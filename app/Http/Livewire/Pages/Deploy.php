@@ -39,11 +39,6 @@ class Deploy extends Component
 
     public $files = [];
 
-    protected $listeners = [
-        'userConnected' => 'attachToUser',
-        'userDisconnected' => 'detachFromUser'
-    ];
-
     public function render()
     {
         return view('livewire.pages.deploy')
@@ -78,95 +73,30 @@ class Deploy extends Component
         $this->byte = config("contracts.artist.byte");
     }
  
-    public function firstStepSubmit()
+    public function submit()
     {
         $validatedData = $this->validate([
             'collection_name' => 'required|min:6',
             'collection_description' => 'required|max:10',
         ]);
 
-        if ($this->smart_contract_id) {
-            $smart_contract = SmartContract::where('public_id', $this->smart_contract_id)->firstOrFail();
-            $smart_contract->collection_name = $validatedData['collection_name'];
-            $smart_contract->collection_description = $validatedData['collection_description'];
-            if ($smart_contract->step < 2) {
-                $smart_contract->step = 2;
-            }
-            $smart_contract->save();
-        } else {
-            $smart_contract = SmartContract::create([
-                'public_id' => SmartContract::generatePublicId(),
-                'collection_name' => $validatedData['collection_name'],
-                'collection_description' => $validatedData['collection_description'],
-                'step' => 2,
-            ]);
-            $this->smart_contract_id = $smart_contract->public_id;
-
-            if (Auth::check()) {
-                $this->attachToUser();
-            }
-        }
- 
-        $this->current_step = 2;
-    }
-
-    public function secondStepSubmit()
-    {
-        $validatedData = $this->validate([
-            'max_supply' => 'required|numeric',
-            'price' => 'required|numeric',
-        ]);
-
-        $smart_contract = SmartContract::where('public_id', $this->smart_contract_id)->firstOrFail();
-        $smart_contract->max_supply = $validatedData['max_supply'];
-        $smart_contract->price = $validatedData['price'];
-        if ($smart_contract->step < 3) {
-            $smart_contract->step = 3;
-        }
-        $smart_contract->save();
- 
-        $this->current_step = 3;
-    }
-
-    public function thirdStepSubmit()
-    {
-        $validatedData = $this->validate([
-            'royalty_percent' => 'required|numeric',
-        ]);
-
-        $smart_contract = SmartContract::where('public_id', $this->smart_contract_id)->firstOrFail();
-        $smart_contract->royalty_percent = $validatedData['royalty_percent'];
-        if ($smart_contract->step < 4) {
-            $smart_contract->step = 4;
-        }
-        $smart_contract->save();
- 
-        $this->current_step = 4;
-    }
-
-    public function back($step)
-    {
-        $this->current_step = $step;
-    }
-
-    public function attachToUser()
-    {
-        if ($this->smart_contract_id) {
-            $smart_contract = SmartContract::where('public_id', $this->smart_contract_id)->firstOrFail();
-            $smart_contract->user_id = Auth::user()->id;
-            $smart_contract->save();
-            $this->emit('urlChange', route('continue_deploy', $this->smart_contract_id));
-        }
-    }
-
-    public function detachFromUser()
-    {
-        if ($this->smart_contract_id) {
-            $smart_contract = SmartContract::where('public_id', $this->smart_contract_id)->firstOrFail();
-            $smart_contract->user_id = null;
-            $smart_contract->save();
-        }
-        $this->emit('urlChange', route('deploy'));
+        // if ($this->smart_contract_id) {
+        //     $smart_contract = SmartContract::where('public_id', $this->smart_contract_id)->firstOrFail();
+        //     $smart_contract->collection_name = $validatedData['collection_name'];
+        //     $smart_contract->collection_description = $validatedData['collection_description'];
+        //     if ($smart_contract->step < 2) {
+        //         $smart_contract->step = 2;
+        //     }
+        //     $smart_contract->save();
+        // } else {
+        //     $smart_contract = SmartContract::create([
+        //         'public_id' => SmartContract::generatePublicId(),
+        //         'collection_name' => $validatedData['collection_name'],
+        //         'collection_description' => $validatedData['collection_description'],
+        //         'step' => 2,
+        //     ]);
+        //     $this->smart_contract_id = $smart_contract->public_id;
+        // }
     }
 
     public function updated($propertyName)
@@ -180,16 +110,6 @@ class Deploy extends Component
 
             'royalty_percent' => 'numeric',
         ]);
-    }
-
-    public function submit()
-    {
-        $this->ipfs_uri = "ipfsUri";
-        $this->arweave_uri = "arweaveUri";
-        $this->hash_proof = "hashProof";
-        $this->royalty_percent = 1000;
-
-        $this->emit('readyToDeploy');
     }
 
     // public function updatedMedia()
