@@ -14,13 +14,23 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Nunito', ...defaultTheme.fontFamily.sans],
+                'DarkerGrotesque': ['Darker Grotesque', 'sans-serif']
             },
             colors: { 
+              NFTF: {
+                'green' : '#2DF540',
+                'greenDark' : '#23C324',
+              },
                 danger: colors.rose,
                 primary: colors.blue,
                 success: colors.green,
                 warning: colors.yellow,
+            },
+            screens: {
+              'lg': '1230px',
+            },
+            transitionProperty: {
+              'margin': "margin"
             },
         },
     },
