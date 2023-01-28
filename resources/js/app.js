@@ -55,7 +55,7 @@ import { EthereumClient, modalConnectors } from "@web3modal/ethereum";
 // **** Setting Wagmi Client & Web3modal
   const chains = [arbitrum, mainnet, polygon];
   const { provider } = configureChains(chains, 
-    [alchemyProvider({ apiKey: 'lHNvUArr8QlIl8DvIuwwP7ujsoiAivT-' }), publicProvider()],
+    [alchemyProvider({ apiKey: 'V75jiJtBsKTCcAfCeuWkZkc8xLR76gWb' }), publicProvider()],
   );
   const wagmiClient = createClient({
     autoConnect: true,
