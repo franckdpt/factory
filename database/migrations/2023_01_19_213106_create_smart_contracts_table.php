@@ -17,16 +17,27 @@ return new class extends Migration
             $table->id();
             $table->char('public_id', 8);
 
-            $table->string('collection_name')->nullable();
-            $table->text('collection_description')->nullable();
+            // Contract
+            $table->string('network')->nullable();
+            $table->string('name')->nullable();
+            $table->string('symbol')->nullable();
+            $table->text('description')->nullable();
+            $table->boolean('free_nft')->default(false);
 
-            $table->integer('max_supply')->nullable();
-            $table->integer('price')->nullable();
+            // Artwork
+            $table->string('artwork_title')->nullable();
+            $table->text('artwork_description')->nullable();
+            $table->string('artwork_hd_media_path')->nullable();
+            $table->string('artwork_ld_media_path')->nullable();
+            $table->integer('artwork_max_supply')->nullable();
+            $table->integer('artwork_price')->nullable();
+            $table->integer('artwork_royalty')->nullable();
 
-            $table->integer('royalty_percent')->nullable();
+            $table->string('artist_portfolio_link')->nullable();
+            $table->string('artist_twitter_link')->nullable();
+            $table->string('artist_contact_mail')->nullable();
 
-            $table->integer('step');
-
+            $table->boolean('deployed')->default(false);
             $table->bigInteger('user_id')->unsigned()->index()->nullable();
             $table->foreign('user_id')
                     ->references('id')

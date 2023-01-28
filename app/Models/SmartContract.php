@@ -13,16 +13,32 @@ class SmartContract extends Model
     protected $fillable = [
         'public_id',
 
-        'collection_name',
-        'collection_description',
+        'network',
+        'name',
+        'symbol',
+        'description',
+        'free_nft',
 
-        'max_supply',
-        'price',
+        'artwork_title',
+        'artwork_description',
+        'artwork_hd_media_path',
+        'artwork_ld_media_path',
+        'artwork_max_supply',
+        'artwork_price',
+        'artwork_royalty',
 
-        'royalty_percent',
+        'artist_portfolio_link',
+        'artist_twitter_link',
+        'artist_contact_mail',
 
-        'step',
+        'deployed',
+
         'user_id',
+    ];
+
+    protected $casts = [
+        'free_nft' => 'boolean',
+        'deployed' => 'boolean',
     ];
 
     public function user()

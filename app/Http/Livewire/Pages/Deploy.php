@@ -6,110 +6,139 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\SmartContract;
+use App\Http\Livewire\Traits\WithNetworks;
 
 class Deploy extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithNetworks;
 
-    public $smart_contract_id;
+    public ?App\Models\SmartContract $smart_contract = null;
+    public $public_id = null;
+    public $deployed = false;
 
-    public $current_step = 1;
+    // Blockchain & Smart Contract
+    public $network = "ethereum";
+    public $name = "";
+    public $symbol = "";
+    public $description = "";
+    public $artist_name = "";
 
-    // 1.
-    public $collection_name, $collection_description;
+    // Artwork
+    public $artwork_title = "";
+    public $artwork_description = "";
+    public $artwork_hd_media_path = "";
+    public $artwork_ld_media_path = "";
+    public $artwork_max_supply = null;
+    public $artwork_price = null;
+    public $artwork_royalty = null; //
+    public $free_nft = false;
 
-    // 2.
-    public $max_supply, $price;
+    // Mint page
+    public $artist_portfolio_link = "";
+    public $artist_twitter_link = "";
+    public $artist_contact_mail = "";
 
-    // 3.
-    public $royalty_percent;
-
-    // Output data
-    public $ipfs_uri;
-    public $arweave_uri;
-    public $hash_proof;
-
-    // Smart contract data
+    // OpenGem contract
     public $abi, $byte;
 
+    // Output variables
     public $media;
     public $media_name;
-    public $media_type;
-    public $media_path;
 
-    public $files = [];
-
-    public function render()
+    protected function rules()
     {
-        return view('livewire.pages.deploy')
-                ->layout('layouts.app');
+        return [
+            'public_id' => 'required|string',
+            
+            'network' => 'required|string',
+            'name' => 'required|string|max:25',
+            'symbol' => 'required|string|max:5',
+            'description' => 'required|string|max:420',
+            'artist_name' => 'string',
+
+            'artwork_title' => 'required|string|max:25',
+            'artwork_description' => 'required|string|max:420',
+            'artwork_hd_media_path' => 'required|string',
+            'artwork_ld_media_path' => 'required|string',
+            'artwork_max_supply' => 'required|numeric|min:1|max:100',
+            'artwork_price' => 'required|numeric',
+            'artwork_royalty' => 'required|numeric|max:10',
+
+            'artist_portfolio_link' => 'url',
+            'artist_twitter_link' => 'url',
+            'artist_contact_mail' => 'email'
+            // 'email' => ['required', 'email', 'not_in:' . auth()->user()->email],
+        ];
     }
 
     public function mount($smart_contract_id = null)
     {
-        if ($smart_contract_id) {
-            $smart_contract = SmartContract::where('public_id', $smart_contract_id)->firstOrFail();
+        if (!is_null($smart_contract_id) && Auth::check()) {
+            $this->smart_contract = SmartContract::where('public_id', $smart_contract_id)->first();
 
-            // --------- 👇 Refactor with middleware ----
-            if (Auth::guest()) {
-                abort(404); // not logged but url specified : need to login
-            } else if ($smart_contract->user_id != Auth::user()->id) {
-                abort(404); // not owner
+            if (is_null($this->smart_contract)) {
+                return redirect()->route('deploy');
             }
-            // --------- 👆 Refactor with middleware ----
 
-            $this->collection_name = $smart_contract->collection_name;
-            $this->collection_description = $smart_contract->collection_description;
+            $this->public_id = $this->smart_contract->public_id;
+            $this->deployed = $this->smart_contract->deployed;
 
-            $this->max_supply = $smart_contract->max_supply;
-            $this->price = $smart_contract->price;
+            // Blockchain & Smart Contract
+            $this->network = $this->smart_contract->network;
+            $this->name = $this->smart_contract->name;
+            $this->symbol = $this->smart_contract->symbol;
+            $this->description = $this->smart_contract->description;
 
-            $this->royalty_percent = $smart_contract->royalty_percent;
+            // Artwork
+            $this->artwork_title = $this->smart_contract->artwork_title;
+            $this->artwork_description = $this->smart_contract->artwork_description;
+            $this->artwork_hd_media_path = $this->smart_contract->artwork_hd_media_path;
+            $this->artwork_ld_media_path = $this->smart_contract->artwork_ld_media_path;
+            $this->artwork_max_supply = $this->smart_contract->artwork_max_supply;
+            $this->artwork_price = $this->smart_contract->artwork_price;
+            $this->artwork_royalty = $this->smart_contract->artwork_royalty;
+            $this->free_nft = $this->smart_contract->free_nft;
 
-            $this->current_step = $smart_contract->step;
+            // Mint page
+            $this->artist_portfolio_link = $this->smart_contract->artist_portfolio_link;
+            $this->artist_twitter_link = $this->smart_contract->artist_twitter_link;
+            $this->artist_contact_mail = $this->smart_contract->artist_contact_mail;
+        } else if (Auth::check()) {
+            $this->artist_portfolio_link = Auth::user()->portfolio_link;
+            $this->artist_twitter_link = Auth::user()->twitter_link;
+            $this->artist_contact_mail = Auth::user()->contact_mail;
+            $this->artist_name = Auth::user()->name;
         }
 
         $this->abi = config("contracts.artist.abi");
         $this->byte = config("contracts.artist.byte");
     }
- 
-    public function submit()
-    {
-        $validatedData = $this->validate([
-            'collection_name' => 'required|min:6',
-            'collection_description' => 'required|max:10',
-        ]);
 
-        // if ($this->smart_contract_id) {
-        //     $smart_contract = SmartContract::where('public_id', $this->smart_contract_id)->firstOrFail();
-        //     $smart_contract->collection_name = $validatedData['collection_name'];
-        //     $smart_contract->collection_description = $validatedData['collection_description'];
-        //     if ($smart_contract->step < 2) {
-        //         $smart_contract->step = 2;
-        //     }
-        //     $smart_contract->save();
-        // } else {
-        //     $smart_contract = SmartContract::create([
-        //         'public_id' => SmartContract::generatePublicId(),
-        //         'collection_name' => $validatedData['collection_name'],
-        //         'collection_description' => $validatedData['collection_description'],
-        //         'step' => 2,
-        //     ]);
-        //     $this->smart_contract_id = $smart_contract->public_id;
-        // }
+    public function deploy()
+    {
+        $this->save();
+        // deploy
+    }
+ 
+    public function save()
+    {
+        $validatedData = $this->validate();
+
+        // TODO: display save button just if public_id is not null
+        $this->smart_contract = SmartContract::updateOrCreate(
+            [ 'public_id' => $this->public_id ], array_merge(
+                $validatedData,
+                [ 'user_id' => Auth::user()->id ])
+        );
     }
 
     public function updated($propertyName)
     {
-        $this->validateOnly($propertyName, [
-            'collection_name' => 'min:6',
-            'collection_description' => 'max:10',
-
-            'max_supply' => 'numeric',
-            'price' => 'numeric',
-
-            'royalty_percent' => 'numeric',
-        ]);
+        if (is_null($this->public_id)) {
+            $this->public_id = SmartContract::generatePublicId();
+        }
+        // dd($propertyName);
+        $this->validateOnly($propertyName);
     }
 
     // public function updatedMedia()
@@ -146,4 +175,10 @@ class Deploy extends Component
     //         $this->ipfs_hash = json_decode($response)->IpfsHash;
     //     }
     // }
+
+    public function render()
+    {
+        return view('livewire.pages.deploy')
+                ->layout('layouts.app');
+    }
 }

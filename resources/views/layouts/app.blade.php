@@ -17,7 +17,7 @@
         @livewireStyles
     </head>
     <body class="antialiased">
-        <x-header />
+        {{-- <x-header /> --}}
         
         <br />
 
