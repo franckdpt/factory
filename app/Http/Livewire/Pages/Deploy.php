@@ -6,13 +6,16 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\SmartContract;
+use App\Models\User;
 use App\Http\Livewire\Traits\WithNetworks;
 
 class Deploy extends Component
 {
     use WithFileUploads, WithNetworks;
 
-    public ?App\Models\SmartContract $smart_contract = null;
+    public ?User $auth_user = null;
+    public ?SmartContract $smart_contract = null;
+    
     public $public_id = null;
     public $deployed = false;
 
@@ -45,6 +48,11 @@ class Deploy extends Component
     public $media;
     public $media_name;
 
+    protected $listeners = [
+        'userConnected',
+        'userDisconnected',
+    ];
+
     protected function rules()
     {
         return [
@@ -70,10 +78,22 @@ class Deploy extends Component
             // 'email' => ['required', 'email', 'not_in:' . auth()->user()->email],
         ];
     }
+    
+    public function userConnected()
+    {
+        $this->auth_user = Auth::user();
+    }
+
+    public function userDisconnected()
+    {
+        $this->auth_user = null;
+    }
 
     public function mount($smart_contract_id = null)
     {
-        if (!is_null($smart_contract_id) && Auth::check()) {
+        $this->auth_user = Auth::user();
+
+        if (!is_null($smart_contract_id) && $this->auth_user) {
             $this->smart_contract = SmartContract::where('public_id', $smart_contract_id)->first();
 
             if (is_null($this->smart_contract)) {
@@ -103,11 +123,11 @@ class Deploy extends Component
             $this->artist_portfolio_link = $this->smart_contract->artist_portfolio_link;
             $this->artist_twitter_link = $this->smart_contract->artist_twitter_link;
             $this->artist_contact_mail = $this->smart_contract->artist_contact_mail;
-        } else if (Auth::check()) {
-            $this->artist_portfolio_link = Auth::user()->portfolio_link;
-            $this->artist_twitter_link = Auth::user()->twitter_link;
-            $this->artist_contact_mail = Auth::user()->contact_mail;
-            $this->artist_name = Auth::user()->name;
+        } else if ($this->auth_user) {
+            $this->artist_portfolio_link = $this->auth_user->portfolio_link;
+            $this->artist_twitter_link = $this->auth_user->twitter_link;
+            $this->artist_contact_mail = $this->auth_user->contact_mail;
+            $this->artist_name = $this->auth_user->name;
         }
 
         $this->abi = config("contracts.artist.abi");
@@ -128,7 +148,7 @@ class Deploy extends Component
         $this->smart_contract = SmartContract::updateOrCreate(
             [ 'public_id' => $this->public_id ], array_merge(
                 $validatedData,
-                [ 'user_id' => Auth::user()->id ])
+                [ 'user_id' => $this->auth_user->id ])
         );
     }
 
