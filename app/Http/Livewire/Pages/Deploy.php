@@ -15,7 +15,7 @@ class Deploy extends Component
 
     public ?User $auth_user = null;
     public ?SmartContract $smart_contract = null;
-    
+
     public $public_id = null;
     public $deployed = false;
 
@@ -137,14 +137,17 @@ class Deploy extends Component
     public function deploy()
     {
         $this->save();
+
         // deploy
+        
+        $this->smart_contract->deployed = true;
+        $this->smart_contract->save();
     }
  
     public function save()
     {
         $validatedData = $this->validate();
 
-        // TODO: display save button just if public_id is not null
         $this->smart_contract = SmartContract::updateOrCreate(
             [ 'public_id' => $this->public_id ], array_merge(
                 $validatedData,
