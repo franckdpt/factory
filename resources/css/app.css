@@ -11,6 +11,10 @@ body {
   --form-control-color: black;
 }
 
+.NFTFtransition {
+  @apply transition duration-150 
+}
+
 .form-control {
   box-sizing: border-box;
   font-family: system-ui, sans-serif;
@@ -72,6 +76,24 @@ input[type="radio"]:focus {
   box-sizing: border-box;
   outline: max(2px, 0.15em) solid #2DF540;
   outline-offset: max(2px, 0.15em);
+}
+
+/* tooltip aniamtion */
+.tooltip-animation {
+  animation-name: to-top;
+  animation-duration: 2s;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes to-top {
+  0% {
+    top: 32px;
+  }
+  100% {
+    top: -50px;
+    opacity: 0;
+  }
 }
 
 

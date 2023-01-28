@@ -15,8 +15,9 @@
         <button type="submit">Submit</button>
     </form> --}}
 
-    <a class="m-10 block mx-auto text-center" href="#">
-      <svg class="inline-block w-32" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.789 77.556">
+    <a class="m-10 block mx-auto text-center" 
+    href="https://nftfactoryparis.com/">
+      <svg class="inline-block w-[100px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.789 77.556">
         <g id="Groupe_7" data-name="Groupe 7" transform="translate(-1501.179 -797.635)">
           <g id="Groupe_7-2" data-name="Groupe 7">
             <path id="Tracé_13" data-name="Tracé 13" d="M1549.352,824.974c3.007,0,5.1,1.611,5.532,4.564h3.463c-.564-4.671-3.92-7.571-9.048-7.571-5.827,0-9.371,4.215-9.371,9.72,0,5.53,3.544,9.746,9.371,9.746,5.128,0,8.484-2.9,9.048-7.6h-3.463c-.43,2.953-2.525,4.591-5.532,4.591-3.759,0-5.96-2.551-5.96-6.739C1543.392,827.525,1545.593,824.974,1549.352,824.974Z"/>
