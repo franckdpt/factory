@@ -1,5 +1,5 @@
 <div>
-    {{-- <form wire:submit.prevent="submit">
+    <form wire:submit.prevent="submit">
         <h2>Form</h2>
 
         <input type="text" wire:model="collection_name">
@@ -13,7 +13,7 @@
         @enderror
 
         <button type="submit">Submit</button>
-    </form> --}}
+    </form>
 
     <a class="m-10 block mx-auto text-center" 
     href="https://nftfactoryparis.com/">
