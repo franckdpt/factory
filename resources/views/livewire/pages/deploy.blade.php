@@ -41,7 +41,7 @@
       <div class="h-10 w-0.5 bg-black"></div>
     </div>
 
-    <form wire:submit.prevent="save">
+    <form wire:submit.prevent="deploy">
       <div class="px-4 md:px-8 relative w-full lg:mx-auto lg:container xl:max-w-screen-lg">
 
         {{-- Blockchain --}}
@@ -635,9 +635,15 @@
         </div>
       </div>
 
-      <button type="submit" class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
-        DEPLOY
-      </button>
+      @if (!is_null($public_id))
+        <button wire:click="save" class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
+          SAVE
+        </button>
+
+        <button type="submit" class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
+          DEPLOY
+        </button>
+      @endif
     </form>
   @endif
 
