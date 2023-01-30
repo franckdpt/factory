@@ -59,7 +59,7 @@
               <label class="flex-1 p-4 flex items-start gap-x-4 border-2 border-transparent hover:border-NFTF-green cursor-pointer">
                 <input class="w-10 h-10 cursor-pointer shrink-0" 
                 type="radio"
-                wire:model="network"
+                wire:model.lazy="network"
                 value="{{ $key }}"/>
                 <span class="-mt-3 fex flex-col">
                   <span class="text-xl md:text-2xl font-bold">
@@ -104,7 +104,7 @@
                   type="text" 
                   id="contractname" 
                   name="contractname" 
-                  wire:model="name"
+                  wire:model.lazy="name"
                   placeholder="My smart contract name">
                   @error('name') 
                     <div class="text-red-600 font-semibold">
@@ -147,7 +147,7 @@
                     type="text" 
                     id="contractsymbole" 
                     name="contractsymbole"
-                    wire:model="symbol"
+                    wire:model.lazy="symbol"
                     placeholder="SC">
                     @error('symbol') 
                       <div class="text-red-600 font-semibold">
@@ -198,7 +198,7 @@
                     type="text" 
                     id="artistname" 
                     name="artistname" 
-                    wire:model="artist_name"
+                    wire:model.lazy="artist_name"
                     placeholder="Your name">
                     @error('artist_name') 
                       <div class="text-red-600 font-semibold">
@@ -245,7 +245,7 @@
                   type="text" 
                   id="artworktitle" 
                   name="artworktitle" 
-                  wire:model="artwork_title" 
+                  wire:model.lazy="artwork_title" 
                   placeholder="My artwork title">
                   @error('artwork_title') 
                     <div class="text-red-600 font-semibold">
@@ -279,7 +279,7 @@
                   type="text" 
                   id="artworkdescription" 
                   name="artworkdescription" 
-                  wire:model="artwork_description" 
+                  wire:model.lazy="artwork_description" 
                   placeholder="My artwork description"></textarea>
                   @error('artwork_description') 
                     <div class="text-red-600 font-semibold">
@@ -304,8 +304,9 @@
                 Hight Definition media
                 </div>
 
-                {{-- <label class="flex relative border-2 border-dashed border-black !border-red-600 cursor-pointer"
-                for="file-input"
+                <label class="flex relative border-2 border-dashed border-black cursor-pointer 
+                {{ $errors->has('hd_media') ? '!border-red-600' : '' }}"
+                for="hdMedia"
                 x-data="drop_file_component()">
                   <div class="p-10 w-full rounded-xl"
                       x-bind:class="dropingFile ? 'bg-gray-300' : ''"
@@ -319,9 +320,10 @@
                       <div class="mt-5 flex justify-center">
                           <svg class="h-16 w-16" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><g fill="#000" fill-rule="evenodd" clip-rule="evenodd"><path d="m20 7-4-4H5a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1zm-1 13H5V4h10.5v2.5a1 1 0 0 0 1 1H19zm-.914-13.5L16.5 4.914V6.5z" fill="#000000" data-original="#000000"></path><path d="M11.5 13.5V16h1v-2.5H15v-1h-2.5V10h-1v2.5H9v1z" fill="#000000" data-original="#000000"></path></g></g></svg>
                       </div>
-                      <div class="text-center font-bold {{ is_null($this->media) ? '' : 'hidden' }}" wire:loading.remove wire.target="media">Upload your media here</div>
-                      <div class="text-center font-bold {{ is_null($this->media) ? 'hidden' : '' }}" wire:loading.remove wire.target="media">{{ $this->media_name }}</div>
-                      <div class="mt-1 flex justify-center" wire:loading.flex wire.target="media">
+                      <div class="text-center font-bold">
+                        {{ is_null($this->hd_media) ? 'Upload your media here' : $this->hd_media->getClientOriginalName() }}
+                      </div>
+                      <div class="mt-1 flex justify-center" wire:loading.flex wire.target="hd_media">
                           <div class="flex">
                               <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -331,11 +333,13 @@
                           </div>
                       </div>
                   </div>
-                </label> --}}
-                <input id="file-input" class="hidden" type="file" wire:model="media" />
-                <div class="text-red-600 font-semibold">
-                  error status here
-                </div>
+                </label>
+                <input id="hdMedia" class="hidden" type="file" wire:model.lazy="hd_media" />
+                @error('hd_media') 
+                  <div class="text-red-600 font-semibold">
+                    {{ $message }}
+                  </div>
+                @enderror
 
               </div>
               <div class="hidden md:block w-1 bg-gray-200"></div>
@@ -382,7 +386,7 @@
                       </div>
                   </div>
                 </label> --}}
-                <input id="file-input" class="hidden" type="file" wire:model="media" />
+                {{-- <input id="file-input" class="hidden" type="file" wire:model.lazy="media" /> --}}
                 <div class="text-red-600 font-semibold">
                   
                 </div>
@@ -415,7 +419,7 @@
                     min="0"
                     placeholder="10"
                     name="price"
-                    wire:model="artwork_price">
+                    wire:model.lazy="artwork_price">
                     ETH
                   </div>
                   @error('artwork_price') 
@@ -458,7 +462,7 @@
                   step="1"
                   placeholder="10"
                   name="maxsupply"
-                  wire:model="artwork_max_supply">
+                  wire:model.lazy="artwork_max_supply">
                   @error('artwork_max_supply') 
                     <div class="text-red-600 font-semibold">
                       {{ $message }}
@@ -494,7 +498,7 @@
                       <input
                         class="w-10 h-10 cursor-pointer shrink-0"
                         type="radio"
-                        wire:model="free_nft"
+                        wire:model.lazy="free_nft"
                         value="true">
                       <span class="-mt-3 fex flex-col ">
                         <span class="text-xl md:text-2xl font-bold">
@@ -505,7 +509,7 @@
                     <label class="mt-6 flex items-start gap-x-4 cursor-pointer">
                       <input class="w-10 h-10 cursor-pointer shrink-0"
                         type="radio"
-                        wire:model="free_nft"
+                        wire:model.lazy="free_nft"
                         value="false">
                       <span class="-mt-3 fex flex-col">
                         <span class="text-xl md:text-2xl font-bold">
@@ -558,7 +562,7 @@
                   type="text" 
                   id="portfoliolink" 
                   name="portfoliolink"
-                  wire:model="artist_portfolio_link"
+                  wire:model.lazy="artist_portfolio_link"
                   placeholder="https://mypportfolio.com">
                   @error('artist_portfolio_link') 
                     <div class="text-red-600 font-semibold">
@@ -586,7 +590,7 @@
                     type="text" 
                     id="twitterlink" 
                     name="twitterlink"
-                    wire:model="artist_twitter_link"
+                    wire:model.lazy="artist_twitter_link"
                     placeholder="https://twitter.com/mypseudo">
                     @error('artist_twitter_link') 
                       <div class="text-red-600 font-semibold">
@@ -615,7 +619,7 @@
                     type="text" 
                     id="mail" 
                     name="mail" 
-                    wire:model="artist_contact_mail"
+                    wire:model.lazy="artist_contact_mail"
                     placeholder="your@mail.com">
                     @error('artist_contact_mail') 
                       <div class="text-red-600 font-semibold">
@@ -636,10 +640,6 @@
       </div>
 
       @if (!is_null($public_id))
-        <button wire:click="save" class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
-          SAVE
-        </button>
-
         <button type="submit" class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
           DEPLOY
         </button>
@@ -658,6 +658,22 @@
     function OnInput() {
       this.style.minHeight = "0";
       this.style.minHeight = (this.scrollHeight) + "px";
+    }
+
+    function drop_file_component() {
+        return {
+            dropingFile: false,
+            handleFileDrop(e) {
+                if (event.dataTransfer.files.length > 0) {
+                    const files = e.dataTransfer.files;
+                    console.log(files[0].name);
+                    @this.upload('hd_media', files[0],
+                        (uploadedFilename) => {
+                        }, () => {}, (event) => {}
+                    )
+                }
+            }
+        };
     }
 
       // async function test() {

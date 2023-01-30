@@ -45,8 +45,16 @@ class Deploy extends Component
     public $abi, $byte;
 
     // Output variables
-    public $media;
-    public $media_name;
+    public $hd_media;
+    public $ld_media;
+
+    public $hd_media_type;
+    public $hd_media_path;
+    public $hd_media_name;
+
+    public $ld_media_type;
+    public $ld_media_path;
+    public $ld_media_name;
 
     protected $listeners = [
         'userConnected',
@@ -62,19 +70,20 @@ class Deploy extends Component
             'name' => 'required|string|max:25',
             'symbol' => 'required|string|max:5',
             'description' => 'required|string|max:420',
-            'artist_name' => 'string',
+            'artist_name' => 'nullable|string',
 
             'artwork_title' => 'required|string|max:25',
             'artwork_description' => 'required|string|max:420',
-            'artwork_hd_media_path' => 'required|string',
-            'artwork_ld_media_path' => 'required|string',
             'artwork_max_supply' => 'required|numeric|min:1|max:100',
             'artwork_price' => 'required|numeric',
             'artwork_royalty' => 'required|numeric|max:10',
 
-            'artist_portfolio_link' => 'url',
-            'artist_twitter_link' => 'url',
-            'artist_contact_mail' => 'email'
+            'artist_portfolio_link' => 'nullable|url',
+            'artist_twitter_link' => 'nullable|url',
+            'artist_contact_mail' => 'nullable|email',
+
+            'hd_media' => 'required|max:10000',
+            'ld_media' => 'required|max:100'
             // 'email' => ['required', 'email', 'not_in:' . auth()->user()->email],
         ];
     }
@@ -160,44 +169,60 @@ class Deploy extends Component
         if (is_null($this->public_id)) {
             $this->public_id = SmartContract::generatePublicId();
         }
-        // dd($propertyName);
-        $this->validateOnly($propertyName);
+
+        $validatedData = $this->validateOnly($propertyName);
+
+        $this->smart_contract = SmartContract::updateOrCreate(
+            [ 'public_id' => $this->public_id ], array_merge(
+                $validatedData,
+                [ 'user_id' => $this->auth_user->id ])
+        );
     }
 
-    // public function updatedMedia()
-    // {
-    //     $this->validate([
-    //         'media' => 'max:100000', // 100MB Max
-    //     ]);
+    public function updatedHdMedia()
+    {
+        $this->hd_media_type = $this->hd_media->getMimeType();
+        $this->hd_media_path = $this->hd_media->getRealPath();
+        $this->hd_media_name = $this->hd_media->getClientOriginalName();
 
-    //     $this->media_type = $this->media->getMimeType();
-    //     $this->media_path = $this->media->getRealPath();
-    //     $this->media_name = $this->media->getClientOriginalName();
-    // }
+        // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd');
+        $this->smart_contract->artwork_hd_media_path = "";
+        $this->smart_contract->save();
+    }
 
-    // public function uploadIpfs()
-    // {
-    //     $curl = curl_init();
-    //     $tmp = curl_setopt_array($curl, [
-    //         CURLOPT_URL => "https://api.pinata.cloud/pinning/pinFileToIPFS",
-    //         CURLOPT_RETURNTRANSFER => true,
-    //         CURLOPT_POST => 1,
-    //         CURLOPT_POSTFIELDS => array('file' => curl_file_create($this->media_path, $this->media_type, $this->title)),
-    //         CURLOPT_HTTPHEADER => [
-    //             "pinata_api_key: ".env('PINATA_KEY'),
-    //             "pinata_secret_api_key: ".env('PINATA_SECRET')
-    //         ],
-    //     ]);
-    //     $response = curl_exec($curl);
-    //     $err = curl_error($curl);
-    //     curl_close($curl);
+    public function updatedLdMedia()
+    {
+        $this->ld_media_type = $this->ld_media->getMimeType();
+        $this->ld_media_path = $this->ld_media->getRealPath();
+        $this->ld_media_name = $this->ld_media->getClientOriginalName();
 
-    //     if ($err) {
-    //         dd($err);
-    //     } else {
-    //         $this->ipfs_hash = json_decode($response)->IpfsHash;
-    //     }
-    // }
+        // $this->ld_media->storeAs('nft_media', $this->public_id.'_ld');
+        $this->smart_contract->artwork_ld_media_path = "";
+        $this->smart_contract->save();
+    }
+
+    public function uploadIpfs() {
+        $curl = curl_init();
+        $tmp = curl_setopt_array($curl, [
+            CURLOPT_URL => "https://api.pinata.cloud/pinning/pinFileToIPFS",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => 1,
+            CURLOPT_POSTFIELDS => array('file' => curl_file_create($this->media_path, $this->media_type, $this->title)),
+            CURLOPT_HTTPHEADER => [
+                "pinata_api_key: ".env('PINATA_KEY'),
+                "pinata_secret_api_key: ".env('PINATA_SECRET')
+            ],
+        ]);
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        curl_close($curl);
+
+        if ($err) {
+            dd($err);
+        } else {
+            $this->ipfs_hash = json_decode($response)->IpfsHash;
+        }
+    }
 
     public function render()
     {
