@@ -8,6 +8,8 @@ use Livewire\WithFileUploads;
 use App\Models\SmartContract;
 use App\Models\User;
 use App\Http\Livewire\Traits\WithNetworks;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class Deploy extends Component
 {
@@ -20,7 +22,7 @@ class Deploy extends Component
     public $deployed = false;
 
     // Blockchain & Smart Contract
-    public $network = "ethereum";
+    public $network = "";
     public $name = "";
     public $symbol = "";
     public $description = "";
@@ -29,8 +31,8 @@ class Deploy extends Component
     // Artwork
     public $artwork_title = "";
     public $artwork_description = "";
-    public $artwork_hd_media_path = "";
-    public $artwork_ld_media_path = "";
+    public $hd_media;
+    public $ld_media;
     public $artwork_max_supply = null;
     public $artwork_price = null;
     public $artwork_royalty = null; //
@@ -42,19 +44,11 @@ class Deploy extends Component
     public $artist_contact_mail = "";
 
     // OpenGem contract
-    public $abi, $byte;
+    public $abi, $byte, $arweave_key;
 
     // Output variables
-    public $hd_media;
-    public $ld_media;
-
-    public $hd_media_type;
-    public $hd_media_path;
-    public $hd_media_name;
-
-    public $ld_media_type;
-    public $ld_media_path;
-    public $ld_media_name;
+    public $ipfs_hash;
+    public $arweave_hash;
 
     protected $listeners = [
         'userConnected',
@@ -100,6 +94,7 @@ class Deploy extends Component
 
     public function mount($smart_contract_id = null)
     {
+        $this->arweave_key = Storage::disk('local')->get('hW-arweave.json');
         $this->auth_user = Auth::user();
 
         if (!is_null($smart_contract_id) && $this->auth_user) {
@@ -121,8 +116,6 @@ class Deploy extends Component
             // Artwork
             $this->artwork_title = $this->smart_contract->artwork_title;
             $this->artwork_description = $this->smart_contract->artwork_description;
-            $this->artwork_hd_media_path = $this->smart_contract->artwork_hd_media_path;
-            $this->artwork_ld_media_path = $this->smart_contract->artwork_ld_media_path;
             $this->artwork_max_supply = $this->smart_contract->artwork_max_supply;
             $this->artwork_price = $this->smart_contract->artwork_price;
             $this->artwork_royalty = $this->smart_contract->artwork_royalty;
@@ -181,33 +174,36 @@ class Deploy extends Component
 
     public function updatedHdMedia()
     {
-        $this->hd_media_type = $this->hd_media->getMimeType();
-        $this->hd_media_path = $this->hd_media->getRealPath();
-        $this->hd_media_name = $this->hd_media->getClientOriginalName();
+        // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd.'.explode('/', $this->hd_media->getMimeType())[1]);
 
-        // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd');
-        $this->smart_contract->artwork_hd_media_path = "";
+        $path = $this->hd_media->storePubliclyAs('nft_media', $this->public_id.'_hd.'.explode('/', $this->hd_media->getMimeType())[1], 'public');
+        $this->smart_contract->artwork_hd_media_path = Storage::url($path);
+        $this->smart_contract->artwork_hd_media_type = $this->hd_media->getMimeType();
         $this->smart_contract->save();
+
+        // $this->emit('readyToUploadArweave', $this->hd_media->getMimeType());
+        // $this->uploadIpfs($this->hd_media->getRealPath(), $this->hd_media->getMimeType(), $this->public_id.'_hd');
     }
 
-    public function updatedLdMedia()
+    // public function updatedLdMedia()
+    // {
+    //     $this->ld_media_type = $this->ld_media->getMimeType();
+    //     $this->ld_media_path = $this->ld_media->getRealPath();
+    //     $this->ld_media_name = $this->ld_media->getClientOriginalName();
+
+    //     // $this->ld_media->storeAs('nft_media', $this->public_id.'_ld');
+    //     $this->smart_contract->artwork_ld_media_path = "";
+    //     $this->smart_contract->save();
+    // }
+
+    public function uploadIpfs($path, $type, $name)
     {
-        $this->ld_media_type = $this->ld_media->getMimeType();
-        $this->ld_media_path = $this->ld_media->getRealPath();
-        $this->ld_media_name = $this->ld_media->getClientOriginalName();
-
-        // $this->ld_media->storeAs('nft_media', $this->public_id.'_ld');
-        $this->smart_contract->artwork_ld_media_path = "";
-        $this->smart_contract->save();
-    }
-
-    public function uploadIpfs() {
         $curl = curl_init();
         $tmp = curl_setopt_array($curl, [
             CURLOPT_URL => "https://api.pinata.cloud/pinning/pinFileToIPFS",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => 1,
-            CURLOPT_POSTFIELDS => array('file' => curl_file_create($this->media_path, $this->media_type, $this->title)),
+            CURLOPT_POSTFIELDS => array('file' => curl_file_create($path, $type, $name)),
             CURLOPT_HTTPHEADER => [
                 "pinata_api_key: ".env('PINATA_KEY'),
                 "pinata_secret_api_key: ".env('PINATA_SECRET')

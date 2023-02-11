@@ -76,6 +76,11 @@
             @endforeach
           
           </div>
+          @error('network') 
+            <div class="text-red-600 font-semibold">
+              {{ $message }}
+            </div>
+          @enderror
         </div>
 
         <div class="flex justify-center">
@@ -354,9 +359,9 @@
           <div class="mt-10">
             <div class="md:flex gap-x-10">
               <div class="flex-1 relative flex flex-col">
-                <div class="text-xl md:text-2xl font-bold">
+                {{-- <div class="text-xl md:text-2xl font-bold">
                 Low Definition media
-                </div>
+                </div> --}}
 
                 {{-- <label class="flex relative border-2 border-dashed border-black cursor-pointer"
                 for="file-input"
@@ -660,6 +665,37 @@
       this.style.minHeight = (this.scrollHeight) + "px";
     }
 
+    async function arweaveUpload(type, file) {
+      let reader  = new FileReader();
+
+      reader.addEventListener("load", function () {
+          let key = @this.get('arweave_key');
+          arweave.createTransaction({ data: buffer.from(reader.result.split(',')[1], 'base64') }, JSON.parse(key))
+          .then((transaction) => {
+              transaction.addTag('Content-Type', type);
+              arweave.transactions.sign(transaction, JSON.parse(key))
+              .then(() => {
+                  arweave.transactions.getUploader(transaction)
+                  .then((uploader) => {
+                      function loop() {
+                          uploader.uploadChunk()
+                          .then(() => {
+                              if (!uploader.isComplete) {
+                                  loop()
+                              } else {
+                                  @this.set('arweave_hash', transaction.id)
+                              }
+                          })
+                      }
+                      loop();
+                  })
+              });
+          });
+      }, false);
+
+      reader.readAsDataURL(file);
+    }
+
     function drop_file_component() {
         return {
             dropingFile: false,
@@ -713,11 +749,11 @@
       */
 
       document.addEventListener('DOMContentLoaded', function () {
-          /*
-          Livewire.on('readyToDeploy', event => {
-              deploy()
-          })
-          */
+
+        Livewire.on('readyToUploadArweave', function (type) {
+          file = document.querySelector('input[type=file]').files[0]
+          arweaveUpload(type, file)
+        });
 
       })
       

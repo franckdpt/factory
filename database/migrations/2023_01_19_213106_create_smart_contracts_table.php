@@ -27,8 +27,12 @@ return new class extends Migration
             // Artwork
             $table->string('artwork_title')->nullable();
             $table->text('artwork_description')->nullable();
+            
             $table->string('artwork_hd_media_path')->nullable();
+            $table->string('artwork_hd_media_type')->nullable();
             $table->string('artwork_ld_media_path')->nullable();
+            $table->string('artwork_ld_media_type')->nullable();
+
             $table->integer('artwork_max_supply')->nullable();
             $table->integer('artwork_price')->nullable();
             $table->integer('artwork_royalty')->nullable();

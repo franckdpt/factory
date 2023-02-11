@@ -69,5 +69,18 @@ import { EthereumClient, modalConnectors } from "@web3modal/ethereum";
   window.Web3modal = web3modal;
 // ****
 
+import { Buffer } from 'buffer';
+window.buffer = Buffer;
+
+import Arweave from 'arweave';
+window.arweave = Arweave.init({
+  host: 'arweave.net',
+  port: 443,
+  protocol: 'https',
+  timeout: 300000,
+  logging: false,
+});
+
+
 // import Turbolinks from 'turbolinks';
 // Turbolinks.start();

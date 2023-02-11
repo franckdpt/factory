@@ -21,8 +21,12 @@ class SmartContract extends Model
 
         'artwork_title',
         'artwork_description',
+        
         'artwork_hd_media_path',
+        'artwork_hd_media_type',
         'artwork_ld_media_path',
+        'artwork_ld_media_type',
+
         'artwork_max_supply',
         'artwork_price',
         'artwork_royalty',
