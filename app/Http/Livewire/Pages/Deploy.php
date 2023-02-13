@@ -17,6 +17,7 @@ class Deploy extends Component
 
     public ?User $auth_user = null;
     public ?SmartContract $smart_contract = null;
+    public $state = null;
 
     public $public_id = null;
     public $deployed = false;
@@ -47,12 +48,18 @@ class Deploy extends Component
     public $abi, $byte, $arweave_key;
 
     // Output variables
-    public $ipfs_hash;
     public $arweave_hash;
+    public $ipfs_hash;
+    public $ipfs_json_hash;
+    public $sha_hash;
+    public $contract_data_json;
+    public $base_url;
 
     protected $listeners = [
         'userConnected',
         'userDisconnected',
+        'arweaveUploaded',
+        'smartContractDeployed',
     ];
 
     protected function rules()
@@ -77,7 +84,8 @@ class Deploy extends Component
             'artist_contact_mail' => 'nullable|email',
 
             'hd_media' => 'required|max:10000',
-            'ld_media' => 'required|max:100'
+            'ld_media' => 'required|max:100',
+            'free_nft' => 'required'
             // 'email' => ['required', 'email', 'not_in:' . auth()->user()->email],
         ];
     }
@@ -94,7 +102,7 @@ class Deploy extends Component
 
     public function mount($smart_contract_id = null)
     {
-        $this->arweave_key = Storage::disk('local')->get('hW-arweave.json');
+        $this->base_url = config('app.url');
         $this->auth_user = Auth::user();
 
         if (!is_null($smart_contract_id) && $this->auth_user) {
@@ -131,30 +139,6 @@ class Deploy extends Component
             $this->artist_contact_mail = $this->auth_user->contact_mail;
             $this->artist_name = $this->auth_user->name;
         }
-
-        $this->abi = config("contracts.artist.abi");
-        $this->byte = config("contracts.artist.byte");
-    }
-
-    public function deploy()
-    {
-        $this->save();
-
-        // deploy
-        
-        $this->smart_contract->deployed = true;
-        $this->smart_contract->save();
-    }
- 
-    public function save()
-    {
-        $validatedData = $this->validate();
-
-        $this->smart_contract = SmartContract::updateOrCreate(
-            [ 'public_id' => $this->public_id ], array_merge(
-                $validatedData,
-                [ 'user_id' => $this->auth_user->id ])
-        );
     }
 
     public function updated($propertyName)
@@ -174,28 +158,158 @@ class Deploy extends Component
 
     public function updatedHdMedia()
     {
-        // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd.'.explode('/', $this->hd_media->getMimeType())[1]);
+        $format = explode('/', $this->hd_media->getMimeType())[1];
 
-        $path = $this->hd_media->storePubliclyAs('nft_media', $this->public_id.'_hd.'.explode('/', $this->hd_media->getMimeType())[1], 'public');
+        // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd.'.$format);
+        $path = $this->hd_media->storePubliclyAs(
+            'nft_media',
+            $this->public_id.'_hd.'.$format,
+            'public'
+        );
+
+        $this->sha_hash = hash_file('sha256', Storage::url($path));
+
         $this->smart_contract->artwork_hd_media_path = Storage::url($path);
         $this->smart_contract->artwork_hd_media_type = $this->hd_media->getMimeType();
         $this->smart_contract->save();
-
-        // $this->emit('readyToUploadArweave', $this->hd_media->getMimeType());
-        // $this->uploadIpfs($this->hd_media->getRealPath(), $this->hd_media->getMimeType(), $this->public_id.'_hd');
     }
 
-    // public function updatedLdMedia()
-    // {
-    //     $this->ld_media_type = $this->ld_media->getMimeType();
-    //     $this->ld_media_path = $this->ld_media->getRealPath();
-    //     $this->ld_media_name = $this->ld_media->getClientOriginalName();
+    public function submit()
+    {
+        $validatedData = $this->validate();
 
-    //     // $this->ld_media->storeAs('nft_media', $this->public_id.'_ld');
-    //     $this->smart_contract->artwork_ld_media_path = "";
-    //     $this->smart_contract->save();
-    // }
+        $this->smart_contract = SmartContract::updateOrCreate(
+            [ 'public_id' => $this->public_id ], array_merge(
+                $validatedData,
+                [ 'user_id' => $this->auth_user->id ])
+        );
 
+        $this->startUploadIpfs();
+    }
+
+    public function startUploadIpfs()
+    {
+        // 1
+        $this->state = 'Uploading media on IPFS...';
+
+        $this->ipfs_hash = $this->uploadIpfs(
+            $this->hd_media->getRealPath(),
+            $this->hd_media->getMimeType(),
+            $this->public_id.'_hd'
+        );
+
+        $this->smart_contract->ipfs_hash = $this->ipfs_hash;
+        $this->smart_contract->save();
+
+        if (empty($this->ipfs_hash)) {
+            dd('error on uploading IPFS');
+        }
+        
+        $this->readyToUploadArweave();
+    }
+
+    public function readyToUploadArweave()
+    {
+        // 2
+        $this->state = 'Uploading media on Arweave...';
+
+        $this->arweave_key = Storage::disk('local')->get('hW-arweave.json');
+
+        $this->emit('uploadArweave', $this->hd_media->getMimeType());
+        // Run on JS side.
+    }
+
+    public function arweaveUploaded()
+    {
+        $this->smart_contract->arweave_hash = $this->arweave_hash;
+        $this->smart_contract->save();
+
+        if (empty($this->arweave_hash)) {
+            dd('error on uploading Arweave');
+        }
+
+        $this->createAndUploadJsonIpfs();
+    }
+
+    public function createAndUploadJsonIpfs()
+    {
+        $this->state = 'Uploading JSON to IPFS...';
+
+        $data = [
+            "name" => $this->artwork_title,
+            "collection" => $this->name,
+            "description" => $this->artwork_description,
+            "image" => "https://gateway.pinata.cloud/ipfs/".$this->ipfs_hash,
+            "image_arweave" => "http://arweave.net/".$this->arweave_hash,
+            "image_ipfs" => "https://gateway.pinata.cloud/ipfs/".$this->ipfs_hash,
+            "image_sha256" => $this->sha_hash,
+        ];
+        
+        file_put_contents('storage/jsons/'.$this->public_id.'.json', json_encode($data));
+            
+        $this->ipfs_json_hash = $this->uploadIpfs(
+            Storage::url('jsons/'.$this->public_id.'.json'),
+            'application/json',
+            $this->public_id
+        );
+
+        $this->smart_contract->ipfs_json_hash = $this->ipfs_json_hash;
+        $this->smart_contract->save();
+
+        if (empty($this->ipfs_hash)) {
+            dd('error on uploading IPFS');
+        }
+
+        $this->readyToDeploySmartContract();
+    }
+
+    public function readyToDeploySmartContract()
+    {
+        // 3
+        $this->state = 'Creating smart contract...';
+
+        $this->abi = config("contracts.artist.abi");
+        $this->byte = config("contracts.artist.byte");
+
+        $this->createJsonContract();
+
+        $this->emit('deploySmartContract');
+        // Run on JS side.
+    }
+
+    public function smartContractDeployed($address)
+    {
+        $this->smart_contract->deployed = true;
+        $this->smart_contract->address = $address;
+        $this->smart_contract->save();
+
+        if (empty($this->address)) {
+            dd('error on deploying contract');
+        }
+    }
+
+    //////////////
+
+    public function createJsonContract()
+    {
+        $contract_data = [
+            "name" => $this->name,
+            "description" => $this->description,
+            "image" => config('app.url').Storage::url('nft_media/'.$this->public_id.'_hd.png'),
+            "external_link" => config('app.url').Storage::url('nft_media/'.$this->public_id.'_hd.png'),
+            "seller_fee_basis_points" => 100, # Indicates a 1% seller fee.
+            "fee_recipient" => $this->auth_address
+        ];
+        
+        if (file_put_contents('storage/jsons/'.$this->public_id.'_contract.json', json_encode($contract_data))) {
+            $this->contract_data_json = Storage::url('jsons/'.$this->public_id.'_contract.json');
+            $this->smart_contract->contract_data_json = Storage::url('jsons/'.$this->public_id.'_contract.json');
+            $this->smart_contract->save();
+        } else {
+            dd('Error on creating contract json');
+        }
+    }
+    
     public function uploadIpfs($path, $type, $name)
     {
         $curl = curl_init();
@@ -216,7 +330,7 @@ class Deploy extends Component
         if ($err) {
             dd($err);
         } else {
-            $this->ipfs_hash = json_decode($response)->IpfsHash;
+            return json_decode($response)->IpfsHash;
         }
     }
 

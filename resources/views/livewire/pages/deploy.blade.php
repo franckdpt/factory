@@ -41,7 +41,7 @@
       <div class="h-10 w-0.5 bg-black"></div>
     </div>
 
-    <form wire:submit.prevent="deploy">
+    <form wire:submit.prevent="submit">
       <div class="px-4 md:px-8 relative w-full lg:mx-auto lg:container xl:max-w-screen-lg">
 
         {{-- Blockchain --}}
@@ -684,6 +684,7 @@
                                   loop()
                               } else {
                                   @this.set('arweave_hash', transaction.id)
+                                  Livewire.emit('arweaveUploaded')
                               }
                           })
                       }
@@ -719,7 +720,7 @@
       //     const { hash } = await sendTransaction(config)
       // }
 
-      /*
+      
       async function deploy() {
           // prevent wallet error
           if (@this.auth_address == formatAddress(getAccount().address)) {
@@ -727,32 +728,39 @@
               const Factory = new ethers.ContractFactory(@this.abi, @this.byte, signer);
               // const factoryContract = await Factory.deploy("Hello, Hardhat!");
               const factoryContract = await Factory.deploy(
-                  'collectionName',
-                  'collectionSymbol',
-                  'collectionDescription',
-                  @this.ipfs_uri,
-                  @this.arweave_uri,
-                  @this.hash_proof,
-                  'uriForFetchingOnly',
-                  100,
-                  ethers.utils.parseEther("1.0"),
+                  @this.name,
+                  @this.symbol,
+                  @this.description,
+                  @this.ipfs_hash,
+                  @this.arweave_hash,
+                  @this.sha_hash,
+                  @this.ipfs_json_hash,
+                  @this.artwork_royalty,
+                  ethers.utils.parseEther(@this.artwork_price),
                   @this.auth_address
               );
 
               await factoryContract.deployed();
-              console.log("factoryContract.address", factoryContract.address);
+              
+              Livewire.emit('smartContractDeployed', factoryContract.address)
+              console.log(" address", factoryContract.address);
           } else {
               console.log('error: this.auth_address differ getAccount().address')
           }
           
       }
-      */
+      
 
       document.addEventListener('DOMContentLoaded', function () {
 
-        Livewire.on('readyToUploadArweave', function (type) {
+        Livewire.on('uploadArweave', function (type) {
           file = document.querySelector('input[type=file]').files[0]
           arweaveUpload(type, file)
+        });
+
+        Livewire.on('deploySmartContract', function (type) {
+          @this.set('state', 'Deploying smart contract...')
+          deploy()
         });
 
       })

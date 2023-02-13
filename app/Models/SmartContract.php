@@ -21,7 +21,7 @@ class SmartContract extends Model
 
         'artwork_title',
         'artwork_description',
-        
+
         'artwork_hd_media_path',
         'artwork_hd_media_type',
         'artwork_ld_media_path',
@@ -34,6 +34,12 @@ class SmartContract extends Model
         'artist_portfolio_link',
         'artist_twitter_link',
         'artist_contact_mail',
+
+        'ipfs_hash',
+        'ipfs_json_hash',
+        'arweave_hash',
+        'sha_hash',
+        'address',
 
         'deployed',
 

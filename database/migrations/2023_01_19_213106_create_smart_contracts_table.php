@@ -41,6 +41,12 @@ return new class extends Migration
             $table->string('artist_twitter_link')->nullable();
             $table->string('artist_contact_mail')->nullable();
 
+            $table->string('ipfs_hash')->nullable();
+            $table->string('ipfs_json_hash')->nullable();
+            $table->string('arweave_hash')->nullable();
+            $table->string('sha_hash')->nullable();
+            $table->string('address')->nullable();
+
             $table->boolean('deployed')->default(false);
             $table->bigInteger('user_id')->unsigned()->index()->nullable();
             $table->foreign('user_id')
