@@ -29,7 +29,7 @@ return new class extends Migration
             $table->text('artwork_description')->nullable();
             
             $table->string('artwork_hd_media_path')->nullable();
-            $table->string('artwork_hd_media_type')->nullable();
+            $table->string('artwork_hd_media_extension')->nullable();
             $table->string('artwork_ld_media_path')->nullable();
             $table->string('artwork_ld_media_type')->nullable();
 

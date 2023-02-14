@@ -26,7 +26,7 @@ class Deploy extends Component
     public $network = "";
     public $name = "";
     public $symbol = "";
-    public $description = "";
+    public $description = "nft factory desc";
     public $artist_name = "";
 
     // Artwork
@@ -52,12 +52,18 @@ class Deploy extends Component
     public $ipfs_hash;
     public $ipfs_json_hash;
     public $sha_hash;
-    public $contract_data_json;
-    public $base_url;
+    public $contract_data_json_url;
+    public $artwork_extension;
 
     protected $listeners = [
         'userConnected',
         'userDisconnected',
+        
+        'readyToUploadIpfs',
+        'readyToUploadArweave',
+        'readyToCreateAndUploadJsonTokenIpfs',
+        'readyToDeploySmartContract',
+
         'arweaveUploaded',
         'smartContractDeployed',
     ];
@@ -77,14 +83,14 @@ class Deploy extends Component
             'artwork_description' => 'required|string|max:420',
             'artwork_max_supply' => 'required|numeric|min:1|max:100',
             'artwork_price' => 'required|numeric',
-            'artwork_royalty' => 'required|numeric|max:10',
+            // 'artwork_royalty' => 'required|numeric|max:10',
 
             'artist_portfolio_link' => 'nullable|url',
             'artist_twitter_link' => 'nullable|url',
             'artist_contact_mail' => 'nullable|email',
 
             'hd_media' => 'required|max:10000',
-            'ld_media' => 'required|max:100',
+            // 'ld_media' => 'required|max:100',
             'free_nft' => 'required'
             // 'email' => ['required', 'email', 'not_in:' . auth()->user()->email],
         ];
@@ -102,7 +108,6 @@ class Deploy extends Component
 
     public function mount($smart_contract_id = null)
     {
-        $this->base_url = config('app.url');
         $this->auth_user = Auth::user();
 
         if (!is_null($smart_contract_id) && $this->auth_user) {
@@ -158,19 +163,20 @@ class Deploy extends Component
 
     public function updatedHdMedia()
     {
-        $format = explode('/', $this->hd_media->getMimeType())[1];
+        $this->artwork_extension = explode('/', $this->hd_media->getMimeType())[1];
 
-        // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd.'.$format);
+        // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd.'.$this->artwork_extension);
         $path = $this->hd_media->storePubliclyAs(
             'nft_media',
-            $this->public_id.'_hd.'.$format,
+            $this->public_id.'_hd.'.$this->artwork_extension,
             'public'
         );
 
-        $this->sha_hash = hash_file('sha256', Storage::url($path));
+        $this->sha_hash = hash_file('sha256', public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_extension));
 
+        $this->smart_contract->sha_hash = $this->sha_hash;
         $this->smart_contract->artwork_hd_media_path = Storage::url($path);
-        $this->smart_contract->artwork_hd_media_type = $this->hd_media->getMimeType();
+        $this->smart_contract->artwork_hd_media_extension = $this->artwork_extension;
         $this->smart_contract->save();
     }
 
@@ -184,14 +190,12 @@ class Deploy extends Component
                 [ 'user_id' => $this->auth_user->id ])
         );
 
-        $this->startUploadIpfs();
+        $this->state = 'Uploading media on IPFS...';
+        $this->emit('readyToUploadIpfs');
     }
 
-    public function startUploadIpfs()
+    public function readyToUploadIpfs()
     {
-        // 1
-        $this->state = 'Uploading media on IPFS...';
-
         $this->ipfs_hash = $this->uploadIpfs(
             $this->hd_media->getRealPath(),
             $this->hd_media->getMimeType(),
@@ -205,18 +209,17 @@ class Deploy extends Component
             dd('error on uploading IPFS');
         }
         
-        $this->readyToUploadArweave();
+        // Next
+        $this->state = 'Uploading media on Arweave...';
+        $this->emit('readyToUploadArweave');
     }
 
     public function readyToUploadArweave()
     {
-        // 2
-        $this->state = 'Uploading media on Arweave...';
-
         $this->arweave_key = Storage::disk('local')->get('hW-arweave.json');
 
+        // Next on JS side.
         $this->emit('uploadArweave', $this->hd_media->getMimeType());
-        // Run on JS side.
     }
 
     public function arweaveUploaded()
@@ -228,27 +231,17 @@ class Deploy extends Component
             dd('error on uploading Arweave');
         }
 
-        $this->createAndUploadJsonIpfs();
+        // Next
+        $this->state = 'Creating & uploading JSON token to IPFS...';
+        $this->emit('readyToCreateAndUploadJsonTokenIpfs');
     }
 
-    public function createAndUploadJsonIpfs()
+    public function readyToCreateAndUploadJsonTokenIpfs()
     {
-        $this->state = 'Uploading JSON to IPFS...';
-
-        $data = [
-            "name" => $this->artwork_title,
-            "collection" => $this->name,
-            "description" => $this->artwork_description,
-            "image" => "https://gateway.pinata.cloud/ipfs/".$this->ipfs_hash,
-            "image_arweave" => "http://arweave.net/".$this->arweave_hash,
-            "image_ipfs" => "https://gateway.pinata.cloud/ipfs/".$this->ipfs_hash,
-            "image_sha256" => $this->sha_hash,
-        ];
-        
-        file_put_contents('storage/jsons/'.$this->public_id.'.json', json_encode($data));
+        $this->createJsonToken();
             
         $this->ipfs_json_hash = $this->uploadIpfs(
-            Storage::url('jsons/'.$this->public_id.'.json'),
+            public_path('storage/jsons/'.$this->public_id.'.json'),
             'application/json',
             $this->public_id
         );
@@ -260,21 +253,21 @@ class Deploy extends Component
             dd('error on uploading IPFS');
         }
 
-        $this->readyToDeploySmartContract();
+        // Next
+        $this->state = 'Creating smart contract...';
+        $this->emit('readyToDeploySmartContract');
     }
 
     public function readyToDeploySmartContract()
     {
-        // 3
-        $this->state = 'Creating smart contract...';
-
         $this->abi = config("contracts.artist.abi");
         $this->byte = config("contracts.artist.byte");
 
         $this->createJsonContract();
 
+        // Next on JS side.
+        $this->state = 'Deploying smart contract...';
         $this->emit('deploySmartContract');
-        // Run on JS side.
     }
 
     public function smartContractDeployed($address)
@@ -290,21 +283,38 @@ class Deploy extends Component
 
     //////////////
 
+    public function createJsonToken()
+    {
+        $data = [
+            "name" => $this->artwork_title,
+            "collection" => $this->name,
+            "description" => $this->artwork_description,
+            "image" => "https://gateway.pinata.cloud/ipfs/".$this->ipfs_hash,
+            "image_arweave" => "http://arweave.net/".$this->arweave_hash,
+            "image_ipfs" => "https://gateway.pinata.cloud/ipfs/".$this->ipfs_hash,
+            "image_sha256" => $this->sha_hash,
+        ];
+
+        if (file_put_contents('storage/jsons/'.$this->public_id.'.json', json_encode($data))) {
+            
+        } else {
+            dd('Error on creating token json');
+        }
+    }
+
     public function createJsonContract()
     {
         $contract_data = [
             "name" => $this->name,
             "description" => $this->description,
-            "image" => config('app.url').Storage::url('nft_media/'.$this->public_id.'_hd.png'),
-            "external_link" => config('app.url').Storage::url('nft_media/'.$this->public_id.'_hd.png'),
+            "image" => public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_extension),
+            "external_link" => public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_extension),
             "seller_fee_basis_points" => 100, # Indicates a 1% seller fee.
-            "fee_recipient" => $this->auth_address
+            "fee_recipient" => $this->auth_user->eth_address
         ];
         
         if (file_put_contents('storage/jsons/'.$this->public_id.'_contract.json', json_encode($contract_data))) {
-            $this->contract_data_json = Storage::url('jsons/'.$this->public_id.'_contract.json');
-            $this->smart_contract->contract_data_json = Storage::url('jsons/'.$this->public_id.'_contract.json');
-            $this->smart_contract->save();
+            $this->contract_data_json_url = public_path('storage/jsons/'.$this->public_id.'_contract.json');
         } else {
             dd('Error on creating contract json');
         }

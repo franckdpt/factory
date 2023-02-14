@@ -504,7 +504,7 @@
                         class="w-10 h-10 cursor-pointer shrink-0"
                         type="radio"
                         wire:model.lazy="free_nft"
-                        value="true">
+                        value="1">
                       <span class="-mt-3 fex flex-col ">
                         <span class="text-xl md:text-2xl font-bold">
                           Yes
@@ -515,7 +515,7 @@
                       <input class="w-10 h-10 cursor-pointer shrink-0"
                         type="radio"
                         wire:model.lazy="free_nft"
-                        value="false">
+                        value="0">
                       <span class="-mt-3 fex flex-col">
                         <span class="text-xl md:text-2xl font-bold">
                           No
@@ -645,9 +645,11 @@
       </div>
 
       @if (!is_null($public_id))
+        {{ $state ? : '' }}
         <button type="submit" class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
           DEPLOY
         </button>
+        
       @endif
     </form>
   @endif
@@ -681,8 +683,10 @@
                           uploader.uploadChunk()
                           .then(() => {
                               if (!uploader.isComplete) {
+                                  console.log('need to loop')
                                   loop()
                               } else {
+                                  console.log('done')
                                   @this.set('arweave_hash', transaction.id)
                                   Livewire.emit('arweaveUploaded')
                               }
@@ -759,8 +763,7 @@
         });
 
         Livewire.on('deploySmartContract', function (type) {
-          @this.set('state', 'Deploying smart contract...')
-          deploy()
+          //deploy()
         });
 
       })
