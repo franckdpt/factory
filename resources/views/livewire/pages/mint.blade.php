@@ -23,9 +23,9 @@
     </a>
     <div class="text-2xl font-semibold">
       Expo Name
-      <button class="ml-4 px-4 py-2 font-black text-lg bg-NFTF-green hover:bg-black text-white NFTF-transition">
-        Connect
-      </button>
+      <div class="ml-4 px-4 py-2 font-black text-lg bg-NFTF-green hover:bg-black text-white NFTF-transition">
+        @livewire('wallet-button')
+      </div>
     </div>
   </div>
 
@@ -74,40 +74,46 @@
     <div class="w-1/2 pl-5">
       <div>
         <h1 class="-mt-5 text-6xl md:text-5xl lg:text-7xl font-bold">
-          Artwork name
+          {{ $this->smart_contract->artwork_name }}
         </h1>
         <p class="mt-3 text-lg">
-          Description Post hanc adclinis Libano monti Phoenice, regio plena gratiarum et venustatis, urbibus decorata magnis et pulchris; in quibus amoenitate celebritateque nominum Tyros excellit, Sidon et Berytus isdemque pares Emissa et Damascus saeculis condita priscis.
+          {{ $this->smart_contract->artwork_description }}
         </p>
         <div class="mt-6 flex justify-between items-center text-xl">
           <div>
-            by <a class="hover:text-NFTF-green font-bold" href="#">Artiste Name</a>
+            by <a class="hover:text-NFTF-green font-bold" href="#">{{ $this->smart_contract->user->name }}</a>
           </div>
           <div class="flex gap-4">
-            <a class="hover:text-NFTF-green NFTF-transition" 
-            href="#"
-             target="_blank" 
-             rel="noopener noreferrer">
-              <svg class="w-8 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19">
-                <path id="Tracé_152" data-name="Tracé 152" d="M9.5,19A9.5,9.5,0,1,1,19,9.5,9.511,9.511,0,0,1,9.5,19Zm1.746-4.45a5.373,5.373,0,0,0,3.071-2.738H12.141a9.705,9.705,0,0,1-.536,1.993A5.68,5.68,0,0,1,11.246,14.55ZM4.683,11.812A5.373,5.373,0,0,0,7.754,14.55a5.689,5.689,0,0,1-.359-.745,9.7,9.7,0,0,1-.536-1.993ZM7.754,4.45A5.373,5.373,0,0,0,4.683,7.188H6.859a9.7,9.7,0,0,1,.536-1.993,5.68,5.68,0,0,1,.359-.745ZM9.5,4.156c-.39,0-.847.538-1.193,1.4a8.517,8.517,0,0,0-.451,1.628h3.289a8.515,8.515,0,0,0-.451-1.628C10.347,4.694,9.89,4.156,9.5,4.156ZM4.156,9.5a5.336,5.336,0,0,0,.167,1.329H6.734c-.039-.432-.06-.877-.06-1.329s.021-.9.06-1.329H4.324A5.336,5.336,0,0,0,4.156,9.5ZM7.72,10.829H11.28c.041-.43.063-.875.063-1.329s-.022-.9-.063-1.329H7.72c-.041.43-.063.875-.063,1.329S7.679,10.4,7.72,10.829ZM9.5,14.844c.39,0,.847-.538,1.193-1.4a8.514,8.514,0,0,0,.451-1.628H7.856a8.518,8.518,0,0,0,.451,1.628C8.653,14.306,9.11,14.844,9.5,14.844ZM14.844,9.5a5.336,5.336,0,0,0-.167-1.329H12.266c.039.432.06.877.06,1.329s-.021.9-.06,1.329h2.411A5.336,5.336,0,0,0,14.844,9.5Zm-.526-2.312A5.373,5.373,0,0,0,11.246,4.45a5.687,5.687,0,0,1,.359.745,9.7,9.7,0,0,1,.536,1.993h2.176ZM15.827,9.5A6.327,6.327,0,1,1,9.5,3.173,6.334,6.334,0,0,1,15.827,9.5Z" fill-rule="evenodd"/>
-              </svg>              
-            </a>
-            <a class="hover:text-NFTF-green NFTF-transition" 
-            href="#" 
-            target="_blank" 
-            rel="noopener noreferrer">
-              <svg class="w-8 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19">
-                <path id="Tracé_151" data-name="Tracé 151" d="M9.5,0A9.5,9.5,0,1,0,19,9.5,9.5,9.5,0,0,0,9.5,0Zm4.338,7.407q.006.14.006.282a6.162,6.162,0,0,1-6.2,6.2h0a6.172,6.172,0,0,1-3.342-.98,4.434,4.434,0,0,0,.52.03,4.375,4.375,0,0,0,2.708-.933A2.183,2.183,0,0,1,5.489,10.5a2.173,2.173,0,0,0,.985-.037A2.181,2.181,0,0,1,4.724,8.321c0-.01,0-.019,0-.028a2.165,2.165,0,0,0,.988.273,2.182,2.182,0,0,1-.675-2.911A6.191,6.191,0,0,0,9.532,7.933a2.182,2.182,0,0,1,3.716-1.989,4.374,4.374,0,0,0,1.385-.529,2.189,2.189,0,0,1-.959,1.206,4.348,4.348,0,0,0,1.252-.343,4.431,4.431,0,0,1-1.088,1.129Zm0,0"/>
-              </svg>
-            </a>
-            <a class="hover:text-NFTF-green NFTF-transition" 
-            href="#" 
-            target="_blank" 
-            rel="noopener noreferrer">
-              <svg class="w-8 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19">
-                <path id="Tracé_150" data-name="Tracé 150" d="M9.5,19A9.5,9.5,0,1,1,19,9.5,9.511,9.511,0,0,1,9.5,19Zm4.927-6.163a.213.213,0,0,0,.212-.212V6.661L9.806,10.5a.491.491,0,0,1-.611,0L4.361,6.661v5.964a.213.213,0,0,0,.212.212Zm-.741-6.675L9.5,9.487,5.314,6.163Zm1.936.212v6.25a1.2,1.2,0,0,1-1.2,1.2H4.573a1.2,1.2,0,0,1-1.2-1.2V6.375a1.2,1.2,0,0,1,1.2-1.2h9.853A1.2,1.2,0,0,1,15.622,6.375Z" fill-rule="evenodd"/>
-              </svg>
-            </a>
+            @if ($this->smart_contract->artist_portfolio_link)
+              <a class="hover:text-NFTF-green NFTF-transition" 
+              href="{{ $this->smart_contract->artist_portfolio_link }}"
+              target="_blank" 
+              rel="noopener noreferrer">
+                <svg class="w-8 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19">
+                  <path id="Tracé_152" data-name="Tracé 152" d="M9.5,19A9.5,9.5,0,1,1,19,9.5,9.511,9.511,0,0,1,9.5,19Zm1.746-4.45a5.373,5.373,0,0,0,3.071-2.738H12.141a9.705,9.705,0,0,1-.536,1.993A5.68,5.68,0,0,1,11.246,14.55ZM4.683,11.812A5.373,5.373,0,0,0,7.754,14.55a5.689,5.689,0,0,1-.359-.745,9.7,9.7,0,0,1-.536-1.993ZM7.754,4.45A5.373,5.373,0,0,0,4.683,7.188H6.859a9.7,9.7,0,0,1,.536-1.993,5.68,5.68,0,0,1,.359-.745ZM9.5,4.156c-.39,0-.847.538-1.193,1.4a8.517,8.517,0,0,0-.451,1.628h3.289a8.515,8.515,0,0,0-.451-1.628C10.347,4.694,9.89,4.156,9.5,4.156ZM4.156,9.5a5.336,5.336,0,0,0,.167,1.329H6.734c-.039-.432-.06-.877-.06-1.329s.021-.9.06-1.329H4.324A5.336,5.336,0,0,0,4.156,9.5ZM7.72,10.829H11.28c.041-.43.063-.875.063-1.329s-.022-.9-.063-1.329H7.72c-.041.43-.063.875-.063,1.329S7.679,10.4,7.72,10.829ZM9.5,14.844c.39,0,.847-.538,1.193-1.4a8.514,8.514,0,0,0,.451-1.628H7.856a8.518,8.518,0,0,0,.451,1.628C8.653,14.306,9.11,14.844,9.5,14.844ZM14.844,9.5a5.336,5.336,0,0,0-.167-1.329H12.266c.039.432.06.877.06,1.329s-.021.9-.06,1.329h2.411A5.336,5.336,0,0,0,14.844,9.5Zm-.526-2.312A5.373,5.373,0,0,0,11.246,4.45a5.687,5.687,0,0,1,.359.745,9.7,9.7,0,0,1,.536,1.993h2.176ZM15.827,9.5A6.327,6.327,0,1,1,9.5,3.173,6.334,6.334,0,0,1,15.827,9.5Z" fill-rule="evenodd"/>
+                </svg>              
+              </a>
+            @endif
+            @if ($this->smart_contract->artist_twitter_link)
+              <a class="hover:text-NFTF-green NFTF-transition" 
+              href="{{ $this->smart_contract->artist_twitter_link }}" 
+              target="_blank" 
+              rel="noopener noreferrer">
+                <svg class="w-8 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19">
+                  <path id="Tracé_151" data-name="Tracé 151" d="M9.5,0A9.5,9.5,0,1,0,19,9.5,9.5,9.5,0,0,0,9.5,0Zm4.338,7.407q.006.14.006.282a6.162,6.162,0,0,1-6.2,6.2h0a6.172,6.172,0,0,1-3.342-.98,4.434,4.434,0,0,0,.52.03,4.375,4.375,0,0,0,2.708-.933A2.183,2.183,0,0,1,5.489,10.5a2.173,2.173,0,0,0,.985-.037A2.181,2.181,0,0,1,4.724,8.321c0-.01,0-.019,0-.028a2.165,2.165,0,0,0,.988.273,2.182,2.182,0,0,1-.675-2.911A6.191,6.191,0,0,0,9.532,7.933a2.182,2.182,0,0,1,3.716-1.989,4.374,4.374,0,0,0,1.385-.529,2.189,2.189,0,0,1-.959,1.206,4.348,4.348,0,0,0,1.252-.343,4.431,4.431,0,0,1-1.088,1.129Zm0,0"/>
+                </svg>
+              </a>
+            @endif
+            @if ($this->smart_contract->artist_contact_mail)
+              <a class="hover:text-NFTF-green NFTF-transition" 
+              href="{{ $this->smart_contract->artist_contact_mail }}" 
+              target="_blank" 
+              rel="noopener noreferrer">
+                <svg class="w-8 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19">
+                  <path id="Tracé_150" data-name="Tracé 150" d="M9.5,19A9.5,9.5,0,1,1,19,9.5,9.511,9.511,0,0,1,9.5,19Zm4.927-6.163a.213.213,0,0,0,.212-.212V6.661L9.806,10.5a.491.491,0,0,1-.611,0L4.361,6.661v5.964a.213.213,0,0,0,.212.212Zm-.741-6.675L9.5,9.487,5.314,6.163Zm1.936.212v6.25a1.2,1.2,0,0,1-1.2,1.2H4.573a1.2,1.2,0,0,1-1.2-1.2V6.375a1.2,1.2,0,0,1,1.2-1.2h9.853A1.2,1.2,0,0,1,15.622,6.375Z" fill-rule="evenodd"/>
+                </svg>
+              </a>
+            @endif
           </div>
         </div>
       </div>
@@ -120,10 +126,10 @@
         </h2>
 
         <div class="mt-2 text-6xl md:text-5xl lg:text-7xl font-black">
-          0.10 ETH
+          {{ $this->smart_contract->artwork_price }} ETH
         </div>
         <div class="text-lg font-bold">
-          12 of 30 Editions Available
+          xx of {{ $this->smart_contract->artwork_max_supply }} Editions Available
         </div>
 
         <div class="flex gap-10">
@@ -153,19 +159,19 @@
         </h2>
         <ul class="mt-6 text-lg">
           <li>
-            <span class="font-bold">Published:</span> 01.02.2023
+            <span class="font-bold">Published:</span> xxx date
           </li>
           <li>
-            <span class="font-bold">Resolution:</span> 2160 x 3800 px
+            <span class="font-bold">Resolution:</span> xxx px
           </li>
           <li>
-            <span class="font-bold">File format:</span> png
+            <span class="font-bold">File format:</span> {{ $this->smart_contract->artwork_hd_extension }}
           </li>
           <li>
-            <span class="font-bold">HD file size:</span> 460 MB
+            <span class="font-bold">HD file size:</span> xxx MB
           </li>
           <li>
-            <span class="font-bold">LD file size:</span> 12 MB
+            <span class="font-bold">LD file size:</span> xxx MB
           </li>
         </ul>
       </div>
@@ -178,19 +184,19 @@
         </h2>
         <ul class="mt-6 text-lg">
           <li>
-            <span class="font-bold">Contract address:</span> 0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d
+            <span class="font-bold">Contract address:</span> {{ $this->smart_contract->address }}
           </li>
           <li>
             <span class="font-bold">Type:</span> ERC-721
           </li>
           <li>
-            <span class="font-bold">Token ID:</span> 2
+            <span class="font-bold">Token ID:</span> xx
           </li>
           <li>
-            <span class="font-bold">Blockchain:</span> Ethereum
+            <span class="font-bold">Blockchain:</span> {{ $this->smart_contract->network }}
           </li>
           <li>
-            <span class="font-bold">Second market royalities:</span> 5%
+            <span class="font-bold">Second market royalities:</span> {{ $this->smart_contract->artwork_royalty }}%
           </li>
         </ul>
       </div>
@@ -217,7 +223,7 @@
           </li>
           <li>
             <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
-            href="#"
+            href={{ "https://etherscan.io/address/".$this->smart_contract->address }}"
             target="_blank"
             rel="noopener noreferrer">
             <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">

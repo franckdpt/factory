@@ -18,7 +18,7 @@ Route::get('/', [\App\Http\Controllers\LandingController::class, 'index'])->name
 Route::get('/deploy', \App\Http\Livewire\Pages\Deploy::class)->name('deploy');
 Route::get('/deploy/{smart_contract_id}', \App\Http\Livewire\Pages\Deploy::class)->name('continue_deploy');
 
-Route::get('/mint/{smart_contract_id}', \App\Http\Livewire\Pages\Mint::class)->name('mint');
+Route::get('/mint/{smart_contract_address}', \App\Http\Livewire\Pages\Mint::class)->name('mint');
 
 // Route::middleware([
 //     'auth',
