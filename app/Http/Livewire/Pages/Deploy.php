@@ -5,50 +5,49 @@ namespace App\Http\Livewire\Pages;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Livewire\Traits\WithNetworks;
+use App\Http\Livewire\Traits\AuthRefreshed;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\SmartContract;
 
 class Deploy extends Component
 {
-    use WithFileUploads, WithNetworks;
+    use WithFileUploads, WithNetworks, AuthRefreshed;
 
     // Livewire variables
     public ?SmartContract $smart_contract = null;
-    public $abi, $byte, $arweave_key, $hd_media, $contract_data_json_url, $state;
-    public $artist_name = "";
+    public $abi, $byte, $arweave_key;
+    public $hd_media, $contract_data_json_url, $state;
+    public $artist_name;
 
     // SmartContract object
     public $public_id = null;
 
     public $network = "";
-    public $name = "";
-    public $symbol = "";
+    public $name;
+    public $symbol;
     public $description = "nft factory desc";
     public $free_nft = false;
     
-    public $artwork_title = "";
-    public $artwork_description = "";
-    public $artwork_hd_extension = "";
+    public $artwork_title;
+    public $artwork_description;
+    public $artwork_hd_extension;
     public $artwork_max_supply = null;
     public $artwork_price = null;
     public $artwork_royalty = null;
     
-    public $artist_portfolio_link = "";
-    public $artist_twitter_link = "";
-    public $artist_contact_mail = "";
+    public $artist_portfolio_link;
+    public $artist_twitter_link;
+    public $artist_contact_mail;
     
-    public $ipfs_hash = "";
-    public $ipfs_json_hash = "";
-    public $arweave_hash = "";
-    public $sha_hash = "";
-    public $address = "";
+    public $ipfs_hash;
+    public $ipfs_json_hash;
+    public $arweave_hash;
+    public $sha_hash;
+    public $address;
     public $deployed = false;
 
     protected $listeners = [
-        'userConnected',
-        'userDisconnected',
-
         'readyToUploadIpfs',
         'readyToUploadArweave',
         'readyToCreateAndUploadJsonTokenIpfs',
@@ -91,48 +90,52 @@ class Deploy extends Component
         if ($smart_contract_id) {
             $this->smart_contract = SmartContract::wherePublicId($smart_contract_id)
                                                 ->whereDeployed(false)
-                                                ->first();
-            if (is_null($this->smart_contract)) {
-                return redirect()->route('deploy');
+                                                ->firstOrFail();
+            if (Auth::guest()) {
+                abort(404); // not logged but url specified : need to login
+            } else if ($this->smart_contract->user_id != Auth::user()->id) {
+                abort(404); // not owner
             }
+
+            $this->public_id = $this->smart_contract->public_id;
+        
+            $this->network = $this->smart_contract->network;
+            $this->name = $this->smart_contract->name;
+            $this->symbol = $this->smart_contract->symbol;
+            $this->description = $this->smart_contract->description;
+            $this->free_nft = $this->smart_contract->free_nft;
+            
+            $this->artwork_title = $this->smart_contract->artwork_title;
+            $this->artwork_description = $this->smart_contract->artwork_description;
+            $this->artwork_hd_extension = $this->smart_contract->artwork_hd_extension;
+            $this->artwork_max_supply = $this->smart_contract->artwork_max_supply;
+            $this->artwork_price = $this->smart_contract->artwork_price;
+            $this->artwork_royalty = $this->smart_contract->artwork_royalty;
+            
+            $this->artist_portfolio_link = $this->smart_contract->artist_portfolio_link;
+            $this->artist_twitter_link = $this->smart_contract->artist_twitter_link;
+            $this->artist_contact_mail = $this->smart_contract->artist_contact_mail;
+
+            $this->ipfs_hash = $this->smart_contract->ipfs_hash;
+            $this->ipfs_json_hash = $this->smart_contract->ipfs_json_hash;
+            $this->arweave_hash = $this->smart_contract->arweave_hash;
+            $this->sha_hash = $this->smart_contract->sha_hash;
+            $this->address = $this->smart_contract->address;
+            $this->deployed = $this->smart_contract->deployed;
         }
     }
     
     public function userConnected()
     {
-        if ($this->smart_contract) {
-            if ($this->smart_contract->user_id == Auth::user()->id) {
-                $this->public_id = $this->smart_contract->public_id;
-            
-                $this->network = $this->smart_contract->network;
-                $this->name = $this->smart_contract->name;
-                $this->symbol = $this->smart_contract->symbol;
-                $this->description = $this->smart_contract->description;
-                $this->free_nft = $this->smart_contract->free_nft;
-                
-                $this->artwork_title = $this->smart_contract->artwork_title;
-                $this->artwork_description = $this->smart_contract->artwork_description;
-                $this->artwork_hd_extension = $this->smart_contract->artwork_hd_extension;
-                $this->artwork_max_supply = $this->smart_contract->artwork_max_supply;
-                $this->artwork_price = $this->smart_contract->artwork_price;
-                $this->artwork_royalty = $this->smart_contract->artwork_royalty;
-                
-                $this->artist_portfolio_link = $this->smart_contract->artist_portfolio_link;
-                $this->artist_twitter_link = $this->smart_contract->artist_twitter_link;
-                $this->artist_contact_mail = $this->smart_contract->artist_contact_mail;
+        $this->artist_name = Auth::user()->name;
 
-                $this->ipfs_hash = $this->smart_contract->ipfs_hash;
-                $this->ipfs_json_hash = $this->smart_contract->ipfs_json_hash;
-                $this->arweave_hash = $this->smart_contract->arweave_hash;
-                $this->sha_hash = $this->smart_contract->sha_hash;
-                $this->address = $this->smart_contract->address;
-                $this->deployed = $this->smart_contract->deployed;
+        if ($this->smart_contract && !$this->smart_contract->deployed) {
+            $this->artist_portfolio_link = $this->smart_contract->artist_portfolio_link ? : Auth::user()->portfolio_link;
+            $this->artist_twitter_link = $this->smart_contract->artist_twitter_link ? : Auth::user()->twitter_link;
+            $this->artist_contact_mail = $this->smart_contract->artist_contact_mail ? : Auth::user()->contact_mail;
 
-                $this->artist_portfolio_link = $this->smart_contract->portfolio_link;
-                $this->artist_twitter_link = $this->smart_contract->twitter_link;
-                $this->artist_contact_mail = $this->smart_contract->contact_mail;
-                // $this->artist_name = Auth::user()->name;
-            }
+            $this->smart_contract->user_id = Auth::user()->id;
+            $this->smart_contract->save();
         }
     }
 

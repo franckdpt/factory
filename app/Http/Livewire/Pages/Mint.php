@@ -4,11 +4,9 @@ namespace App\Http\Livewire\Pages;
 
 use Livewire\Component;
 use App\Models\SmartContract;
-use App\Http\Livewire\Traits\WithAuthUser;
 
 class Mint extends Component
 {
-    use WithAuthUser;
 
     public ?SmartContract $smart_contract = null;
 
