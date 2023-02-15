@@ -36,7 +36,7 @@
     </div>
   </div>
 
-  @if ($auth_user)
+  @if (Auth::check())
     <div class="flex justify-center">
       <div class="h-10 w-0.5 bg-black"></div>
     </div>
@@ -645,11 +645,9 @@
       </div>
 
       @if (!is_null($public_id))
-        {{ $state ? : '' }}
         <button type="submit" class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
-          DEPLOY
+          {{ $state ? : 'Deploy' }}
         </button>
-        
       @endif
     </form>
   @endif
@@ -757,12 +755,12 @@
 
       document.addEventListener('DOMContentLoaded', function () {
 
-        Livewire.on('uploadArweave', function (type) {
+        Livewire.on('uploadArweaveOnJs', function (type) {
           file = document.querySelector('input[type=file]').files[0]
           arweaveUpload(type, file)
         });
 
-        Livewire.on('deploySmartContract', function (type) {
+        Livewire.on('deploySmartContractOnJs', function (type) {
           //deploy()
         });
 

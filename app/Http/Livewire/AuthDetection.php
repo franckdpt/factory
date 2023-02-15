@@ -31,9 +31,9 @@ class AuthDetection extends Component
             $user = User::firstOrCreate([
                 'eth_address' =>  $address
             ]);
-    
+            
             Auth::login($user);
-    
+            
             $this->emit('userConnected');
         }
     }

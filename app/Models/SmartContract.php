@@ -12,6 +12,7 @@ class SmartContract extends Model
 
     protected $fillable = [
         'public_id',
+        'user_id',
 
         'network',
         'name',
@@ -21,12 +22,7 @@ class SmartContract extends Model
 
         'artwork_title',
         'artwork_description',
-
-        'artwork_hd_media_path',
-        'artwork_hd_media_extension',
-        'artwork_ld_media_path',
-        'artwork_ld_media_type',
-
+        'artwork_hd_extension',
         'artwork_max_supply',
         'artwork_price',
         'artwork_royalty',
@@ -40,10 +36,7 @@ class SmartContract extends Model
         'arweave_hash',
         'sha_hash',
         'address',
-
         'deployed',
-
-        'user_id',
     ];
 
     protected $casts = [

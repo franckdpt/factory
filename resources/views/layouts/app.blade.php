@@ -20,7 +20,7 @@
         {{-- <x-header /> --}}
         
         <br />
-
+        
         <main>
             {{ $slot }}
         </main>

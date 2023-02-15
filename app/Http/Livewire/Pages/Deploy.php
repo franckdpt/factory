@@ -3,62 +3,52 @@
 namespace App\Http\Livewire\Pages;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Livewire\Traits\WithNetworks;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\SmartContract;
-use App\Models\User;
-use App\Http\Livewire\Traits\WithNetworks;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Http;
 
 class Deploy extends Component
 {
     use WithFileUploads, WithNetworks;
 
-    public ?User $auth_user = null;
+    // Livewire variables
     public ?SmartContract $smart_contract = null;
-    public $state = null;
+    public $abi, $byte, $arweave_key, $hd_media, $contract_data_json_url, $state;
+    public $artist_name = "";
 
+    // SmartContract object
     public $public_id = null;
-    public $deployed = false;
 
-    // Blockchain & Smart Contract
     public $network = "";
     public $name = "";
     public $symbol = "";
     public $description = "nft factory desc";
-    public $artist_name = "";
-
-    // Artwork
+    public $free_nft = false;
+    
     public $artwork_title = "";
     public $artwork_description = "";
-    public $hd_media;
-    public $ld_media;
+    public $artwork_hd_extension = "";
     public $artwork_max_supply = null;
     public $artwork_price = null;
-    public $artwork_royalty = null; //
-    public $free_nft = false;
-
-    // Mint page
+    public $artwork_royalty = null;
+    
     public $artist_portfolio_link = "";
     public $artist_twitter_link = "";
     public $artist_contact_mail = "";
-
-    // OpenGem contract
-    public $abi, $byte, $arweave_key;
-
-    // Output variables
-    public $arweave_hash;
-    public $ipfs_hash;
-    public $ipfs_json_hash;
-    public $sha_hash;
-    public $contract_data_json_url;
-    public $artwork_extension;
+    
+    public $ipfs_hash = "";
+    public $ipfs_json_hash = "";
+    public $arweave_hash = "";
+    public $sha_hash = "";
+    public $address = "";
+    public $deployed = false;
 
     protected $listeners = [
         'userConnected',
         'userDisconnected',
-        
+
         'readyToUploadIpfs',
         'readyToUploadArweave',
         'readyToCreateAndUploadJsonTokenIpfs',
@@ -77,7 +67,8 @@ class Deploy extends Component
             'name' => 'required|string|max:25',
             'symbol' => 'required|string|max:5',
             'description' => 'required|string|max:420',
-            'artist_name' => 'nullable|string',
+            'free_nft' => 'required',
+            // 'artist_name' => 'nullable|string',
 
             'artwork_title' => 'required|string|max:25',
             'artwork_description' => 'required|string|max:420',
@@ -91,58 +82,57 @@ class Deploy extends Component
 
             'hd_media' => 'required|max:10000',
             // 'ld_media' => 'required|max:100',
-            'free_nft' => 'required'
             // 'email' => ['required', 'email', 'not_in:' . auth()->user()->email],
         ];
-    }
-    
-    public function userConnected()
-    {
-        $this->auth_user = Auth::user();
-    }
-
-    public function userDisconnected()
-    {
-        $this->auth_user = null;
     }
 
     public function mount($smart_contract_id = null)
     {
-        $this->auth_user = Auth::user();
-
-        if (!is_null($smart_contract_id) && $this->auth_user) {
-            $this->smart_contract = SmartContract::where('public_id', $smart_contract_id)->first();
-
+        if ($smart_contract_id) {
+            $this->smart_contract = SmartContract::wherePublicId($smart_contract_id)
+                                                ->whereDeployed(false)
+                                                ->first();
             if (is_null($this->smart_contract)) {
                 return redirect()->route('deploy');
             }
+        }
+    }
+    
+    public function userConnected()
+    {
+        if ($this->smart_contract) {
+            if ($this->smart_contract->user_id == Auth::user()->id) {
+                $this->public_id = $this->smart_contract->public_id;
+            
+                $this->network = $this->smart_contract->network;
+                $this->name = $this->smart_contract->name;
+                $this->symbol = $this->smart_contract->symbol;
+                $this->description = $this->smart_contract->description;
+                $this->free_nft = $this->smart_contract->free_nft;
+                
+                $this->artwork_title = $this->smart_contract->artwork_title;
+                $this->artwork_description = $this->smart_contract->artwork_description;
+                $this->artwork_hd_extension = $this->smart_contract->artwork_hd_extension;
+                $this->artwork_max_supply = $this->smart_contract->artwork_max_supply;
+                $this->artwork_price = $this->smart_contract->artwork_price;
+                $this->artwork_royalty = $this->smart_contract->artwork_royalty;
+                
+                $this->artist_portfolio_link = $this->smart_contract->artist_portfolio_link;
+                $this->artist_twitter_link = $this->smart_contract->artist_twitter_link;
+                $this->artist_contact_mail = $this->smart_contract->artist_contact_mail;
 
-            $this->public_id = $this->smart_contract->public_id;
-            $this->deployed = $this->smart_contract->deployed;
+                $this->ipfs_hash = $this->smart_contract->ipfs_hash;
+                $this->ipfs_json_hash = $this->smart_contract->ipfs_json_hash;
+                $this->arweave_hash = $this->smart_contract->arweave_hash;
+                $this->sha_hash = $this->smart_contract->sha_hash;
+                $this->address = $this->smart_contract->address;
+                $this->deployed = $this->smart_contract->deployed;
 
-            // Blockchain & Smart Contract
-            $this->network = $this->smart_contract->network;
-            $this->name = $this->smart_contract->name;
-            $this->symbol = $this->smart_contract->symbol;
-            $this->description = $this->smart_contract->description;
-
-            // Artwork
-            $this->artwork_title = $this->smart_contract->artwork_title;
-            $this->artwork_description = $this->smart_contract->artwork_description;
-            $this->artwork_max_supply = $this->smart_contract->artwork_max_supply;
-            $this->artwork_price = $this->smart_contract->artwork_price;
-            $this->artwork_royalty = $this->smart_contract->artwork_royalty;
-            $this->free_nft = $this->smart_contract->free_nft;
-
-            // Mint page
-            $this->artist_portfolio_link = $this->smart_contract->artist_portfolio_link;
-            $this->artist_twitter_link = $this->smart_contract->artist_twitter_link;
-            $this->artist_contact_mail = $this->smart_contract->artist_contact_mail;
-        } else if ($this->auth_user) {
-            $this->artist_portfolio_link = $this->auth_user->portfolio_link;
-            $this->artist_twitter_link = $this->auth_user->twitter_link;
-            $this->artist_contact_mail = $this->auth_user->contact_mail;
-            $this->artist_name = $this->auth_user->name;
+                $this->artist_portfolio_link = $this->smart_contract->portfolio_link;
+                $this->artist_twitter_link = $this->smart_contract->twitter_link;
+                $this->artist_contact_mail = $this->smart_contract->contact_mail;
+                // $this->artist_name = Auth::user()->name;
+            }
         }
     }
 
@@ -157,26 +147,25 @@ class Deploy extends Component
         $this->smart_contract = SmartContract::updateOrCreate(
             [ 'public_id' => $this->public_id ], array_merge(
                 $validatedData,
-                [ 'user_id' => $this->auth_user->id ])
+                [ 'user_id' => Auth::user()->id ])
         );
     }
 
     public function updatedHdMedia()
     {
-        $this->artwork_extension = explode('/', $this->hd_media->getMimeType())[1];
+        $this->artwork_hd_extension = explode('/', $this->hd_media->getMimeType())[1];
 
-        // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd.'.$this->artwork_extension);
+        // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd.'.$this->artwork_hd_extension);
         $path = $this->hd_media->storePubliclyAs(
             'nft_media',
-            $this->public_id.'_hd.'.$this->artwork_extension,
+            $this->public_id.'_hd.'.$this->artwork_hd_extension,
             'public'
         );
 
-        $this->sha_hash = hash_file('sha256', public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_extension));
+        $this->sha_hash = hash_file('sha256', public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension));
 
         $this->smart_contract->sha_hash = $this->sha_hash;
-        $this->smart_contract->artwork_hd_media_path = Storage::url($path);
-        $this->smart_contract->artwork_hd_media_extension = $this->artwork_extension;
+        $this->smart_contract->artwork_hd_extension = $this->artwork_hd_extension;
         $this->smart_contract->save();
     }
 
@@ -187,7 +176,7 @@ class Deploy extends Component
         $this->smart_contract = SmartContract::updateOrCreate(
             [ 'public_id' => $this->public_id ], array_merge(
                 $validatedData,
-                [ 'user_id' => $this->auth_user->id ])
+                [ 'user_id' => Auth::user()->id ])
         );
 
         $this->state = 'Uploading media on IPFS...';
@@ -196,7 +185,7 @@ class Deploy extends Component
 
     public function readyToUploadIpfs()
     {
-        $this->ipfs_hash = $this->uploadIpfs(
+        $this->ipfs_hash = $this->uploadFileToIpfs(
             $this->hd_media->getRealPath(),
             $this->hd_media->getMimeType(),
             $this->public_id.'_hd'
@@ -219,7 +208,7 @@ class Deploy extends Component
         $this->arweave_key = Storage::disk('local')->get('hW-arweave.json');
 
         // Next on JS side.
-        $this->emit('uploadArweave', $this->hd_media->getMimeType());
+        $this->emit('uploadArweaveOnJs', $this->hd_media->getMimeType());
     }
 
     public function arweaveUploaded()
@@ -240,7 +229,7 @@ class Deploy extends Component
     {
         $this->createJsonToken();
             
-        $this->ipfs_json_hash = $this->uploadIpfs(
+        $this->ipfs_json_hash = $this->uploadFileToIpfs(
             public_path('storage/jsons/'.$this->public_id.'.json'),
             'application/json',
             $this->public_id
@@ -267,13 +256,16 @@ class Deploy extends Component
 
         // Next on JS side.
         $this->state = 'Deploying smart contract...';
-        $this->emit('deploySmartContract');
+        $this->emit('deploySmartContractOnJs');
     }
 
     public function smartContractDeployed($address)
     {
-        $this->smart_contract->deployed = true;
-        $this->smart_contract->address = $address;
+        $this->deployed = true;
+        $this->address = $address;
+
+        $this->smart_contract->deployed = $this->deployed;
+        $this->smart_contract->address = $this->address;
         $this->smart_contract->save();
 
         if (empty($this->address)) {
@@ -307,10 +299,10 @@ class Deploy extends Component
         $contract_data = [
             "name" => $this->name,
             "description" => $this->description,
-            "image" => public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_extension),
-            "external_link" => public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_extension),
+            "image" => public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension),
+            "external_link" => public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension),
             "seller_fee_basis_points" => 100, # Indicates a 1% seller fee.
-            "fee_recipient" => $this->auth_user->eth_address
+            "fee_recipient" => Auth::user()->eth_address
         ];
         
         if (file_put_contents('storage/jsons/'.$this->public_id.'_contract.json', json_encode($contract_data))) {
@@ -320,7 +312,7 @@ class Deploy extends Component
         }
     }
     
-    public function uploadIpfs($path, $type, $name)
+    public function uploadFileToIpfs($path, $type, $name)
     {
         $curl = curl_init();
         $tmp = curl_setopt_array($curl, [
