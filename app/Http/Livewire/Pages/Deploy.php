@@ -8,6 +8,7 @@ use App\Http\Livewire\Traits\WithNetworks;
 use App\Http\Livewire\Traits\AuthRefreshed;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use App\Models\Expo;
 use App\Models\SmartContract;
 
 class Deploy extends Component
@@ -16,9 +17,11 @@ class Deploy extends Component
 
     // Livewire variables
     public ?SmartContract $smart_contract = null;
+    public Expo $expo;
     public $abi, $byte, $arweave_key;
     public $hd_media, $contract_data_json_url, $state;
-    public $artist_name;
+    public $disabled = false;
+    public $allowed = false;
 
     // SmartContract object
     public $public_id = null;
@@ -67,7 +70,6 @@ class Deploy extends Component
             'symbol' => 'required|string|max:5',
             'description' => 'required|string|max:420',
             'free_nft' => 'required',
-            // 'artist_name' => 'nullable|string',
 
             'artwork_title' => 'required|string|max:25',
             'artwork_description' => 'required|string|max:420',
@@ -80,22 +82,30 @@ class Deploy extends Component
             'artist_contact_mail' => 'nullable|email',
 
             'hd_media' => 'required|max:10000',
-            // 'ld_media' => 'required|max:100',
             // 'email' => ['required', 'email', 'not_in:' . auth()->user()->email],
         ];
     }
 
-    public function mount($smart_contract_id = null)
+    public function mount($expo, $smart_contract = null)
     {
-        if ($smart_contract_id) {
-            $this->smart_contract = SmartContract::wherePublicId($smart_contract_id)
-                                                ->whereDeployed(false)
-                                                ->firstOrFail();
-            if (Auth::guest()) {
-                abort(404); // not logged but url specified : need to login
-            } else if ($this->smart_contract->user_id != Auth::user()->id) {
-                abort(404); // not owner
+        $this->expo = $expo;
+
+        $this->walletAllowing();
+        
+        if (is_null($smart_contract)) {
+            $this->maybeRedirectToEdit();
+        } else {
+            if (Auth::guest() ||
+                $smart_contract->user_id != Auth::user()->id ||
+                $smart_contract->expo_id != $this->expo->id ||
+                $smart_contract->deployed
+                ) {
+                abort(404);
             }
+
+            $this->smart_contract = $smart_contract;
+
+            $this->disabled = $this->smart_contract->status == 'waiting_for_validation';
 
             $this->public_id = $this->smart_contract->public_id;
         
@@ -127,63 +137,79 @@ class Deploy extends Component
     
     public function userConnected()
     {
-        $this->artist_name = Auth::user()->name;
+        $this->walletAllowing();
 
-        if ($this->smart_contract && !$this->smart_contract->deployed) {
-            $this->artist_portfolio_link = $this->smart_contract->artist_portfolio_link ? : Auth::user()->portfolio_link;
-            $this->artist_twitter_link = $this->smart_contract->artist_twitter_link ? : Auth::user()->twitter_link;
-            $this->artist_contact_mail = $this->smart_contract->artist_contact_mail ? : Auth::user()->contact_mail;
+        if (is_null($this->smart_contract)) {
+            $this->maybeRedirectToEdit();
+        }
 
-            $this->smart_contract->user_id = Auth::user()->id;
-            $this->smart_contract->save();
+        if (!$this->disabled && $this->allowed) {
+            if ($this->smart_contract && !$this->smart_contract->deployed) {
+                $this->artist_portfolio_link = $this->smart_contract->artist_portfolio_link ? : Auth::user()->portfolio_link;
+                $this->artist_twitter_link = $this->smart_contract->artist_twitter_link ? : Auth::user()->twitter_link;
+                $this->artist_contact_mail = $this->smart_contract->artist_contact_mail ? : Auth::user()->contact_mail;
+
+                $this->smart_contract->user_id = Auth::user()->id;
+                $this->smart_contract->save();
+            }
         }
     }
 
     public function updated($propertyName)
     {
-        if (is_null($this->public_id)) {
-            $this->public_id = SmartContract::generatePublicId();
+        if (!$this->disabled) {
+            if (is_null($this->public_id)) {
+                $this->public_id = SmartContract::generatePublicId();
+            }
+
+            $validatedData = $this->validateOnly($propertyName);
+
+            $this->smart_contract = SmartContract::updateOrCreate(
+                [ 'public_id' => $this->public_id ], array_merge(
+                    $validatedData,
+                    [ 'user_id' => Auth::user()->id, 'expo_id' => $this->expo->id ])
+            );
         }
-
-        $validatedData = $this->validateOnly($propertyName);
-
-        $this->smart_contract = SmartContract::updateOrCreate(
-            [ 'public_id' => $this->public_id ], array_merge(
-                $validatedData,
-                [ 'user_id' => Auth::user()->id ])
-        );
     }
 
     public function updatedHdMedia()
     {
-        $this->artwork_hd_extension = explode('/', $this->hd_media->getMimeType())[1];
+        if (!$this->disabled) {
+            $this->artwork_hd_extension = explode('/', $this->hd_media->getMimeType())[1];
 
-        // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd.'.$this->artwork_hd_extension);
-        $path = $this->hd_media->storePubliclyAs(
-            'nft_media',
-            $this->public_id.'_hd.'.$this->artwork_hd_extension,
-            'public'
-        );
+            // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd.'.$this->artwork_hd_extension);
+            $path = $this->hd_media->storePubliclyAs(
+                'nft_media',
+                $this->public_id.'_hd.'.$this->artwork_hd_extension,
+                'public'
+            );
 
-        $this->sha_hash = hash_file('sha256', public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension));
+            $this->sha_hash = hash_file('sha256', public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension));
 
-        $this->smart_contract->sha_hash = $this->sha_hash;
-        $this->smart_contract->artwork_hd_extension = $this->artwork_hd_extension;
-        $this->smart_contract->save();
+            $this->smart_contract->sha_hash = $this->sha_hash;
+            $this->smart_contract->artwork_hd_extension = $this->artwork_hd_extension;
+            $this->smart_contract->save();
+        }
     }
 
     public function submit()
     {
-        $validatedData = $this->validate();
+        if (!$this->disabled) {
+            $validatedData = $this->validate();
 
-        $this->smart_contract = SmartContract::updateOrCreate(
-            [ 'public_id' => $this->public_id ], array_merge(
-                $validatedData,
-                [ 'user_id' => Auth::user()->id ])
-        );
+            $this->smart_contract = SmartContract::updateOrCreate(
+                [ 'public_id' => $this->public_id ], array_merge(
+                    $validatedData,
+                    [ 'status' => 'waiting_for_validation' ])
+            );
 
-        $this->state = 'Uploading media on IPFS...';
-        $this->emit('readyToUploadIpfs');
+            $this->state = 'Submitted!';
+
+        } else if ($this->smart_contract->status == 'waiting_for_validation') {
+            // nothing
+        } else if ($this->smart_contract->status == 'ready_to_deploy') {
+            $this->emit('readyToUploadIpfs');
+        }
     }
 
     public function readyToUploadIpfs()
@@ -339,9 +365,25 @@ class Deploy extends Component
         }
     }
 
-    public function render()
+    private function maybeRedirectToEdit()
     {
-        return view('livewire.pages.deploy')
-                ->layout('layouts.app');
+        $editing = (Auth::check() && $this->allowed) ? Auth::user()->smart_contracts()
+                                                                ->where('status', 'editing')
+                                                                ->where('expo_id', $this->expo->id)
+                                                                ->first() : null;
+        if ($editing) {
+            return redirect()->route('continue_deploy', [
+                'expo' => $this->expo,
+                'smart_contract' => $editing,
+            ]);
+        }
+    }
+    private function walletAllowing()
+    {
+        if (Auth::check()) {
+            $this->allowed = $this->expo->artists->contains(Auth::user());
+        } else {
+            $this->allowed = false;
+        }
     }
 }

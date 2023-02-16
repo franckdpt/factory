@@ -28,7 +28,15 @@
   <div class="px-4 md:px-8 relative w-full lg:mx-auto lg:container xl:max-w-screen-lg">
     <div class="py-14 px-12 flex justify-between border border-black bg-black">
       <div class="text-white text-xl md:text-4xl font-black">
-        Artiste name
+        @if (Auth::check())
+          @if ($allowed)
+            Welcome {{ Auth::user()->name ? : '' }}
+          @else
+            Sorry, this wallet is not allowed to mint
+          @endif
+        @else
+          Please connect your wallet
+        @endif
       </div>
       <div class="px-4 py-2 font-black text-lg bg-NFTF-green hover:bg-white text-white hover:text-black transition duration-150 ease">
         @livewire('wallet-button')
@@ -36,7 +44,7 @@
     </div>
   </div>
 
-  @if (Auth::check())
+  @if (Auth::check() && $allowed)
     <div class="flex justify-center">
       <div class="h-10 w-0.5 bg-black"></div>
     </div>
@@ -55,9 +63,10 @@
 
           <div class="mt-10 flex flex-wrap gap-y-4 gap-x-16">
 
-            @foreach($possible_networks as $key => $possible_network)
+            @foreach ($possible_networks as $key => $possible_network)
               <label class="flex-1 p-4 flex items-start gap-x-4 border-2 border-transparent hover:border-NFTF-green cursor-pointer">
-                <input class="w-10 h-10 cursor-pointer shrink-0" 
+                <input class="w-10 h-10 cursor-pointer shrink-0"
+                {{ $disabled ? 'disabled' : '' }}
                 type="radio"
                 wire:model.lazy="network"
                 value="{{ $key }}"/>
@@ -106,6 +115,7 @@
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green
                   {{ $errors->has('name') ? '!border-red-600' : ''  }}"
+                  {{ $disabled ? 'disabled' : '' }}
                   type="text" 
                   id="contractname" 
                   name="contractname" 
@@ -149,6 +159,7 @@
                   <div>
                     <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green
                     {{ $errors->has('symbol') ? '!border-red-600' : ''  }}"
+                    {{ $disabled ? 'disabled' : '' }}
                     type="text" 
                     id="contractsymbole" 
                     name="contractsymbole"
@@ -189,37 +200,6 @@
                 </ul>
               </div>
             </div>
-
-            <div class="mt-10">
-              <div class="md:flex gap-x-10">
-                <div class="flex-1 relative flex flex-col">
-                  <label class="text-xl md:text-2xl font-bold" 
-                  for="artistname">
-                  Artist name
-                  </label>
-                  <div>
-                    <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green
-                    {{ $errors->has('artist_name') ? '!border-red-600' : '' }}"
-                    type="text" 
-                    id="artistname" 
-                    name="artistname" 
-                    wire:model.lazy="artist_name"
-                    placeholder="Your name">
-                    @error('artist_name') 
-                      <div class="text-red-600 font-semibold">
-                        {{ $message }}
-                      </div>
-                    @enderror
-                  </div>
-                </div>
-                <div class="hidden md:block w-1 bg-gray-200"></div>
-                <ul class="flex-1 self-end list-inside list-disc">
-                  <li class="text-lg">
-                    Can't be changed after the deployment
-                  </li>
-                </ul>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -247,6 +227,7 @@
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artwork_title') ? '!border-red-600' : '' }}"
+                  {{ $disabled ? 'disabled' : '' }}
                   type="text" 
                   id="artworktitle" 
                   name="artworktitle" 
@@ -339,7 +320,7 @@
                       </div>
                   </div>
                 </label>
-                <input id="hdMedia" class="hidden" type="file" wire:model.lazy="hd_media" />
+                <input {{ $disabled ? 'disabled' : '' }} id="hdMedia" class="hidden" type="file" wire:model.lazy="hd_media" />
                 @error('hd_media') 
                   <div class="text-red-600 font-semibold">
                     {{ $message }}
@@ -420,6 +401,7 @@
                   <div class="flex gap-x-5 items-center text-xl md:text-2xl font-bold">
                     <input class="flex-1 mt-2 py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artwork_price') ? '!border-red-600' : '' }}"
+                    {{ $disabled ? 'disabled' : '' }}
                     type="number" 
                     min="0"
                     placeholder="10"
@@ -462,6 +444,7 @@
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artwork_max_supply') ? '!border-red-600' : '' }}"
+                  {{ $disabled ? 'disabled' : '' }}
                   type="number" 
                   min="0" 
                   step="1"
@@ -501,6 +484,7 @@
                   <div class="flex gap-x-10">
                     <label class="mt-6 flex items-start gap-x-4 cursor-pointer">
                       <input
+                        {{ $disabled ? 'disabled' : '' }}
                         class="w-10 h-10 cursor-pointer shrink-0"
                         type="radio"
                         wire:model.lazy="free_nft"
@@ -513,6 +497,7 @@
                     </label>
                     <label class="mt-6 flex items-start gap-x-4 cursor-pointer">
                       <input class="w-10 h-10 cursor-pointer shrink-0"
+                        {{ $disabled ? 'disabled' : '' }}
                         type="radio"
                         wire:model.lazy="free_nft"
                         value="0">
@@ -564,6 +549,7 @@
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artist_portfolio_link') ? '!border-red-600' : '' }}"
+                  {{ $disabled ? 'disabled' : '' }}
                   type="text" 
                   id="portfoliolink" 
                   name="portfoliolink"
@@ -592,6 +578,7 @@
                   <div>
                     <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artist_twitter_link') ? '!border-red-600' : '' }}"
+                    {{ $disabled ? 'disabled' : '' }}
                     type="text" 
                     id="twitterlink" 
                     name="twitterlink"
@@ -621,6 +608,7 @@
                   <div>
                     <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artist_contact_mail') ? '!border-red-600' : '' }}"
+                    {{ $disabled ? 'disabled' : '' }}
                     type="text" 
                     id="mail" 
                     name="mail" 
@@ -645,9 +633,19 @@
       </div>
 
       @if (!is_null($public_id))
-        <button type="submit" class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
-          {{ $state ? : 'Deploy' }}
-        </button>
+          @if ($this->smart_contract->status == 'editing')
+            <button type="submit" class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
+              Submit for approval
+            </button>
+          @elseif ($this->smart_contract->status == 'waiting_for_validation')
+            <button disabled class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
+              Contract in review
+            </button>
+          @elseif ($this->smart_contract->status == 'ready_to_deploy')
+            <button type="submit" class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
+              {{ $state ? : 'Deploy' }}
+            </button>
+          @endif
       @endif
     </form>
   @endif
@@ -659,6 +657,7 @@
       tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
       tx[i].addEventListener("input", OnInput, false);
     }
+
 
     function OnInput() {
       this.style.minHeight = "0";
@@ -754,7 +753,7 @@
       
 
       document.addEventListener('DOMContentLoaded', function () {
-
+        
         Livewire.on('uploadArweaveOnJs', function (type) {
           file = document.querySelector('input[type=file]').files[0]
           arweaveUpload(type, file)

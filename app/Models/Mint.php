@@ -23,11 +23,11 @@ class Mint extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class);
     }
 
     public function smart_contract()
     {
-        return $this->belongsTo('App\Models\SmartContract');
+        return $this->belongsTo(SmartContract::class);
     }
 }

@@ -16,10 +16,17 @@ return new class extends Migration
         Schema::create('smart_contracts', function (Blueprint $table) {
             $table->id();
             $table->char('public_id', 8);
+            
             $table->bigInteger('user_id')->unsigned()->index()->nullable();
             $table->foreign('user_id')
                     ->references('id')
                     ->on('users')
+                    ->onDelete('cascade');
+
+            $table->bigInteger('expo_id')->unsigned()->index()->nullable();
+            $table->foreign('expo_id')
+                    ->references('id')
+                    ->on('expos')
                     ->onDelete('cascade');
 
             // Contract
@@ -47,6 +54,7 @@ return new class extends Migration
             $table->string('ipfs_json_hash')->nullable();
             $table->string('arweave_hash')->nullable();
             $table->string('sha_hash')->nullable();
+            $table->string('status')->default('editing');
             $table->string('address')->nullable();
             $table->boolean('deployed')->default(false);
             

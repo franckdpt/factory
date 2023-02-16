@@ -66,8 +66,13 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
+    public function expos()
+    {
+        return $this->belongsToMany(Expo::class);
+    }
+
     public function smart_contracts()
     {
-        return $this->hasMany('App\Models\SmartContract');
+        return $this->hasMany(SmartContract::class);
     }
 }

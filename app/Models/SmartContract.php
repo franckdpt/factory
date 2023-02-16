@@ -13,6 +13,7 @@ class SmartContract extends Model
     protected $fillable = [
         'public_id',
         'user_id',
+        'expo_id',
 
         'network',
         'name',
@@ -35,6 +36,7 @@ class SmartContract extends Model
         'ipfs_json_hash',
         'arweave_hash',
         'sha_hash',
+        'status',
         'address',
         'deployed',
     ];
@@ -44,9 +46,19 @@ class SmartContract extends Model
         'deployed' => 'boolean',
     ];
 
-    public function user()
+    public function getRouteKeyName()
     {
-        return $this->belongsTo('App\Models\User');
+        return 'public_id';
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function expo()
+    {
+        return $this->belongsTo(Expo::class);
     }
 
     public static function generatePublicId(int $length = 8): string
