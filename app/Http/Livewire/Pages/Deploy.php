@@ -68,7 +68,7 @@ class Deploy extends Component
             'network' => 'required|string',
             'name' => 'required|string|max:25',
             'symbol' => 'required|string|max:5',
-            'description' => 'required|string|max:420',
+            // 'description' => 'required|string|max:420',
             'free_nft' => 'required',
 
             'artwork_title' => 'required|string|max:25',

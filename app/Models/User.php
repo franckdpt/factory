@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -25,6 +26,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'admin',
         'eth_ens',
         'eth_address',
 
@@ -55,6 +57,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'admin' => 'boolean'
     ];
 
     /**
@@ -65,6 +68,16 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    protected function ethAddress(): Attribute
+    {
+        return Attribute::make(
+            set: fn ($value) => [
+                'eth_address' => $value,
+                'name' => 'guest' // TODO: only whitelisted admin
+            ],
+        );
+    }
 
     public function expos()
     {

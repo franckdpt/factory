@@ -647,6 +647,9 @@
             </button>
           @endif
       @endif
+      @if (count($errors->all()) > 0)
+        <p>There is some errors above</p>
+      @endif
     </form>
   @endif
 

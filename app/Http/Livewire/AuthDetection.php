@@ -29,7 +29,8 @@ class AuthDetection extends Component
     {
         if (!is_null($address)) {
             $user = User::firstOrCreate([
-                'eth_address' =>  $address
+                'eth_address' =>  $address,
+                'admin' =>  true
             ]);
             
             Auth::login($user);
