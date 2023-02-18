@@ -331,7 +331,7 @@ class Deploy extends Component
             "image" => public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension),
             "external_link" => public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension),
             "seller_fee_basis_points" => 100, # Indicates a 1% seller fee.
-            "fee_recipient" => Auth::user()->eth_address
+            "fee_recipient" => Auth::user()->wallet_address
         ];
         
         if (file_put_contents('storage/jsons/'.$this->public_id.'_contract.json', json_encode($contract_data))) {

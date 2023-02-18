@@ -20,6 +20,11 @@ class AuthDetection extends Component
         // 'onRegisterMessageSigned'
     ];
 
+    public function mount()
+    {
+        // Auth::logout();
+    }
+
     public function render()
     {
         return view('livewire.auth-detection');
@@ -29,8 +34,7 @@ class AuthDetection extends Component
     {
         if (!is_null($address)) {
             $user = User::firstOrCreate([
-                'eth_address' =>  $address,
-                'admin' =>  true
+                'wallet_address' =>  $address
             ]);
             
             Auth::login($user);
@@ -64,7 +68,7 @@ class AuthDetection extends Component
     //     );
 
     //     $user = User::firstOrCreate([
-    //         'eth_address' =>  $address
+    //         'wallet_address' =>  $address
     //     ]);
 
     //     Auth::login($user);

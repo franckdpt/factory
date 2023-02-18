@@ -8,6 +8,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/css/fonts.css',
                 'resources/js/app.js',
+                'resources/js/custom-filament.js',
             ],
             refresh: [
                 ...refreshPaths,

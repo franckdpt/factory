@@ -1,5 +1,5 @@
 <div>
-    <button x-data @click="openModal()">{{ Auth::check() ? Auth::user()->eth_address : 'Connect wallet' }}</button>
+    <button x-data @click="openModal()">{{ Auth::check() ? Auth::user()->wallet_address : 'Connect wallet' }}</button>
     <!-- <w3m-core-button></w3m-core-button> -->
     <!-- <w3m-network-switch></w3m-network-switch> -->
     <script>

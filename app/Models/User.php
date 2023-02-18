@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,8 +11,9 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Filament\Models\Contracts\FilamentUser;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens;
     use HasFactory;
@@ -28,7 +30,7 @@ class User extends Authenticatable
         'name',
         'admin',
         'eth_ens',
-        'eth_address',
+        'wallet_address',
 
         'portfolio_link',
         'twitter_link',
@@ -69,12 +71,17 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
+    public function canAccessFilament(): bool
+    {
+        return $this->admin;
+    }
+
     protected function ethAddress(): Attribute
     {
         return Attribute::make(
             set: fn ($value) => [
-                'eth_address' => $value,
-                'name' => 'guest' // TODO: only whitelisted admin
+                'wallet_address' => $value,
+                'name' => $this->name ? : 'guest' // TODO: only whitelisted admin
             ],
         );
     }

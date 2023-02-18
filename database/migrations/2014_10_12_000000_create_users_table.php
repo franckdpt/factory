@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+            $table->string('name_and_wallet')->virtualAs('concat(name, \' (\', wallet_address,  \')\')');
             $table->boolean('admin')->default(false);
             $table->string('eth_ens')->unique()->nullable();
-            $table->string('eth_address')->index()->unique()->nullable();
+            $table->string('wallet_address')->index()->unique()->nullable();
 
             $table->string('portfolio_link')->nullable();
             $table->string('twitter_link')->nullable();
