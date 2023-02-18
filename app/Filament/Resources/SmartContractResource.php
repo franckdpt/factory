@@ -12,6 +12,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Fieldset;
 
 class SmartContractResource extends Resource
 {
@@ -23,6 +24,11 @@ class SmartContractResource extends Resource
     {
         return $form
             ->schema([
+                Fieldset::make('Owner')
+                    ->relationship('user')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                    ]),
                 Forms\Components\TextInput::make('network')
                     ->maxLength(255),
                 Forms\Components\Toggle::make('free_nft')
@@ -54,6 +60,7 @@ class SmartContractResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('user.name')->label('Owner'),
                 Tables\Columns\TextColumn::make('artwork_title'),
                 Tables\Columns\TextColumn::make('artwork_price'),
                 Tables\Columns\TextColumn::make('address'),
@@ -64,7 +71,7 @@ class SmartContractResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),

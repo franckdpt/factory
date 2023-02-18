@@ -51,7 +51,7 @@ class SmartContract extends Model
         return 'public_id';
     }
 
-    public function owner()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

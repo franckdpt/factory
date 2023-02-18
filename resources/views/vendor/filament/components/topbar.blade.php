@@ -41,7 +41,6 @@
         shift = false
         Livewire.on('userDisconnected', function () {
             window.location.reload();
-            shift = false
         });
         Livewire.on('userConnected', function () {
             if (shift) {
