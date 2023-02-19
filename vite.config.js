@@ -7,6 +7,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/fonts.css',
+                'resources/css/filament.css',
                 'resources/js/app.js',
                 'resources/js/custom-filament.js',
             ],

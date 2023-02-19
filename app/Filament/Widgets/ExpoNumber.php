@@ -17,7 +17,7 @@ class ExpoNumber extends BaseWidget
         return [
             Card::make('Total Unique visitors', User::count()),
             Card::make('Expositions', Expo::count()),
-            Card::make('Deployed Artworks', SmartContract::whereDeployed(true)->count()),
+            Card::make('Deployed Collections', SmartContract::whereDeployed(true)->count()),
         ];
     }
 }

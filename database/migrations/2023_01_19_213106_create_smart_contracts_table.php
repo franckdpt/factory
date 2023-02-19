@@ -28,12 +28,14 @@ return new class extends Migration
                     ->references('id')
                     ->on('expos')
                     ->onDelete('cascade');
+            
+            $table->bigInteger('network_id')->unsigned()->index()->nullable();
+            $table->foreign('network_id')
+                    ->references('id')
+                    ->on('networks')
+                    ->onDelete('cascade');
 
             // Contract
-            $table->string('network')->nullable();
-            $table->string('name')->nullable();
-            $table->string('symbol')->nullable();
-            $table->text('description')->nullable();
             $table->boolean('free_nft')->default(false);
 
             // Artwork

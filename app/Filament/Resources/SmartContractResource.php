@@ -13,46 +13,72 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Grid;
 
 class SmartContractResource extends Resource
 {
     protected static ?string $model = SmartContract::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
-
+    
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Fieldset::make('Owner')
-                    ->relationship('user')
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
+                Fieldset::make('Owner Info')->relationship('user')->schema([
+                    Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('name'),
                     ]),
-                Forms\Components\TextInput::make('network')
-                    ->maxLength(255),
-                Forms\Components\Toggle::make('free_nft')
-                    ->required(),
-                Forms\Components\TextInput::make('artwork_title')
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('artwork_description')
-                    ->maxLength(65535),
-                Forms\Components\TextInput::make('artwork_hd_extension')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('artwork_max_supply'),
-                Forms\Components\TextInput::make('artwork_price'),
-                Forms\Components\TextInput::make('artwork_royalty'),
-                Forms\Components\TextInput::make('ipfs_hash')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('ipfs_json_hash')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('arweave_hash')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('sha_hash')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('status')
-                    ->required()
-                    ->maxLength(255),
+                    Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('wallet_address')
+                    ])
+                ]),
+
+                Fieldset::make('Smart Contract Info')->schema([
+                    Grid::make(4)->schema([
+                        Forms\Components\Toggle::make('deployed'),
+                        Forms\Components\Select::make('network')
+                            ->relationship('network', 'name')
+                    ]),
+                    Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('address')
+                            ->label("Smart contract address"),
+                    ]),
+                    Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('ipfs_json_hash')
+                            ->label('TokenURI'),
+                    ]),
+                ]),
+                
+                Fieldset::make('Artwork Info')->schema([
+                    Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('artwork_title'),
+                    ]),
+                    Grid::make(2)->schema([
+                        Forms\Components\Textarea::make('artwork_description'),
+                    ]),
+                    Grid::make(4)->schema([
+                        Forms\Components\TextInput::make('artwork_hd_extension'),
+                        Forms\Components\TextInput::make('artwork_max_supply'),
+                    ]),
+                    Grid::make(4)->schema([
+                        Forms\Components\TextInput::make('artwork_price'),
+                        Forms\Components\TextInput::make('artwork_royalty'),
+                    ]),
+                    Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('ipfs_hash')
+                        ->label('Artwork IPFS hash'),
+                    ]),
+                    Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('arweave_hash')
+                        ->label('Artwork Arweave hash'),
+                    ]),
+                    Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('sha_hash')
+                        ->label('Artwork SHA hash'),
+                    ]),
+                ]),
+                
             ]);
     }
 

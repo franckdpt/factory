@@ -5,20 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 
 class SmartContract extends Model
 {
     use HasFactory;
+    use Searchable;
 
     protected $fillable = [
         'public_id',
         'user_id',
         'expo_id',
+        'network_id',
 
-        'network',
-        'name',
-        'symbol',
-        'description',
         'free_nft',
 
         'artwork_title',
@@ -42,6 +41,7 @@ class SmartContract extends Model
     ];
 
     protected $casts = [
+        'network_id' => 'integer',
         'free_nft' => 'boolean',
         'deployed' => 'boolean',
     ];
@@ -59,6 +59,11 @@ class SmartContract extends Model
     public function expo()
     {
         return $this->belongsTo(Expo::class);
+    }
+
+    public function network()
+    {
+        return $this->belongsTo(Network::class);
     }
 
     public static function generatePublicId(int $length = 8): string

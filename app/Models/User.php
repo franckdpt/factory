@@ -12,6 +12,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Filament\Models\Contracts\FilamentUser;
+use Laravel\Scout\Searchable;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -20,6 +21,7 @@ class User extends Authenticatable implements FilamentUser
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use Searchable;
 
     /**
      * The attributes that are mass assignable.
@@ -62,14 +64,13 @@ class User extends Authenticatable implements FilamentUser
         'admin' => 'boolean'
     ];
 
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array<int, string>
-     */
-    protected $appends = [
-        'profile_photo_url',
-    ];
+    public function toSearchableArray()
+    {
+        return [
+            'name' => '',
+            'wallet_address' => '',
+        ];
+    }
 
     public function canAccessFilament(): bool
     {

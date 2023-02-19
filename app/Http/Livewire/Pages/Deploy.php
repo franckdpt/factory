@@ -4,16 +4,16 @@ namespace App\Http\Livewire\Pages;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Livewire\Traits\WithNetworks;
 use App\Http\Livewire\Traits\AuthRefreshed;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Expo;
 use App\Models\SmartContract;
+use App\Models\Network;
 
 class Deploy extends Component
 {
-    use WithFileUploads, WithNetworks, AuthRefreshed;
+    use WithFileUploads, AuthRefreshed;
 
     // Livewire variables
     public ?SmartContract $smart_contract = null;
@@ -26,10 +26,8 @@ class Deploy extends Component
     // SmartContract object
     public $public_id = null;
 
-    public $network = "";
-    public $name;
-    public $symbol;
-    public $description = "nft factory desc";
+    public $networks;
+    public $network_id;
     public $free_nft = false;
     
     public $artwork_title;
@@ -65,10 +63,7 @@ class Deploy extends Component
         return [
             'public_id' => 'required|string',
             
-            'network' => 'required|string',
-            'name' => 'required|string|max:25',
-            'symbol' => 'required|string|max:5',
-            // 'description' => 'required|string|max:420',
+            'network_id' => 'required|numeric',
             'free_nft' => 'required',
 
             'artwork_title' => 'required|string|max:25',
@@ -88,6 +83,7 @@ class Deploy extends Component
 
     public function mount($expo, $smart_contract = null)
     {
+        $this->networks = Network::all();
         $this->expo = $expo;
 
         $this->walletAllowing();
@@ -109,10 +105,7 @@ class Deploy extends Component
 
             $this->public_id = $this->smart_contract->public_id;
         
-            $this->network = $this->smart_contract->network;
-            $this->name = $this->smart_contract->name;
-            $this->symbol = $this->smart_contract->symbol;
-            $this->description = $this->smart_contract->description;
+            $this->network_id = $this->smart_contract->network->id;
             $this->free_nft = $this->smart_contract->free_nft;
             
             $this->artwork_title = $this->smart_contract->artwork_title;
@@ -178,7 +171,7 @@ class Deploy extends Component
             $this->artwork_hd_extension = explode('/', $this->hd_media->getMimeType())[1];
 
             // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd.'.$this->artwork_hd_extension);
-            $path = $this->hd_media->storePubliclyAs(
+            $this->hd_media->storePubliclyAs(
                 'nft_media',
                 $this->public_id.'_hd.'.$this->artwork_hd_extension,
                 'public'
@@ -308,7 +301,7 @@ class Deploy extends Component
     {
         $data = [
             "name" => $this->artwork_title,
-            "collection" => $this->name,
+            "collection" => $this->expo->contracts_name,
             "description" => $this->artwork_description,
             "image" => "https://gateway.pinata.cloud/ipfs/".$this->ipfs_hash,
             "image_arweave" => "http://arweave.net/".$this->arweave_hash,
@@ -326,8 +319,8 @@ class Deploy extends Component
     public function createJsonContract()
     {
         $contract_data = [
-            "name" => $this->name,
-            "description" => $this->description,
+            "name" => $this->expo->contracts_name,
+            "description" => $this->expo->contracts_description,
             "image" => public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension),
             "external_link" => public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension),
             "seller_fee_basis_points" => 100, # Indicates a 1% seller fee.

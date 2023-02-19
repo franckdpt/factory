@@ -14,6 +14,10 @@ class Expo extends Model
     protected $fillable = [
         'name',
         'description',
+
+        'contracts_name',
+        'contracts_description',
+        'contracts_symbol',
     ];
 
     public function getRouteKeyName()

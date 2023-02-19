@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('networks')->truncate();
         DB::table('expos')->truncate();
         DB::table('users')->truncate();
         DB::table('expo_user')->truncate();
@@ -25,6 +26,20 @@ class DatabaseSeeder extends Seeder
             'name' => 'Expo test 1',
             'description' => 'Expo desc',
             'slug' => 'expo-test-1',
+
+            'contracts_name' => 'Expo nb 1',
+            'contracts_description' => 'Description of expo',
+            'contracts_symbol' => 'ETN',
+        ]);
+
+        DB::table('networks')->insert([
+            'name' => 'Ethereum',
+            'public_id' => 1,
+        ]);
+
+        DB::table('networks')->insert([
+            'name' => 'Polygon',
+            'public_id' => 137,
         ]);
 
         DB::table('users')->insert([
@@ -54,6 +69,7 @@ class DatabaseSeeder extends Seeder
             'artwork_title' => 'Test Artwork',
             'user_id' => 1,
             'expo_id' => 1,
+            'network_id' => 1,
         ]);
 
         DB::table('smart_contracts')->insert([
@@ -61,6 +77,7 @@ class DatabaseSeeder extends Seeder
             'artwork_title' => 'Test Artwork 2',
             'user_id' => 2,
             'expo_id' => 1,
+            'network_id' => 2,
         ]);
     }
 }

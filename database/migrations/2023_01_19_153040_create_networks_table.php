@@ -13,17 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('expos', function (Blueprint $table) {
+        Schema::create('networks', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->text('description')->nullable();
-
-            $table->string('contracts_name')->nullable();
-            $table->text('contracts_description')->nullable();
-            $table->string('contracts_symbol')->nullable();
-
-            $table->string('slug')->nullable();
-
+            $table->string('name');
+            $table->integer('public_id');
             $table->timestamps();
         });
     }
@@ -35,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('expos');
+        Schema::dropIfExists('networks');
     }
 };
