@@ -45,7 +45,7 @@ class SmartContractResource extends Resource
                             ->label("Smart contract address"),
                     ]),
                     Grid::make(2)->schema([
-                        Forms\Components\TextInput::make('ipfs_json_hash')
+                        Forms\Components\TextInput::make('contract_ipfs_json_hash')
                             ->label('TokenURI'),
                     ]),
                 ]),
@@ -66,15 +66,15 @@ class SmartContractResource extends Resource
                         Forms\Components\TextInput::make('artwork_royalty'),
                     ]),
                     Grid::make(2)->schema([
-                        Forms\Components\TextInput::make('ipfs_hash')
+                        Forms\Components\TextInput::make('artwork_ipfs_hash')
                         ->label('Artwork IPFS hash'),
                     ]),
                     Grid::make(2)->schema([
-                        Forms\Components\TextInput::make('arweave_hash')
+                        Forms\Components\TextInput::make('artwork_arweave_hash')
                         ->label('Artwork Arweave hash'),
                     ]),
                     Grid::make(2)->schema([
-                        Forms\Components\TextInput::make('sha_hash')
+                        Forms\Components\TextInput::make('artwork_sha_hash')
                         ->label('Artwork SHA hash'),
                     ]),
                 ]),

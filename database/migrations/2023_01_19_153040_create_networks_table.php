@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('public_id');
+            $table->string('explorer');
             $table->timestamps();
         });
     }

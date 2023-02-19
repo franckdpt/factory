@@ -35,11 +35,13 @@ class DatabaseSeeder extends Seeder
         DB::table('networks')->insert([
             'name' => 'Ethereum',
             'public_id' => 1,
+            'explorer' => "http://etherscan.io/",
         ]);
 
         DB::table('networks')->insert([
             'name' => 'Polygon',
             'public_id' => 137,
+            'explorer' => "http://polygonscan.com/",
         ]);
 
         DB::table('users')->insert([

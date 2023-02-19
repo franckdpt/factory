@@ -22,7 +22,7 @@
       </svg>
     </a>
     <div class="text-2xl font-semibold">
-      Expo Name
+      {{ $this->smart_contract->expo->name }}
       <div class="ml-4 px-4 py-2 font-black text-lg bg-NFTF-green hover:bg-black text-white NFTF-transition">
         @livewire('wallet-button')
       </div>
@@ -193,7 +193,7 @@
             <span class="font-bold">Token ID:</span> xx
           </li>
           <li>
-            <span class="font-bold">Blockchain:</span> {{ $this->smart_contract->network }}
+            <span class="font-bold">Blockchain:</span> {{ $this->smart_contract->network->name }}
           </li>
           <li>
             <span class="font-bold">Second market royalities:</span> {{ $this->smart_contract->artwork_royalty }}%
@@ -223,7 +223,7 @@
           </li>
           <li>
             <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
-            href={{ "https://etherscan.io/address/".$this->smart_contract->address }}"
+            href={{ $this->smart_contract->network->explorer."address/".$this->smart_contract->address }}
             target="_blank"
             rel="noopener noreferrer">
             <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">
@@ -231,12 +231,12 @@
                 <path id="Tracé_147" data-name="Tracé 147" d="M17.865,4.462V8.622a.462.462,0,0,1-.924,0V5.578l-6.606,6.606a.462.462,0,1,1-.653-.653l6.606-6.606H13.243a.462.462,0,0,1,0-.924H17.4A.462.462,0,0,1,17.865,4.462ZM16.016,16.478V10.932a.462.462,0,1,0-.924,0v5.546a.462.462,0,0,1-.462.462H5.386a.462.462,0,0,1-.462-.462V7.235a.462.462,0,0,1,.462-.462h5.546a.462.462,0,0,0,0-.924H5.386A1.388,1.388,0,0,0,4,7.235v9.243a1.388,1.388,0,0,0,1.386,1.386H14.63A1.388,1.388,0,0,0,16.016,16.478Z" fill="#fff"/>
               </g>
             </svg>
-              Etherscan
+              Smart Contract
             </a>
           </li>
           <li>
             <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
-            href="#"
+            href="{{ $this->smart_contract->getArtworkIpfsUrl() }}"
             target="_blank"
             rel="noopener noreferrer">
             <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">
@@ -244,12 +244,12 @@
                 <path id="Tracé_147" data-name="Tracé 147" d="M17.865,4.462V8.622a.462.462,0,0,1-.924,0V5.578l-6.606,6.606a.462.462,0,1,1-.653-.653l6.606-6.606H13.243a.462.462,0,0,1,0-.924H17.4A.462.462,0,0,1,17.865,4.462ZM16.016,16.478V10.932a.462.462,0,1,0-.924,0v5.546a.462.462,0,0,1-.462.462H5.386a.462.462,0,0,1-.462-.462V7.235a.462.462,0,0,1,.462-.462h5.546a.462.462,0,0,0,0-.924H5.386A1.388,1.388,0,0,0,4,7.235v9.243a1.388,1.388,0,0,0,1.386,1.386H14.63A1.388,1.388,0,0,0,16.016,16.478Z" fill="#fff"/>
               </g>
             </svg>
-            Onchain artwork
+            IPFS artwork
             </a>
           </li>
           <li>
             <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
-            href="#"
+            href="{{ $this->smart_contract->getArtworkArweaveUrl() }}"
             target="_blank"
             rel="noopener noreferrer">
               <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">
@@ -257,7 +257,7 @@
                   <path id="Tracé_147" data-name="Tracé 147" d="M17.865,4.462V8.622a.462.462,0,0,1-.924,0V5.578l-6.606,6.606a.462.462,0,1,1-.653-.653l6.606-6.606H13.243a.462.462,0,0,1,0-.924H17.4A.462.462,0,0,1,17.865,4.462ZM16.016,16.478V10.932a.462.462,0,1,0-.924,0v5.546a.462.462,0,0,1-.462.462H5.386a.462.462,0,0,1-.462-.462V7.235a.462.462,0,0,1,.462-.462h5.546a.462.462,0,0,0,0-.924H5.386A1.388,1.388,0,0,0,4,7.235v9.243a1.388,1.388,0,0,0,1.386,1.386H14.63A1.388,1.388,0,0,0,16.016,16.478Z" fill="#fff"/>
                 </g>
               </svg>
-              Onchain artwork
+              Arweave artwork
             </a>
           </li>
         </ul>

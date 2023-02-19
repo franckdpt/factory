@@ -52,10 +52,10 @@ return new class extends Migration
             $table->string('artist_contact_mail')->nullable();
 
             // Output
-            $table->string('ipfs_hash')->nullable();
-            $table->string('ipfs_json_hash')->nullable();
-            $table->string('arweave_hash')->nullable();
-            $table->string('sha_hash')->nullable();
+            $table->string('artwork_ipfs_hash')->nullable();
+            $table->string('contract_ipfs_json_hash')->nullable();
+            $table->string('artwork_arweave_hash')->nullable();
+            $table->string('artwork_sha_hash')->nullable();
             $table->string('status')->default('editing');
             $table->string('address')->nullable();
             $table->boolean('deployed')->default(false);

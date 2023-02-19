@@ -12,6 +12,7 @@ class Network extends Model
     protected $fillable = [
         'name',
         'public_id',
+        'explorer',
     ];
 
     public function smart_contracts()

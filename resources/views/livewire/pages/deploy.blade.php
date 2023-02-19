@@ -647,7 +647,7 @@
                                   loop()
                               } else {
                                   console.log('done')
-                                  @this.set('arweave_hash', transaction.id)
+                                  @this.set('artwork_arweave_hash', transaction.id)
                                   Livewire.emit('arweaveUploaded')
                               }
                           })
@@ -695,10 +695,10 @@
                   @this.name,
                   @this.symbol,
                   @this.description,
-                  @this.ipfs_hash,
-                  @this.arweave_hash,
-                  @this.sha_hash,
-                  @this.ipfs_json_hash,
+                  @this.artwork_ipfs_hash,
+                  @this.artwork_arweave_hash,
+                  @this.artwork_sha_hash,
+                  @this.contract_ipfs_json_hash,
                   @this.artwork_royalty,
                   ethers.utils.parseEther(@this.artwork_price),
                   @this.auth_address

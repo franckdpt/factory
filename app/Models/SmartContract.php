@@ -31,10 +31,10 @@ class SmartContract extends Model
         'artist_twitter_link',
         'artist_contact_mail',
 
-        'ipfs_hash',
-        'ipfs_json_hash',
-        'arweave_hash',
-        'sha_hash',
+        'artwork_ipfs_hash',
+        'contract_ipfs_json_hash',
+        'artwork_arweave_hash',
+        'artwork_sha_hash',
         'status',
         'address',
         'deployed',
@@ -64,6 +64,16 @@ class SmartContract extends Model
     public function network()
     {
         return $this->belongsTo(Network::class);
+    }
+
+    public function getArtworkIpfsUrl(): string
+    {
+        return "https://gateway.pinata.cloud/ipfs/".$this->artwork_ipfs_hash;
+    }
+
+    public function getArtworkArweaveUrl(): string
+    {
+        return "https://arweave.net/".$this->artwork_arweave_hash;
     }
 
     public static function generatePublicId(int $length = 8): string

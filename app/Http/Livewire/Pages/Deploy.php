@@ -41,10 +41,10 @@ class Deploy extends Component
     public $artist_twitter_link;
     public $artist_contact_mail;
     
-    public $ipfs_hash;
-    public $ipfs_json_hash;
-    public $arweave_hash;
-    public $sha_hash;
+    public $artwork_ipfs_hash;
+    public $contract_ipfs_json_hash;
+    public $artwork_arweave_hash;
+    public $artwork_sha_hash;
     public $address;
     public $deployed = false;
 
@@ -119,10 +119,10 @@ class Deploy extends Component
             $this->artist_twitter_link = $this->smart_contract->artist_twitter_link;
             $this->artist_contact_mail = $this->smart_contract->artist_contact_mail;
 
-            $this->ipfs_hash = $this->smart_contract->ipfs_hash;
-            $this->ipfs_json_hash = $this->smart_contract->ipfs_json_hash;
-            $this->arweave_hash = $this->smart_contract->arweave_hash;
-            $this->sha_hash = $this->smart_contract->sha_hash;
+            $this->artwork_ipfs_hash = $this->smart_contract->artwork_ipfs_hash;
+            $this->contract_ipfs_json_hash = $this->smart_contract->contract_ipfs_json_hash;
+            $this->artwork_arweave_hash = $this->smart_contract->artwork_arweave_hash;
+            $this->artwork_sha_hash = $this->smart_contract->artwork_sha_hash;
             $this->address = $this->smart_contract->address;
             $this->deployed = $this->smart_contract->deployed;
         }
@@ -177,9 +177,9 @@ class Deploy extends Component
                 'public'
             );
 
-            $this->sha_hash = hash_file('sha256', public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension));
+            $this->artwork_sha_hash = hash_file('sha256', public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension));
 
-            $this->smart_contract->sha_hash = $this->sha_hash;
+            $this->smart_contract->artwork_sha_hash = $this->artwork_sha_hash;
             $this->smart_contract->artwork_hd_extension = $this->artwork_hd_extension;
             $this->smart_contract->save();
         }
@@ -207,16 +207,16 @@ class Deploy extends Component
 
     public function readyToUploadIpfs()
     {
-        $this->ipfs_hash = $this->uploadFileToIpfs(
+        $this->artwork_ipfs_hash = $this->uploadFileToIpfs(
             $this->hd_media->getRealPath(),
             $this->hd_media->getMimeType(),
             $this->public_id.'_hd'
         );
 
-        $this->smart_contract->ipfs_hash = $this->ipfs_hash;
+        $this->smart_contract->artwork_ipfs_hash = $this->artwork_ipfs_hash;
         $this->smart_contract->save();
 
-        if (empty($this->ipfs_hash)) {
+        if (empty($this->artwork_ipfs_hash)) {
             dd('error on uploading IPFS');
         }
         
@@ -235,10 +235,10 @@ class Deploy extends Component
 
     public function arweaveUploaded()
     {
-        $this->smart_contract->arweave_hash = $this->arweave_hash;
+        $this->smart_contract->artwork_arweave_hash = $this->artwork_arweave_hash;
         $this->smart_contract->save();
 
-        if (empty($this->arweave_hash)) {
+        if (empty($this->artwork_arweave_hash)) {
             dd('error on uploading Arweave');
         }
 
@@ -251,16 +251,16 @@ class Deploy extends Component
     {
         $this->createJsonToken();
             
-        $this->ipfs_json_hash = $this->uploadFileToIpfs(
+        $this->contract_ipfs_json_hash = $this->uploadFileToIpfs(
             public_path('storage/jsons/'.$this->public_id.'.json'),
             'application/json',
             $this->public_id
         );
 
-        $this->smart_contract->ipfs_json_hash = $this->ipfs_json_hash;
+        $this->smart_contract->contract_ipfs_json_hash = $this->contract_ipfs_json_hash;
         $this->smart_contract->save();
 
-        if (empty($this->ipfs_hash)) {
+        if (empty($this->artwork_ipfs_hash)) {
             dd('error on uploading IPFS');
         }
 
@@ -303,10 +303,10 @@ class Deploy extends Component
             "name" => $this->artwork_title,
             "collection" => $this->expo->contracts_name,
             "description" => $this->artwork_description,
-            "image" => "https://gateway.pinata.cloud/ipfs/".$this->ipfs_hash,
-            "image_arweave" => "http://arweave.net/".$this->arweave_hash,
-            "image_ipfs" => "https://gateway.pinata.cloud/ipfs/".$this->ipfs_hash,
-            "image_sha256" => $this->sha_hash,
+            "image" => "https://gateway.pinata.cloud/ipfs/".$this->artwork_ipfs_hash,
+            "image_arweave" => "http://arweave.net/".$this->artwork_arweave_hash,
+            "image_ipfs" => "https://gateway.pinata.cloud/ipfs/".$this->artwork_ipfs_hash,
+            "image_sha256" => $this->artwork_sha_hash,
         ];
 
         if (file_put_contents('storage/jsons/'.$this->public_id.'.json', json_encode($data))) {
