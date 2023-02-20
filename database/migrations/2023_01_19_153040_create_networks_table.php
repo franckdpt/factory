@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->integer('public_id');
             $table->string('explorer');
+            $table->string('currency');
             $table->timestamps();
         });
     }

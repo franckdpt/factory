@@ -174,7 +174,7 @@
           </h1>
           <p class="sm:text-lg md:text-2xl font-semibold">
             NFTs will be created when buyer will mint it. <br>
-            The artwork will be persistent, nothing and nobody will be able to alter it in time.
+            The artwork will be persistent, nothing and nobody will be able to alter it.
           </p>
 
           <div class="mt-10">
@@ -203,10 +203,10 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  Displayed on marketplaces for all NFTs in your collection
+                  On-chain. Can't be changed after the deployment.
                 </li>
                 <li class="text-lg">
-                  Can't be changed after the deployment
+                  Displayed on marketplaces.
                 </li>
               </ul>
             </div>
@@ -237,7 +237,10 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  Can't be changed after the deployment
+                  On-chain. Can't be changed after the deployment.
+                </li>
+                <li class="text-lg">
+                  Displayed on marketplaces.
                 </li>
               </ul>
             </div>
@@ -291,7 +294,16 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  Can't be changed after the deployment
+                  Will be stored into IPFS.
+                </li>
+                <li class="text-lg">
+                  Will be stored into Arweave.
+                </li>
+                <li class="text-lg">
+                  Will be on-chain prooved (SHA256).
+                </li>
+                <li class="text-lg">
+                  Can't be changed after the deployment.
                 </li>
               </ul>
             </div>
@@ -314,7 +326,9 @@
                     placeholder="10"
                     name="price"
                     wire:model.lazy="artwork_price">
-                    ETH
+                    @if ($this->smart_contract && $this->smart_contract->network)
+                       {{ $this->smart_contract->network->currency }}
+                    @endif
                   </div>
                   @error('artwork_price') 
                     <div class="text-red-600 font-semibold">
@@ -326,16 +340,10 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  First market price
+                  On-chain. Can't be changed after the deployment.
                 </li>
                 <li class="text-lg">
-                  70% of the price in the wallet used for the deployment (the wallet connected right now)
-                </li>
-                <li class="text-lg">
-                  30% fees token on the price for the NFT Factory
-                </li>
-                <li class="text-lg">
-                  Approximatively 0.01 ETH transaction fees more for the buyer 
+                  30% fees for the NFT Factory.
                 </li>
               </ul>
             </div>
@@ -384,7 +392,7 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  If not, you will be able to open it later
+                  If not, you will be able to open it later.
                 </li>
               </ul>
             </div>
@@ -419,7 +427,10 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  Second market royalties
+                  Second market royalties.
+                </li>
+                <li class="text-lg">
+                  On-chain. Can't be changed after the deployment.
                 </li>
               </ul>
             </div>
@@ -452,13 +463,10 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  The max supply is the number max of mintable NFT
+                  The max supply is the maximum number of mintable NFT.
                 </li>
                 <li class="text-lg">
-                  Number of edition is the total of minted NFTs
-                </li>
-                <li class="text-lg">
-                  Be careful for max supply 1 no free drop possible
+                  Will be automatically updated in case of non-soldout when you'll close & lock sales.
                 </li>
               </ul>
             </div>
@@ -469,7 +477,7 @@
               <div class="flex-1 relative flex flex-col">
                 <label class="text-xl md:text-2xl font-bold" 
                 for="self_nfts_number">
-                  Number of copies you want in your wallet
+                  Number of NFT you want in your wallet
                 </label>
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
@@ -491,7 +499,7 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  
+                  These copies will be minted & sent just after the deployment.
                 </li>
               </ul>
             </div>

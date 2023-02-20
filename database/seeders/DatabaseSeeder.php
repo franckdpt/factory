@@ -36,12 +36,14 @@ class DatabaseSeeder extends Seeder
             'name' => 'Ethereum',
             'public_id' => 1,
             'explorer' => "http://etherscan.io/",
+            'currency' => "ETH",
         ]);
 
         DB::table('networks')->insert([
             'name' => 'Polygon',
             'public_id' => 137,
             'explorer' => "http://polygonscan.com/",
+            'currency' => "MATIC",
         ]);
 
         DB::table('users')->insert([

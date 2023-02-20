@@ -13,6 +13,7 @@ class Network extends Model
         'name',
         'public_id',
         'explorer',
+        'currency',
     ];
 
     public function smart_contracts()
