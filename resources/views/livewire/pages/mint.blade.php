@@ -269,10 +269,10 @@
   <hr class="my-16 border-gray-400">
 
   <h1 class="-mt-5 text-6xl md:text-5xl lg:text-7xl font-bold">
-    Expo name
+    {{ $this->smart_contract->expo->name }}
   </h1>
   <p class="mt-3 text-lg">
-    Description Post hanc adclinis Libano monti Phoenice, regio plena gratiarum et venustatis, urbibus decorata magnis et pulchris; in quibus amoenitate celebritateque nominum Tyros excellit, Sidon et Berytus isdemque pares Emissa et Damascus saeculis condita priscis.
+    {{ $this->smart_contract->expo->description }}
   </p>
 
 

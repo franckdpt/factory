@@ -12,13 +12,14 @@ class SmartContract extends Model
     use HasFactory;
     use Searchable;
 
+    const IPFS_GATEWAY = "https://gateway.pinata.cloud/ipfs/";
+    const ARWEAVE_GATEWAY = "https://arweave.net/";
+
     protected $fillable = [
         'public_id',
         'user_id',
         'expo_id',
         'network_id',
-
-        'free_nft',
 
         'artwork_title',
         'artwork_description',
@@ -32,18 +33,20 @@ class SmartContract extends Model
         'artist_contact_mail',
 
         'artwork_ipfs_hash',
-        'contract_ipfs_json_hash',
+        'token_ipfs_hash',
         'artwork_arweave_hash',
         'artwork_sha_hash',
         'status',
         'address',
         'deployed',
+        'open_sales',
+        'self_nfts_number',
     ];
 
     protected $casts = [
         'network_id' => 'integer',
-        'free_nft' => 'boolean',
         'deployed' => 'boolean',
+        'open_sales' => 'boolean',
     ];
 
     public function getRouteKeyName()
@@ -66,14 +69,24 @@ class SmartContract extends Model
         return $this->belongsTo(Network::class);
     }
 
+    public function getContractUrl(): string
+    {
+        return public_path('storage/jsons/'.$this->public_id.'_contract.json');
+    }
+
+    public function getTokenIpfsUrl(): string
+    {
+        return self::IPFS_GATEWAY.$this->token_ipfs_hash;
+    }
+
     public function getArtworkIpfsUrl(): string
     {
-        return "https://gateway.pinata.cloud/ipfs/".$this->artwork_ipfs_hash;
+        return self::IPFS_GATEWAY.$this->artwork_ipfs_hash;
     }
 
     public function getArtworkArweaveUrl(): string
     {
-        return "https://arweave.net/".$this->artwork_arweave_hash;
+        return self::ARWEAVE_GATEWAY.$this->artwork_arweave_hash;
     }
 
     public static function generatePublicId(int $length = 8): string

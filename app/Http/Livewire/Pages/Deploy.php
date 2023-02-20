@@ -20,15 +20,21 @@ class Deploy extends Component
     public Expo $expo;
     public $abi, $byte, $arweave_key;
     public $hd_media, $contract_data_json_url, $state;
+    public $wallet;
     public $disabled = false;
     public $allowed = false;
+
+    public $expo_name;
+    public $expo_symbol;
+    public $artwork_ipfs_url;
+    public $token_ipfs_url;
+    public $artwork_arweave_url;
 
     // SmartContract object
     public $public_id = null;
 
     public $networks;
     public $network_id;
-    public $free_nft = false;
     
     public $artwork_title;
     public $artwork_description;
@@ -42,11 +48,13 @@ class Deploy extends Component
     public $artist_contact_mail;
     
     public $artwork_ipfs_hash;
-    public $contract_ipfs_json_hash;
+    public $token_ipfs_hash;
     public $artwork_arweave_hash;
     public $artwork_sha_hash;
     public $address;
     public $deployed = false;
+    public $open_sales = true;
+    public $self_nfts_number = 0;
 
     protected $listeners = [
         'readyToUploadIpfs',
@@ -64,20 +72,20 @@ class Deploy extends Component
             'public_id' => 'required|string',
             
             'network_id' => 'required|numeric',
-            'free_nft' => 'required',
 
             'artwork_title' => 'required|string|max:25',
             'artwork_description' => 'required|string|max:420',
             'artwork_max_supply' => 'required|numeric|min:1|max:100',
             'artwork_price' => 'required|numeric',
-            // 'artwork_royalty' => 'required|numeric|max:10',
+            'artwork_royalty' => 'required|numeric|max:10',
 
             'artist_portfolio_link' => 'nullable|url',
             'artist_twitter_link' => 'nullable|url',
             'artist_contact_mail' => 'nullable|email',
 
             'hd_media' => 'required|max:10000',
-            // 'email' => ['required', 'email', 'not_in:' . auth()->user()->email],
+            'open_sales' => 'required|numeric',
+            'self_nfts_number' => 'required|numeric',
         ];
     }
 
@@ -85,6 +93,8 @@ class Deploy extends Component
     {
         $this->networks = Network::all();
         $this->expo = $expo;
+        $this->expo_name = $expo->name;
+        $this->expo_symbol = $expo->symbol;
 
         $this->walletAllowing();
         
@@ -104,9 +114,8 @@ class Deploy extends Component
             $this->disabled = $this->smart_contract->status == 'waiting_for_validation';
 
             $this->public_id = $this->smart_contract->public_id;
-        
-            $this->network_id = $this->smart_contract->network->id;
-            $this->free_nft = $this->smart_contract->free_nft;
+            
+            $this->network_id = $this->smart_contract->network_id;
             
             $this->artwork_title = $this->smart_contract->artwork_title;
             $this->artwork_description = $this->smart_contract->artwork_description;
@@ -120,11 +129,13 @@ class Deploy extends Component
             $this->artist_contact_mail = $this->smart_contract->artist_contact_mail;
 
             $this->artwork_ipfs_hash = $this->smart_contract->artwork_ipfs_hash;
-            $this->contract_ipfs_json_hash = $this->smart_contract->contract_ipfs_json_hash;
+            $this->token_ipfs_hash = $this->smart_contract->token_ipfs_hash;
             $this->artwork_arweave_hash = $this->smart_contract->artwork_arweave_hash;
             $this->artwork_sha_hash = $this->smart_contract->artwork_sha_hash;
             $this->address = $this->smart_contract->address;
             $this->deployed = $this->smart_contract->deployed;
+            $this->open_sales = $this->smart_contract->open_sales;
+            $this->self_nfts_number = $this->smart_contract->self_nfts_number;
         }
     }
     
@@ -160,7 +171,7 @@ class Deploy extends Component
             $this->smart_contract = SmartContract::updateOrCreate(
                 [ 'public_id' => $this->public_id ], array_merge(
                     $validatedData,
-                    [ 'user_id' => Auth::user()->id, 'expo_id' => $this->expo->id ])
+                    [ 'user_id' => Auth::user()->id, 'expo_id' => $this->expo->id])
             );
         }
     }
@@ -185,6 +196,21 @@ class Deploy extends Component
         }
     }
 
+    public function updatedTokenIpfsHash()
+    {
+        $this->token_ipfs_url = SmartContract::IPFS_GATEWAY.$this->token_ipfs_hash;
+    }
+
+    public function updatedArtworkIpfsHash()
+    {
+        $this->artwork_ipfs_url = SmartContract::IPFS_GATEWAY.$this->artwork_ipfs_hash;
+    }
+
+    public function updatedArtworkArweaveHash()
+    {
+        $this->artwork_arweave_url = SmartContract::ARWEAVE_GATEWAY.$this->artwork_arweave_hash;
+    }
+
     public function submit()
     {
         if (!$this->disabled) {
@@ -201,6 +227,7 @@ class Deploy extends Component
         } else if ($this->smart_contract->status == 'waiting_for_validation') {
             // nothing
         } else if ($this->smart_contract->status == 'ready_to_deploy') {
+            $this->wallet = Auth::user()->wallet_address;
             $this->emit('readyToUploadIpfs');
         }
     }
@@ -251,13 +278,13 @@ class Deploy extends Component
     {
         $this->createJsonToken();
             
-        $this->contract_ipfs_json_hash = $this->uploadFileToIpfs(
+        $this->token_ipfs_hash = $this->uploadFileToIpfs(
             public_path('storage/jsons/'.$this->public_id.'.json'),
             'application/json',
             $this->public_id
         );
 
-        $this->smart_contract->contract_ipfs_json_hash = $this->contract_ipfs_json_hash;
+        $this->smart_contract->token_ipfs_hash = $this->token_ipfs_hash;
         $this->smart_contract->save();
 
         if (empty($this->artwork_ipfs_hash)) {
@@ -303,9 +330,9 @@ class Deploy extends Component
             "name" => $this->artwork_title,
             "collection" => $this->expo->contracts_name,
             "description" => $this->artwork_description,
-            "image" => "https://gateway.pinata.cloud/ipfs/".$this->artwork_ipfs_hash,
-            "image_arweave" => "http://arweave.net/".$this->artwork_arweave_hash,
-            "image_ipfs" => "https://gateway.pinata.cloud/ipfs/".$this->artwork_ipfs_hash,
+            "image" => $this->artwork_ipfs_url,
+            "image_arweave" => $this->artwork_arweave_url,
+            "image_ipfs" => $this->artwork_ipfs_url,
             "image_sha256" => $this->artwork_sha_hash,
         ];
 

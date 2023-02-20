@@ -35,9 +35,6 @@ return new class extends Migration
                     ->on('networks')
                     ->onDelete('cascade');
 
-            // Contract
-            $table->boolean('free_nft')->default(false);
-
             // Artwork
             $table->string('artwork_title')->nullable();
             $table->text('artwork_description')->nullable();
@@ -53,12 +50,14 @@ return new class extends Migration
 
             // Output
             $table->string('artwork_ipfs_hash')->nullable();
-            $table->string('contract_ipfs_json_hash')->nullable();
+            $table->string('token_ipfs_hash')->nullable();
             $table->string('artwork_arweave_hash')->nullable();
             $table->string('artwork_sha_hash')->nullable();
             $table->string('status')->default('editing');
             $table->string('address')->nullable();
+            $table->boolean('open_sales')->default(true);
             $table->boolean('deployed')->default(false);
+            $table->integer('self_nfts_number')->default(0);
             
             $table->timestamps();
         });

@@ -85,7 +85,7 @@
             @endforeach
           
           </div>
-          @error('network') 
+          @error('network_id') 
             <div class="text-red-600 font-semibold">
               {{ $message }}
             </div>
@@ -300,59 +300,6 @@
           <div class="mt-10">
             <div class="md:flex gap-x-10">
               <div class="flex-1 relative flex flex-col">
-                {{-- <div class="text-xl md:text-2xl font-bold">
-                Low Definition media
-                </div> --}}
-
-                {{-- <label class="flex relative border-2 border-dashed border-black cursor-pointer"
-                for="file-input"
-                x-data="drop_file_component()">
-                  <div class="p-10 w-full rounded-xl"
-                      x-bind:class="dropingFile ? 'bg-gray-300' : ''"
-                      x-on:drop="dropingFile = false"
-                      x-on:drop.prevent="handleFileDrop($event)"
-                      x-on:dragover.prevent="dropingFile = true"
-                      x-on:dragleave.prevent="dropingFile = false">
-                      <div class="text-center text-xl text-gray-500 font-semibold uppercase">
-                          JPEG, PNG or MP4<br>(max 500Mb)
-                      </div>
-                      <div class="mt-5 flex justify-center">
-                          <svg class="h-16 w-16" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><g fill="#000" fill-rule="evenodd" clip-rule="evenodd"><path d="m20 7-4-4H5a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1zm-1 13H5V4h10.5v2.5a1 1 0 0 0 1 1H19zm-.914-13.5L16.5 4.914V6.5z" fill="#000000" data-original="#000000"></path><path d="M11.5 13.5V16h1v-2.5H15v-1h-2.5V10h-1v2.5H9v1z" fill="#000000" data-original="#000000"></path></g></g></svg>
-                      </div>
-                      <div class="text-center font-bold {{ is_null($this->media) ? '' : 'hidden' }}" wire:loading.remove wire.target="media">Upload your media here</div>
-                      <div class="text-center font-bold {{ is_null($this->media) ? 'hidden' : '' }}" wire:loading.remove wire.target="media">{{ $this->media_name }}</div>
-                      <div class="mt-1 flex justify-center" wire:loading.flex wire.target="media">
-                          <div class="flex">
-                              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                              <div class="font-bold">Processing Files</div>
-                          </div>
-                      </div>
-                  </div>
-                </label> --}}
-                {{-- <input id="file-input" class="hidden" type="file" wire:model.lazy="media" /> --}}
-                <div class="text-red-600 font-semibold">
-                  
-                </div>
-
-              </div>
-              <div class="hidden md:block w-1 bg-gray-200"></div>
-              <ul class="flex-1 self-end list-inside list-disc">
-                <li class="text-lg">
-                  Can't be changed after the deployment
-                </li>
-                <li class="text-lg">
-                  Onchain
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="mt-10">
-            <div class="md:flex gap-x-10">
-              <div class="flex-1 relative flex flex-col">
                 <label class="text-xl md:text-2xl font-bold" 
                 for="price">
                   Price
@@ -389,6 +336,90 @@
                 </li>
                 <li class="text-lg">
                   Approximatively 0.01 ETH transaction fees more for the buyer 
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="mt-10">
+            <div class="md:flex gap-x-10">
+              <div class="flex-1 relative flex flex-col">
+                <label class="text-xl md:text-2xl font-bold" 
+                for="contractname">
+                  Open the sales now
+                </label>
+                <div>
+                  <div class="flex gap-x-10">
+                    <label class="mt-6 flex items-start gap-x-4 cursor-pointer">
+                      <input
+                        {{ $disabled ? 'disabled' : '' }}
+                        class="w-10 h-10 cursor-pointer shrink-0"
+                        type="radio"
+                        wire:model.lazy="open_sales"
+                        value="1">
+                      <span class="-mt-3 fex flex-col ">
+                        <span class="text-xl md:text-2xl font-bold">
+                          Yes
+                        </span>
+                      </span>
+                    </label>
+                    <label class="mt-6 flex items-start gap-x-4 cursor-pointer">
+                      <input class="w-10 h-10 cursor-pointer shrink-0"
+                        {{ $disabled ? 'disabled' : '' }}
+                        type="radio"
+                        wire:model.lazy="open_sales"
+                        value="0">
+                      <span class="-mt-3 fex flex-col">
+                        <span class="text-xl md:text-2xl font-bold">
+                          No
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+                  <div class="text-red-600 font-semibold">
+                    {{-- error here --}}
+                  </div>
+                </div>
+              </div>
+              <div class="hidden md:block w-1 bg-gray-200"></div>
+              <ul class="flex-1 self-end list-inside list-disc">
+                <li class="text-lg">
+                  If not, you will be able to open it later
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="mt-10">
+            <div class="md:flex gap-x-10">
+              <div class="flex-1 relative flex flex-col">
+                <label class="text-xl md:text-2xl font-bold" 
+                for="price">
+                  Royalties (e.g. creator fees)
+                </label>
+                <div>
+                  <div class="flex gap-x-5 items-center text-xl md:text-2xl font-bold">
+                    <input class="flex-1 mt-2 py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
+                    {{ $errors->has('artwork_royalty') ? '!border-red-600' : '' }}"
+                    {{ $disabled ? 'disabled' : '' }}
+                    type="number" 
+                    min="0"
+                    placeholder="10"
+                    name="royalty"
+                    wire:model.lazy="artwork_royalty">
+                    %
+                  </div>
+                  @error('artwork_royalty') 
+                    <div class="text-red-600 font-semibold">
+                      {{ $message }}
+                    </div>
+                  @enderror
+                </div>
+              </div>
+              <div class="hidden md:block w-1 bg-gray-200"></div>
+              <ul class="flex-1 self-end list-inside list-disc">
+                <li class="text-lg">
+                  Second market royalties
                 </li>
               </ul>
             </div>
@@ -437,49 +468,30 @@
             <div class="md:flex gap-x-10">
               <div class="flex-1 relative flex flex-col">
                 <label class="text-xl md:text-2xl font-bold" 
-                for="contractname">
-                  Send 1 NFT for free in your wallet
+                for="self_nfts_number">
+                  Number of copies you want in your wallet
                 </label>
                 <div>
-                  <div class="flex gap-x-10">
-                    <label class="mt-6 flex items-start gap-x-4 cursor-pointer">
-                      <input
-                        {{ $disabled ? 'disabled' : '' }}
-                        class="w-10 h-10 cursor-pointer shrink-0"
-                        type="radio"
-                        wire:model.lazy="free_nft"
-                        value="1">
-                      <span class="-mt-3 fex flex-col ">
-                        <span class="text-xl md:text-2xl font-bold">
-                          Yes
-                        </span>
-                      </span>
-                    </label>
-                    <label class="mt-6 flex items-start gap-x-4 cursor-pointer">
-                      <input class="w-10 h-10 cursor-pointer shrink-0"
-                        {{ $disabled ? 'disabled' : '' }}
-                        type="radio"
-                        wire:model.lazy="free_nft"
-                        value="0">
-                      <span class="-mt-3 fex flex-col">
-                        <span class="text-xl md:text-2xl font-bold">
-                          No
-                        </span>
-                      </span>
-                    </label>
-                  </div>
-                  <div class="text-red-600 font-semibold">
-                    {{-- error here --}}
-                  </div>
+                  <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
+                  {{ $errors->has('self_nfts_number') ? '!border-red-600' : '' }}"
+                  {{ $disabled ? 'disabled' : '' }}
+                  type="number" 
+                  min="0" 
+                  step="1"
+                  placeholder="10"
+                  name="self_nfts_number"
+                  wire:model.lazy="self_nfts_number">
+                  @error('self_nfts_number') 
+                    <div class="text-red-600 font-semibold">
+                      {{ $message }}
+                    </div>
+                  @enderror
                 </div>
               </div>
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  Option available if your max supply is greater than one
-                </li>
-                <li class="text-lg">
-                  Free mint and negligible fee gas
+                  
                 </li>
               </ul>
             </div>
@@ -692,16 +704,19 @@
               const Factory = new ethers.ContractFactory(@this.abi, @this.byte, signer);
               // const factoryContract = await Factory.deploy("Hello, Hardhat!");
               const factoryContract = await Factory.deploy(
-                  @this.name,
-                  @this.symbol,
-                  @this.description,
-                  @this.artwork_ipfs_hash,
-                  @this.artwork_arweave_hash,
+                  @this.expo_name,
+                  @this.expo_symbol,
+                  @this.artwork_description,
+                  @this.artwork_ipfs_url,
+                  @this.token_ipfs_url,
+                  @this.artwork_arweave_url,
                   @this.artwork_sha_hash,
-                  @this.contract_ipfs_json_hash,
-                  @this.artwork_royalty,
+                  @this.contract_data_json_url,
+                  @this.artwork_max_supply,
                   ethers.utils.parseEther(@this.artwork_price),
-                  @this.auth_address
+                  @this.auth_address,
+                  @this.artwork_royalty,
+                  @this.open_sales
               );
 
               await factoryContract.deployed();
@@ -716,7 +731,6 @@
       
 
       document.addEventListener('DOMContentLoaded', function () {
-        
         Livewire.on('uploadArweaveOnJs', function (type) {
           file = document.querySelector('input[type=file]').files[0]
           arweaveUpload(type, file)

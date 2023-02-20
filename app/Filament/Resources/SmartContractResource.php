@@ -45,7 +45,7 @@ class SmartContractResource extends Resource
                             ->label("Smart contract address"),
                     ]),
                     Grid::make(2)->schema([
-                        Forms\Components\TextInput::make('contract_ipfs_json_hash')
+                        Forms\Components\TextInput::make('token_ipfs_hash')
                             ->label('TokenURI'),
                     ]),
                 ]),
