@@ -66,7 +66,7 @@
             @foreach ($networks as $network)
               <label class="flex-1 p-4 flex items-start gap-x-4 border-2 border-transparent hover:border-NFTF-green cursor-pointer">
                 <input class="w-10 h-10 cursor-pointer shrink-0"
-                {{ $disabled ? 'disabled' : '' }}
+                {{ $in_review ? 'disabled' : '' }}
                 type="radio"
                 wire:model.lazy="network_id"
                 value="{{ $network->id }}"/>
@@ -187,7 +187,7 @@
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artwork_title') ? '!border-red-600' : '' }}"
-                  {{ $disabled ? 'disabled' : '' }}
+                  {{ $in_review ? 'disabled' : '' }}
                   type="text" 
                   id="artworktitle" 
                   name="artworktitle" 
@@ -250,11 +250,11 @@
             <div class="md:flex gap-x-10">
               <div class="flex-1 relative flex flex-col">
                 <div class="text-xl md:text-2xl font-bold">
-                Hight Definition media
+                High Definition media
                 </div>
 
                 <label class="flex relative border-2 border-dashed border-black cursor-pointer 
-                {{ $errors->has('hd_media') ? '!border-red-600' : '' }}"
+                {{ ($errors->has('hd_media') || $errors->has('artwork_path')) ? '!border-red-600' : '' }}"
                 for="hdMedia"
                 x-data="drop_file_component()">
                   <div class="p-10 w-full rounded-xl"
@@ -264,13 +264,13 @@
                       x-on:dragover.prevent="dropingFile = true"
                       x-on:dragleave.prevent="dropingFile = false">
                       <div class="text-center text-xl text-gray-500 font-semibold uppercase">
-                          JPEG, PNG or MP4<br>(max 500Mb)
+                          JPEG or MP4<br>(max 10Mb)
                       </div>
                       <div class="mt-5 flex justify-center">
                           <svg class="h-16 w-16" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><g fill="#000" fill-rule="evenodd" clip-rule="evenodd"><path d="m20 7-4-4H5a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1zm-1 13H5V4h10.5v2.5a1 1 0 0 0 1 1H19zm-.914-13.5L16.5 4.914V6.5z" fill="#000000" data-original="#000000"></path><path d="M11.5 13.5V16h1v-2.5H15v-1h-2.5V10h-1v2.5H9v1z" fill="#000000" data-original="#000000"></path></g></g></svg>
                       </div>
                       <div class="text-center font-bold">
-                        {{ is_null($this->hd_media) ? 'Upload your media here' : $this->hd_media->getClientOriginalName() }}
+                        {{ is_null($hd_media) ? 'Upload your media here' : $hd_media->getClientOriginalName() }}
                       </div>
                       <div class="mt-1 flex justify-center" wire:loading.flex wire.target="hd_media">
                           <div class="flex">
@@ -283,12 +283,23 @@
                       </div>
                   </div>
                 </label>
-                <input {{ $disabled ? 'disabled' : '' }} id="hdMedia" class="hidden" type="file" wire:model.lazy="hd_media" />
+                <input {{ $in_review ? 'disabled' : '' }} id="hdMedia" class="hidden" type="file" wire:model.lazy="hd_media" />
                 @error('hd_media') 
                   <div class="text-red-600 font-semibold">
                     {{ $message }}
                   </div>
                 @enderror
+                @error('artwork_path') 
+                  <div class="text-red-600 font-semibold">
+                    {{ $message }}
+                  </div>
+                @enderror
+                
+                @if ($hd_media && $refresh_preview)
+                  <img src="{{ $hd_media->temporaryUrl() }}" />
+                @elseif ($artwork_path)
+                  <img src="{{ config('app.url').$artwork_path }}" />
+                @endif
 
               </div>
               <div class="hidden md:block w-1 bg-gray-200"></div>
@@ -320,14 +331,14 @@
                   <div class="flex gap-x-5 items-center text-xl md:text-2xl font-bold">
                     <input class="flex-1 mt-2 py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artwork_price') ? '!border-red-600' : '' }}"
-                    {{ $disabled ? 'disabled' : '' }}
+                    {{ $in_review ? 'disabled' : '' }}
                     type="number" 
                     min="0"
                     placeholder="10"
                     name="price"
                     wire:model.lazy="artwork_price">
-                    @if ($this->smart_contract && $this->smart_contract->network)
-                       {{ $this->smart_contract->network->currency }}
+                    @if ($smart_contract && $smart_contract->network_id)
+                      {{ $smart_contract->network->currency }}
                     @endif
                   </div>
                   @error('artwork_price') 
@@ -360,7 +371,7 @@
                   <div class="flex gap-x-10">
                     <label class="mt-6 flex items-start gap-x-4 cursor-pointer">
                       <input
-                        {{ $disabled ? 'disabled' : '' }}
+                        {{ $in_review ? 'disabled' : '' }}
                         class="w-10 h-10 cursor-pointer shrink-0"
                         type="radio"
                         wire:model.lazy="open_sales"
@@ -373,7 +384,7 @@
                     </label>
                     <label class="mt-6 flex items-start gap-x-4 cursor-pointer">
                       <input class="w-10 h-10 cursor-pointer shrink-0"
-                        {{ $disabled ? 'disabled' : '' }}
+                        {{ $in_review ? 'disabled' : '' }}
                         type="radio"
                         wire:model.lazy="open_sales"
                         value="0">
@@ -409,7 +420,7 @@
                   <div class="flex gap-x-5 items-center text-xl md:text-2xl font-bold">
                     <input class="flex-1 mt-2 py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artwork_royalty') ? '!border-red-600' : '' }}"
-                    {{ $disabled ? 'disabled' : '' }}
+                    {{ $in_review ? 'disabled' : '' }}
                     type="number" 
                     min="0"
                     placeholder="10"
@@ -446,7 +457,7 @@
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artwork_max_supply') ? '!border-red-600' : '' }}"
-                  {{ $disabled ? 'disabled' : '' }}
+                  {{ $in_review ? 'disabled' : '' }}
                   type="number" 
                   min="0" 
                   step="1"
@@ -482,7 +493,7 @@
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('self_nfts_number') ? '!border-red-600' : '' }}"
-                  {{ $disabled ? 'disabled' : '' }}
+                  {{ $in_review ? 'disabled' : '' }}
                   type="number" 
                   min="0" 
                   step="1"
@@ -529,7 +540,7 @@
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artist_portfolio_link') ? '!border-red-600' : '' }}"
-                  {{ $disabled ? 'disabled' : '' }}
+                  {{ $in_review ? 'disabled' : '' }}
                   type="text" 
                   id="portfoliolink" 
                   name="portfoliolink"
@@ -558,7 +569,7 @@
                   <div>
                     <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artist_twitter_link') ? '!border-red-600' : '' }}"
-                    {{ $disabled ? 'disabled' : '' }}
+                    {{ $in_review ? 'disabled' : '' }}
                     type="text" 
                     id="twitterlink" 
                     name="twitterlink"
@@ -588,7 +599,7 @@
                   <div>
                     <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artist_contact_mail') ? '!border-red-600' : '' }}"
-                    {{ $disabled ? 'disabled' : '' }}
+                    {{ $in_review ? 'disabled' : '' }}
                     type="text" 
                     id="mail" 
                     name="mail" 
@@ -612,21 +623,19 @@
         </div>
       </div>
 
-      @if (!is_null($public_id))
-          @if ($this->smart_contract->status == 'editing')
-            <button type="submit" class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
-              Submit for approval
-            </button>
-          @elseif ($this->smart_contract->status == 'waiting_for_validation')
-            <button disabled class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
-              Contract in review
-            </button>
-          @elseif ($this->smart_contract->status == 'ready_to_deploy')
-            <button type="submit" class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
-              {{ $state ? : 'Deploy' }}
-            </button>
-          @endif
-      @endif
+      <button {{ $in_review ? 'disabled' : 'type="submit"'}}
+        class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
+        @if ($in_review)
+          Contract in review
+        @elseif ($smart_contract && $smart_contract->inEditing())
+          Submit for approval
+        @elseif ($smart_contract && $smart_contract->readyToDeploy())
+          Deploy
+        @else 
+          Submit for approval 
+        @endif
+      </button>
+
       @if (count($errors->all()) > 0)
         <p>There is some errors above</p>
       @endif

@@ -23,6 +23,7 @@ class SmartContract extends Model
 
         'artwork_title',
         'artwork_description',
+        'artwork_path',
         'artwork_hd_extension',
         'artwork_max_supply',
         'artwork_price',
@@ -69,9 +70,29 @@ class SmartContract extends Model
         return $this->belongsTo(Network::class);
     }
 
+    public function inReview(): string
+    {
+        return $this->status == "in_review";
+    }
+
+    public function inEditing(): string
+    {
+        return $this->status == "in_editing";
+    }
+
+    public function readyToDeploy(): string
+    {
+        return $this->status == "ready_to_deploy";
+    }
+
     public function getContractUrl(): string
     {
-        return public_path('storage/jsons/'.$this->public_id.'_contract.json');
+        return config('app.url').'/storage/jsons/'.$this->public_id.'_contract.';
+    }
+
+    public function getArtworkUrl(): string
+    {
+        return config('app.url').'/storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension;
     }
 
     public function getTokenIpfsUrl(): string

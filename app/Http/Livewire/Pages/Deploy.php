@@ -18,11 +18,14 @@ class Deploy extends Component
     // Livewire variables
     public ?SmartContract $smart_contract = null;
     public Expo $expo;
+    public $networks;
+
     public $abi, $byte, $arweave_key;
     public $hd_media, $contract_data_json_url, $state;
     public $wallet;
-    public $disabled = false;
+    public $in_review = false;
     public $allowed = false;
+    public $refresh_preview = false;
 
     public $expo_name;
     public $expo_symbol;
@@ -32,12 +35,11 @@ class Deploy extends Component
 
     // SmartContract object
     public $public_id = null;
-
-    public $networks;
     public $network_id;
     
     public $artwork_title;
     public $artwork_description;
+    public $artwork_path = null;
     public $artwork_hd_extension;
     public $artwork_max_supply = null;
     public $artwork_price = null;
@@ -78,12 +80,12 @@ class Deploy extends Component
             'artwork_max_supply' => 'required|numeric|min:1|max:100',
             'artwork_price' => 'required|numeric',
             'artwork_royalty' => 'required|numeric|max:10',
+            'artwork_path' => 'required|string',
 
             'artist_portfolio_link' => 'nullable|url',
             'artist_twitter_link' => 'nullable|url',
             'artist_contact_mail' => 'nullable|email',
 
-            'hd_media' => 'required|max:10000',
             'open_sales' => 'required|numeric',
             'self_nfts_number' => 'required|numeric',
         ];
@@ -111,14 +113,14 @@ class Deploy extends Component
 
             $this->smart_contract = $smart_contract;
 
-            $this->disabled = $this->smart_contract->status == 'waiting_for_validation';
+            $this->in_review = $this->smart_contract->inReview();
 
             $this->public_id = $this->smart_contract->public_id;
-            
             $this->network_id = $this->smart_contract->network_id;
             
             $this->artwork_title = $this->smart_contract->artwork_title;
             $this->artwork_description = $this->smart_contract->artwork_description;
+            $this->artwork_path = $this->smart_contract->artwork_path;
             $this->artwork_hd_extension = $this->smart_contract->artwork_hd_extension;
             $this->artwork_max_supply = $this->smart_contract->artwork_max_supply;
             $this->artwork_price = $this->smart_contract->artwork_price;
@@ -147,7 +149,7 @@ class Deploy extends Component
             $this->maybeRedirectToEdit();
         }
 
-        if (!$this->disabled && $this->allowed) {
+        if (!$this->in_review && $this->allowed) {
             if ($this->smart_contract && !$this->smart_contract->deployed) {
                 $this->artist_portfolio_link = $this->smart_contract->artist_portfolio_link ? : Auth::user()->portfolio_link;
                 $this->artist_twitter_link = $this->smart_contract->artist_twitter_link ? : Auth::user()->twitter_link;
@@ -161,7 +163,7 @@ class Deploy extends Component
 
     public function updated($propertyName)
     {
-        if (!$this->disabled) {
+        if (!$this->in_review) {
             if (is_null($this->public_id)) {
                 $this->public_id = SmartContract::generatePublicId();
             }
@@ -178,7 +180,13 @@ class Deploy extends Component
 
     public function updatedHdMedia()
     {
-        if (!$this->disabled) {
+        $this->refresh_preview = false;
+        $this->validate([
+            'hd_media' => 'nullable|max:100000|mimes:jpg,mp4',
+        ]);
+        $this->refresh_preview = true;
+
+        if (!$this->in_review) {
             $this->artwork_hd_extension = explode('/', $this->hd_media->getMimeType())[1];
 
             // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd.'.$this->artwork_hd_extension);
@@ -189,9 +197,11 @@ class Deploy extends Component
             );
 
             $this->artwork_sha_hash = hash_file('sha256', public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension));
+            $this->artwork_path = '/storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension;
 
             $this->smart_contract->artwork_sha_hash = $this->artwork_sha_hash;
             $this->smart_contract->artwork_hd_extension = $this->artwork_hd_extension;
+            $this->smart_contract->artwork_path = $this->artwork_path;
             $this->smart_contract->save();
         }
     }
@@ -213,18 +223,18 @@ class Deploy extends Component
 
     public function submit()
     {
-        if (!$this->disabled) {
+        if (!$this->in_review) {
             $validatedData = $this->validate();
 
             $this->smart_contract = SmartContract::updateOrCreate(
                 [ 'public_id' => $this->public_id ], array_merge(
                     $validatedData,
-                    [ 'status' => 'waiting_for_validation' ])
+                    [ 'status' => 'in_review' ])
             );
 
             $this->state = 'Submitted!';
 
-        } else if ($this->smart_contract->status == 'waiting_for_validation') {
+        } else if ($this->smart_contract->status == 'in_review') {
             // nothing
         } else if ($this->smart_contract->status == 'ready_to_deploy') {
             $this->wallet = Auth::user()->wallet_address;
@@ -388,7 +398,7 @@ class Deploy extends Component
     private function maybeRedirectToEdit()
     {
         $editing = (Auth::check() && $this->allowed) ? Auth::user()->smart_contracts()
-                                                                ->where('status', 'editing')
+                                                                ->where('status', 'in_editing')
                                                                 ->where('expo_id', $this->expo->id)
                                                                 ->first() : null;
         if ($editing) {

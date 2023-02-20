@@ -38,6 +38,7 @@ return new class extends Migration
             // Artwork
             $table->string('artwork_title')->nullable();
             $table->text('artwork_description')->nullable();
+            $table->string('artwork_path')->nullable();
             $table->string('artwork_hd_extension')->nullable();
             $table->integer('artwork_max_supply')->nullable();
             $table->integer('artwork_price')->nullable();
@@ -50,10 +51,10 @@ return new class extends Migration
 
             // Output
             $table->string('artwork_ipfs_hash')->nullable();
-            $table->string('token_ipfs_hash')->nullable();
             $table->string('artwork_arweave_hash')->nullable();
             $table->string('artwork_sha_hash')->nullable();
-            $table->string('status')->default('editing');
+            $table->string('token_ipfs_hash')->nullable();
+            $table->string('status')->default('in_editing');
             $table->string('address')->nullable();
             $table->boolean('open_sales')->default(true);
             $table->boolean('deployed')->default(false);
