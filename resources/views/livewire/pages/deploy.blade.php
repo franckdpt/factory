@@ -29,10 +29,10 @@
     <div class="py-14 px-12 flex justify-between border border-black bg-black">
       <div class="text-white text-xl md:text-4xl font-black">
         @if (Auth::check())
-          @if ($allowed)
+          @if ($wallet_allowed)
             Welcome {{ Auth::user()->name ? : '' }}
           @else
-            Sorry, this wallet is not allowed to mint
+            Sorry, this wallet is not wallet_allowed to mint
           @endif
         @else
           Please connect your wallet
@@ -44,7 +44,11 @@
     </div>
   </div>
 
-  @if (Auth::check() && $allowed)
+  @if ($deployments_limit_reached)
+    You've already deploy for this expo.
+  @endif
+
+  @if (Auth::check() && $wallet_allowed && !$deployments_limit_reached)
     <div class="flex justify-center">
       <div class="h-10 w-0.5 bg-black"></div>
     </div>
@@ -66,7 +70,7 @@
             @foreach ($networks as $network)
               <label class="flex-1 p-4 flex items-start gap-x-4 border-2 border-transparent hover:border-NFTF-green cursor-pointer">
                 <input class="w-10 h-10 cursor-pointer shrink-0"
-                {{ $in_review ? 'disabled' : '' }}
+                {{ !$in_editing ? 'disabled' : '' }}
                 type="radio"
                 wire:model.lazy="network_id"
                 value="{{ $network->id }}"/>
@@ -187,7 +191,7 @@
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artwork_title') ? '!border-red-600' : '' }}"
-                  {{ $in_review ? 'disabled' : '' }}
+                  {{ !$in_editing ? 'disabled' : '' }}
                   type="text" 
                   id="artworktitle" 
                   name="artworktitle" 
@@ -222,6 +226,7 @@
                 <div>
                   <textarea class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artwork_description') ? '!border-red-600' : '' }}"
+                  {{ !$in_editing ? 'disabled' : '' }}
                   type="text" 
                   id="artworkdescription" 
                   name="artworkdescription" 
@@ -283,7 +288,7 @@
                       </div>
                   </div>
                 </label>
-                <input {{ $in_review ? 'disabled' : '' }} id="hdMedia" class="hidden" type="file" wire:model.lazy="hd_media" />
+                <input {{ !$in_editing ? 'disabled' : '' }} id="hdMedia" class="hidden" type="file" wire:model.lazy="hd_media" />
                 @error('hd_media') 
                   <div class="text-red-600 font-semibold">
                     {{ $message }}
@@ -331,7 +336,7 @@
                   <div class="flex gap-x-5 items-center text-xl md:text-2xl font-bold">
                     <input class="flex-1 mt-2 py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artwork_price') ? '!border-red-600' : '' }}"
-                    {{ $in_review ? 'disabled' : '' }}
+                    {{ !$in_editing ? 'disabled' : '' }}
                     type="number" 
                     min="0"
                     placeholder="10"
@@ -371,7 +376,7 @@
                   <div class="flex gap-x-10">
                     <label class="mt-6 flex items-start gap-x-4 cursor-pointer">
                       <input
-                        {{ $in_review ? 'disabled' : '' }}
+                        {{ !$in_editing ? 'disabled' : '' }}
                         class="w-10 h-10 cursor-pointer shrink-0"
                         type="radio"
                         wire:model.lazy="open_sales"
@@ -384,7 +389,7 @@
                     </label>
                     <label class="mt-6 flex items-start gap-x-4 cursor-pointer">
                       <input class="w-10 h-10 cursor-pointer shrink-0"
-                        {{ $in_review ? 'disabled' : '' }}
+                        {{ !$in_editing ? 'disabled' : '' }}
                         type="radio"
                         wire:model.lazy="open_sales"
                         value="0">
@@ -420,7 +425,7 @@
                   <div class="flex gap-x-5 items-center text-xl md:text-2xl font-bold">
                     <input class="flex-1 mt-2 py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artwork_royalty') ? '!border-red-600' : '' }}"
-                    {{ $in_review ? 'disabled' : '' }}
+                    {{ !$in_editing ? 'disabled' : '' }}
                     type="number" 
                     min="0"
                     placeholder="10"
@@ -457,7 +462,7 @@
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artwork_max_supply') ? '!border-red-600' : '' }}"
-                  {{ $in_review ? 'disabled' : '' }}
+                  {{ !$in_editing ? 'disabled' : '' }}
                   type="number" 
                   min="0" 
                   step="1"
@@ -493,7 +498,7 @@
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('self_nfts_number') ? '!border-red-600' : '' }}"
-                  {{ $in_review ? 'disabled' : '' }}
+                  {{ !$in_editing ? 'disabled' : '' }}
                   type="number" 
                   min="0" 
                   step="1"
@@ -540,7 +545,7 @@
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artist_portfolio_link') ? '!border-red-600' : '' }}"
-                  {{ $in_review ? 'disabled' : '' }}
+                  {{ !$in_editing ? 'disabled' : '' }}
                   type="text" 
                   id="portfoliolink" 
                   name="portfoliolink"
@@ -569,7 +574,7 @@
                   <div>
                     <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artist_twitter_link') ? '!border-red-600' : '' }}"
-                    {{ $in_review ? 'disabled' : '' }}
+                    {{ !$in_editing ? 'disabled' : '' }}
                     type="text" 
                     id="twitterlink" 
                     name="twitterlink"
@@ -599,7 +604,7 @@
                   <div>
                     <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artist_contact_mail') ? '!border-red-600' : '' }}"
-                    {{ $in_review ? 'disabled' : '' }}
+                    {{ !$in_editing ? 'disabled' : '' }}
                     type="text" 
                     id="mail" 
                     name="mail" 
@@ -623,21 +628,20 @@
         </div>
       </div>
 
-      <button {{ $in_review ? 'disabled' : 'type="submit"'}}
+      <button {{ ($smart_contract && $smart_contract->inReview()) ? 'disabled' : 'type="submit"'}}
         class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
-        @if ($in_review)
-          Contract in review
-        @elseif ($smart_contract && $smart_contract->inEditing())
+        @if ($in_editing)
           Submit for approval
+        @elseif ($smart_contract && $smart_contract->inReview())
+          Contract in review
         @elseif ($smart_contract && $smart_contract->readyToDeploy())
-          Deploy
+          {{ $state ? : 'Deploy' }}
         @else 
-          Submit for approval 
+          Submit for approval
         @endif
       </button>
 
       @if (count($errors->all()) > 0)
-      {{ dd($errors->all())}}
         <p>There is some errors above</p>
       @endif
     </form>
@@ -658,11 +662,12 @@
     }
 
     async function arweaveUpload(type, file) {
-      let reader  = new FileReader();
+      //let reader  = new FileReader();
 
-      reader.addEventListener("load", function () {
+      //reader.addEventListener("load", function () {
           let key = @this.get('arweave_key');
-          arweave.createTransaction({ data: buffer.from(reader.result.split(',')[1], 'base64') }, JSON.parse(key))
+          //arweave.createTransaction({ data: buffer.from(reader.result.split(',')[1], 'base64') }, JSON.parse(key))
+          arweave.createTransaction({ data: buffer.from(file, 'base64') }, JSON.parse(key))
           .then((transaction) => {
               transaction.addTag('Content-Type', type);
               arweave.transactions.sign(transaction, JSON.parse(key))
@@ -686,9 +691,9 @@
                   })
               });
           });
-      }, false);
+      //}, false);
 
-      reader.readAsDataURL(file);
+      //reader.readAsDataURL(file);
     }
 
     function drop_file_component() {
@@ -715,7 +720,7 @@
       // }
 
       
-      async function deploy() {
+      async function deploy(tokenUrl, ipfsUrl, arweaveUrl, contractUrl) {
           // prevent wallet error
           if (@this.auth_address == formatAddress(getAccount().address)) {
               const signer = await fetchSigner()
@@ -725,11 +730,11 @@
                   @this.expo_name,
                   @this.expo_symbol,
                   @this.artwork_description,
-                  @this.artwork_ipfs_url,
-                  @this.token_ipfs_url,
-                  @this.artwork_arweave_url,
+                  ipfsUrl,
+                  tokenUrl,
+                  arweaveUrl,
                   @this.artwork_sha_hash,
-                  @this.contract_data_json_url,
+                  contractUrl,
                   @this.artwork_max_supply,
                   ethers.utils.parseEther(@this.artwork_price),
                   @this.auth_address,
@@ -749,13 +754,13 @@
       
 
       document.addEventListener('DOMContentLoaded', function () {
-        Livewire.on('uploadArweaveOnJs', function (type) {
-          file = document.querySelector('input[type=file]').files[0]
+        Livewire.on('uploadArweaveOnJs', function (type, file) {
+          // file = document.querySelector('input[type=file]').files[0]
           arweaveUpload(type, file)
         });
 
-        Livewire.on('deploySmartContractOnJs', function (type) {
-          //deploy()
+        Livewire.on('deploySmartContractOnJs', function (tokenUrl, ipfsUrl, arweaveUrl, contractUrl) {
+          //deploy(tokenUrl, ipfsUrl, arweaveUrl, contractUrl)
         });
 
       })

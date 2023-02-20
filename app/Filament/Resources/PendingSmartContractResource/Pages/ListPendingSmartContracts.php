@@ -2,16 +2,16 @@
 
 namespace App\Filament\Resources\SmartContractResource\Pages;
 
-use App\Filament\Resources\SmartContractResource;
+use App\Filament\Resources\PendingSmartContractResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
 use App\Models\SmartContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
-class ListSmartContracts extends ListRecords
+class ListPendingSmartContracts extends ListRecords
 {
-    protected static string $resource = SmartContractResource::class;
+    protected static string $resource = PendingSmartContractResource::class;
 
     public function isTableSearchable(): bool
     {

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
+use Illuminate\Database\Eloquent\Builder;
 
 class SmartContract extends Model
 {
@@ -25,6 +26,7 @@ class SmartContract extends Model
         'artwork_description',
         'artwork_path',
         'artwork_hd_extension',
+        'artwork_hd_mime',
         'artwork_max_supply',
         'artwork_price',
         'artwork_royalty',
@@ -50,9 +52,24 @@ class SmartContract extends Model
         'open_sales' => 'boolean',
     ];
 
+    public function toSearchableArray()
+    {
+        return [
+            'artwork_title' => '',
+            'address' => '',
+        ];
+    }
+
     public function getRouteKeyName()
     {
         return 'public_id';
+    }
+
+    protected static function booted(): void
+    {
+        // static::addGlobalScope('in_review', function (Builder $builder) {
+        //     $builder->whereStatus('in_review');
+        // });
     }
 
     public function user()
@@ -87,7 +104,7 @@ class SmartContract extends Model
 
     public function getContractUrl(): string
     {
-        return config('app.url').'/storage/jsons/'.$this->public_id.'_contract.';
+        return config('app.url').'/storage/jsons/'.$this->public_id.'_contract.json';
     }
 
     public function getArtworkUrl(): string

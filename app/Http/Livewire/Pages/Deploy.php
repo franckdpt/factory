@@ -21,17 +21,15 @@ class Deploy extends Component
     public $networks;
 
     public $abi, $byte, $arweave_key;
-    public $hd_media, $contract_data_json_url, $state;
+    public $hd_media, $state;
     public $wallet;
-    public $in_review = false;
-    public $allowed = false;
+    public $in_editing = true;
+    public $wallet_allowed = false;
     public $refresh_preview = false;
+    public $deployments_limit_reached = false;
 
     public $expo_name;
     public $expo_symbol;
-    public $artwork_ipfs_url;
-    public $token_ipfs_url;
-    public $artwork_arweave_url;
 
     // SmartContract object
     public $public_id = null;
@@ -113,7 +111,7 @@ class Deploy extends Component
 
             $this->smart_contract = $smart_contract;
 
-            $this->in_review = $this->smart_contract->inReview();
+            $this->in_editing = $this->smart_contract->inEditing();
 
             $this->public_id = $this->smart_contract->public_id;
             $this->network_id = $this->smart_contract->network_id;
@@ -149,7 +147,7 @@ class Deploy extends Component
             $this->maybeRedirectToEdit();
         }
 
-        if (!$this->in_review && $this->allowed) {
+        if ($this->in_editing && $this->wallet_allowed) {
             if ($this->smart_contract && !$this->smart_contract->deployed) {
                 $this->artist_portfolio_link = $this->smart_contract->artist_portfolio_link ? : Auth::user()->portfolio_link;
                 $this->artist_twitter_link = $this->smart_contract->artist_twitter_link ? : Auth::user()->twitter_link;
@@ -163,7 +161,7 @@ class Deploy extends Component
 
     public function updated($propertyName)
     {
-        if (!$this->in_review) {
+        if ($this->in_editing) {
             if (is_null($this->public_id)) {
                 $this->public_id = SmartContract::generatePublicId();
             }
@@ -186,7 +184,7 @@ class Deploy extends Component
         ]);
         $this->refresh_preview = true;
 
-        if (!$this->in_review) {
+        if ($this->in_editing) {
             $this->artwork_hd_extension = explode('/', $this->hd_media->getMimeType())[1];
 
             // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd.'.$this->artwork_hd_extension);
@@ -201,29 +199,15 @@ class Deploy extends Component
 
             $this->smart_contract->artwork_sha_hash = $this->artwork_sha_hash;
             $this->smart_contract->artwork_hd_extension = $this->artwork_hd_extension;
+            $this->smart_contract->artwork_hd_mime = $this->hd_media->getMimeType();
             $this->smart_contract->artwork_path = $this->artwork_path;
             $this->smart_contract->save();
         }
     }
 
-    public function updatedTokenIpfsHash()
-    {
-        $this->token_ipfs_url = SmartContract::IPFS_GATEWAY.$this->token_ipfs_hash;
-    }
-
-    public function updatedArtworkIpfsHash()
-    {
-        $this->artwork_ipfs_url = SmartContract::IPFS_GATEWAY.$this->artwork_ipfs_hash;
-    }
-
-    public function updatedArtworkArweaveHash()
-    {
-        $this->artwork_arweave_url = SmartContract::ARWEAVE_GATEWAY.$this->artwork_arweave_hash;
-    }
-
     public function submit()
     {
-        if (!$this->in_review) {
+        if ($this->in_editing) {
             $validatedData = $this->validate();
 
             $this->smart_contract = SmartContract::updateOrCreate(
@@ -233,20 +217,23 @@ class Deploy extends Component
             );
 
             $this->state = 'Submitted!';
+            return redirect(request()->header('Referer'));
 
-        } else if ($this->smart_contract->status == 'in_review') {
+        } else if ($this->smart_contract->inReview()) {
             // nothing
-        } else if ($this->smart_contract->status == 'ready_to_deploy') {
+        } else if ($this->smart_contract->readyToDeploy()) {
             $this->wallet = Auth::user()->wallet_address;
+            $this->state = 'Uploading media on IPFS...';
             $this->emit('readyToUploadIpfs');
         }
     }
 
     public function readyToUploadIpfs()
     {
+        
         $this->artwork_ipfs_hash = $this->uploadFileToIpfs(
-            $this->hd_media->getRealPath(),
-            $this->hd_media->getMimeType(),
+            $this->getArtworkUrlForIpfsUpload(),
+            $this->smart_contract->artwork_hd_mime,
             $this->public_id.'_hd'
         );
 
@@ -265,9 +252,10 @@ class Deploy extends Component
     public function readyToUploadArweave()
     {
         $this->arweave_key = Storage::disk('local')->get('hW-arweave.json');
+        $base64 = base64_encode(file_get_contents($this->getArtworkUrlForIpfsUpload()));
 
         // Next on JS side.
-        $this->emit('uploadArweaveOnJs', $this->hd_media->getMimeType());
+        $this->emit('uploadArweaveOnJs', $this->smart_contract->artwork_hd_mime, $base64);
     }
 
     public function arweaveUploaded()
@@ -315,7 +303,12 @@ class Deploy extends Component
 
         // Next on JS side.
         $this->state = 'Deploying smart contract...';
-        $this->emit('deploySmartContractOnJs');
+        $this->emit('deploySmartContractOnJs',
+            $this->smart_contract->getTokenIpfsUrl(),
+            $this->smart_contract->getArtworkIpfsUrl(),
+            $this->smart_contract->getArtworkArweaveUrl(),
+            $this->smart_contract->getContractUrl(),
+        );
     }
 
     public function smartContractDeployed($address)
@@ -340,9 +333,9 @@ class Deploy extends Component
             "name" => $this->artwork_title,
             "collection" => $this->expo->contracts_name,
             "description" => $this->artwork_description,
-            "image" => $this->artwork_ipfs_url,
-            "image_arweave" => $this->artwork_arweave_url,
-            "image_ipfs" => $this->artwork_ipfs_url,
+            "image" => $this->smart_contract->getArtworkIpfsUrl(),
+            "image_arweave" => $this->smart_contract->getArtworkArweaveUrl(),
+            "image_ipfs" => $this->smart_contract->getArtworkIpfsUrl(),
             "image_sha256" => $this->artwork_sha_hash,
         ];
 
@@ -358,14 +351,14 @@ class Deploy extends Component
         $contract_data = [
             "name" => $this->expo->contracts_name,
             "description" => $this->expo->contracts_description,
-            "image" => public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension),
-            "external_link" => public_path('storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension),
+            "image" => $this->smart_contract->getArtworkUrl(),
+            "external_link" => $this->smart_contract->getArtworkUrl(),
             "seller_fee_basis_points" => 100, # Indicates a 1% seller fee.
             "fee_recipient" => Auth::user()->wallet_address
         ];
         
         if (file_put_contents('storage/jsons/'.$this->public_id.'_contract.json', json_encode($contract_data))) {
-            $this->contract_data_json_url = public_path('storage/jsons/'.$this->public_id.'_contract.json');
+            
         } else {
             dd('Error on creating contract json');
         }
@@ -397,23 +390,48 @@ class Deploy extends Component
 
     private function maybeRedirectToEdit()
     {
-        $editing = (Auth::check() && $this->allowed) ? Auth::user()->smart_contracts()
-                                                                ->where('status', 'in_editing')
-                                                                ->where('expo_id', $this->expo->id)
-                                                                ->first() : null;
-        if ($editing) {
-            return redirect()->route('continue_deploy', [
-                'expo' => $this->expo,
-                'smart_contract' => $editing,
-            ]);
+        if ($this->wallet_allowed) {
+            $nb_deployment_done = Auth::user()->smart_contracts()
+                        ->where('deployed', true)
+                        ->where('expo_id', $this->expo->id)
+                        ->count();
+            if ($nb_deployment_done >= $this->expo->nb_deployment_authorized) {
+                $this->deployments_limit_reached = true;
+            } else {
+                $this->deployments_limit_reached = false;
+                
+                $undeployed_constract = Auth::user()->smart_contracts()
+                        ->where('deployed', false)
+                        ->where('expo_id', $this->expo->id)
+                        ->first();
+                        
+                if ($undeployed_constract) {
+                    return redirect()->route('continue_deploy', [
+                        'expo' => $this->expo,
+                        'smart_contract' => $undeployed_constract,
+                    ]);
+                }
+            }
         }
     }
     private function walletAllowing()
     {
         if (Auth::check()) {
-            $this->allowed = $this->expo->artists->contains(Auth::user());
+            $this->wallet_allowed = $this->expo->artists->contains(Auth::user());
         } else {
-            $this->allowed = false;
+            $this->wallet_allowed = false;
+        }
+    }
+
+    private function getArtworkUrlForIpfsUpload()
+    {
+        if (env('APP_ENV') == 'local') {
+            return '/Users/franckdupont/Valet/factory/storage/app/public/nft_media/'.
+                    $this->smart_contract->public_id.
+                    '_hd.'.
+                    $this->smart_contract->artwork_hd_extension;
+        } else {
+            return $this->smart_contract->getArtworkUrl();
         }
     }
 }

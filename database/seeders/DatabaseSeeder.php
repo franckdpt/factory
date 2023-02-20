@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Expo test 1',
             'description' => 'Expo desc',
             'slug' => 'expo-test-1',
+            'nb_deployment_authorized' => 1,
 
             'contracts_name' => 'Expo nb 1',
             'contracts_description' => 'Description of expo',

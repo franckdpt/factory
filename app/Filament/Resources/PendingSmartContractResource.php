@@ -15,18 +15,18 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
-use Filament\Tables\Filters\Filter;
 
-
-class SmartContractResource extends Resource
+class PendingSmartContractResource extends Resource
 {
     protected static ?string $model = SmartContract::class;
-
-    protected static ?string $navigationLabel = 'All';
+ 
+    protected static ?string $navigationLabel = 'In review';
 
     protected static ?string $navigationGroup = 'Smart Contracts';
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
+
+    protected static ?string $slug = 'review-smart-contracts';
 
     protected static ?string $recordTitleAttribute = 'artwork_title';
 
@@ -42,22 +42,22 @@ class SmartContractResource extends Resource
         ];
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->whereStatus('in_review');
+    }
+
+    protected static function getNavigationBadge(): ?string
+    {
+        $nb = static::$model::where('status', 'in_review')->count();
+        return $nb > 0 ? $nb : null;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
+        ->schema([
                 Group::make()->schema([
-                    Forms\Components\Section::make('Smart Contract info')->schema([
-                        Grid::make(2)->schema([
-                            Forms\Components\Select::make('network')
-                                ->relationship('network', 'name')
-                        ]),
-                        Forms\Components\TextInput::make('address')
-                            ->label("Smart contract address"),
-                        Forms\Components\TextInput::make('token_ipfs_hash')
-                            ->label('TokenURI'),
-                    ]),
-
                     Forms\Components\Section::make('Artwork')->schema([
                         Grid::make(2)->schema([
                             Forms\Components\TextInput::make('artwork_title'),
@@ -71,12 +71,6 @@ class SmartContractResource extends Resource
                             Forms\Components\TextInput::make('artwork_price'),
                             Forms\Components\TextInput::make('artwork_royalty'),
                         ]),
-                        Forms\Components\TextInput::make('artwork_ipfs_hash')
-                            ->label('Artwork IPFS hash'),
-                        Forms\Components\TextInput::make('artwork_arweave_hash')
-                            ->label('Artwork Arweave hash'),
-                        Forms\Components\TextInput::make('artwork_sha_hash')
-                            ->label('Artwork SHA hash'),
                     ]),
                 ])->columnSpan(['lg' => 2]),
 
@@ -97,18 +91,15 @@ class SmartContractResource extends Resource
                 Tables\Columns\TextColumn::make('artwork_title'),
                 Tables\Columns\TextColumn::make('artwork_price'),
                 Tables\Columns\TextColumn::make('user.name')->label('Owner'),
-                Tables\Columns\TextColumn::make('status'),
-                Tables\Columns\IconColumn::make('deployed')->boolean(),
             ])
             ->filters([
-                // Filter::make('in_review')
-                //     ->query(fn (Builder $query): Builder => $query->where('status', 'in_review'))
+                //
             ])
             ->actions([
-                // Tables\Actions\ViewAction::make(),
+                
             ])
             ->bulkActions([
-                // Tables\Actions\DeleteBulkAction::make(),
+                
             ]);
     }
     
@@ -122,10 +113,8 @@ class SmartContractResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListSmartContracts::route('/'),
-            // 'create' => Pages\CreateSmartContract::route('/create'),
-            'view' => Pages\ViewSmartContract::route('/{record}'),
-            // 'edit' => Pages\EditSmartContract::route('/{record}/edit'),
+            'index' => Pages\ListPendingSmartContracts::route('/'),
+            'view' => Pages\ViewPendingSmartContract::route('/{record}'),
         ];
-    }
+    }    
 }

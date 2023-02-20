@@ -20,6 +20,24 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
+
+    protected static ?string $navigationLabel = 'Users';
+
+    protected static ?string $navigationGroup = ' ';
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'wallet_address'];
+    }
+
+    public static function getGlobalSearchResultDetails($record): array
+    {
+        return [
+            'Wallet' => $record->wallet_address,
+        ];
+    }
     
     public static function form(Form $form): Form
     {

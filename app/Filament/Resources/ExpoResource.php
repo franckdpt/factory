@@ -21,11 +21,20 @@ class ExpoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
+    protected static ?string $navigationGroup = ' ';
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [ 'name', 'contracts_name'];
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Fieldset::make('Collections Info')->schema([
+                Fieldset::make('Exposition info displayed on the website')->schema([
                     Grid::make(2)->schema([
                         Forms\Components\TextInput::make('name')
                         ->maxLength(255)
@@ -35,10 +44,15 @@ class ExpoResource extends Resource
                         Forms\Components\Textarea::make('description')
                         ->maxLength(65535)
                         ->required(),
+                    ]),
+                    Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('nb_deployment_authorized')
+                        ->label("Maximum of smart contracts for each artist")
+                        ->required(),
                     ])
                 ]),
 
-                Fieldset::make('Collections Info')->schema([
+                Fieldset::make('Collections info on web3 marketplaces')->schema([
                     Grid::make(4)->schema([
                         Forms\Components\TextInput::make('contracts_name')
                         ->label("Collections name")

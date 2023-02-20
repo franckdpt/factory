@@ -14,6 +14,7 @@ class Expo extends Model
     protected $fillable = [
         'name',
         'description',
+        'nb_deployment_authorized',
 
         'contracts_name',
         'contracts_description',
