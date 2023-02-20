@@ -33,22 +33,6 @@ class SmartContractResource extends Resource
                         Forms\Components\TextInput::make('wallet_address')
                     ])
                 ]),
-
-                Fieldset::make('Smart Contract Info')->schema([
-                    Grid::make(4)->schema([
-                        Forms\Components\Toggle::make('deployed'),
-                        Forms\Components\Select::make('network')
-                            ->relationship('network', 'name')
-                    ]),
-                    Grid::make(2)->schema([
-                        Forms\Components\TextInput::make('address')
-                            ->label("Smart contract address"),
-                    ]),
-                    Grid::make(2)->schema([
-                        Forms\Components\TextInput::make('token_ipfs_hash')
-                            ->label('TokenURI'),
-                    ]),
-                ]),
                 
                 Fieldset::make('Artwork Info')->schema([
                     Grid::make(2)->schema([
@@ -64,6 +48,22 @@ class SmartContractResource extends Resource
                     Grid::make(4)->schema([
                         Forms\Components\TextInput::make('artwork_price'),
                         Forms\Components\TextInput::make('artwork_royalty'),
+                    ]),
+                ]),
+
+                Fieldset::make('Smart Contract Info')->schema([
+                    Grid::make(4)->schema([
+                        Forms\Components\Toggle::make('deployed'),
+                        Forms\Components\Select::make('network')
+                            ->relationship('network', 'name')
+                    ]),
+                    Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('address')
+                            ->label("Smart contract address"),
+                    ]),
+                    Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('token_ipfs_hash')
+                            ->label('TokenURI'),
                     ]),
                     Grid::make(2)->schema([
                         Forms\Components\TextInput::make('artwork_ipfs_hash')
