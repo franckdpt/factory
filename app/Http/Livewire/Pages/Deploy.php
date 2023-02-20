@@ -86,7 +86,7 @@ class Deploy extends Component
             'artist_twitter_link' => 'nullable|url',
             'artist_contact_mail' => 'nullable|email',
 
-            'open_sales' => 'required|numeric',
+            'open_sales' => 'required|boolean',
             'self_nfts_number' => 'required|numeric',
         ];
     }

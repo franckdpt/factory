@@ -637,6 +637,7 @@
       </button>
 
       @if (count($errors->all()) > 0)
+      {{ dd($errors->all())}}
         <p>There is some errors above</p>
       @endif
     </form>
