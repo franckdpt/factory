@@ -285,7 +285,7 @@
                       <div class="text-center font-bold">
                         {{ is_null($hd_media) ? 'Upload your media here' : $hd_media->getClientOriginalName() }}
                       </div>
-                      <div class="mt-1 flex justify-center" wire:loading.flex wire.target="hd_media">
+                      <div class="mt-1 flex justify-center" wire:loading.flex wire:target="hd_media">
                           <div class="flex">
                               <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -295,8 +295,8 @@
                           </div>
                       </div>
                   </div>
+                   <input {{ !$in_editing ? 'disabled' : '' }} id="hdMedia" class="hidden" type="file" wire:model="hd_media" />
                 </label>
-                <input {{ !$in_editing ? 'disabled' : '' }} id="hdMedia" class="hidden" type="file" wire:model.lazy="hd_media" />
                 @error('hd_media') 
                   <div class="text-red-600 font-semibold">
                     {{ $message }}
@@ -350,7 +350,7 @@
                     min="0"
                     placeholder="10"
                     name="price"
-                    wire:model.lazy="artwork_price">
+                    wire:model="artwork_price">
                     @if ($smart_contract && $smart_contract->network_id)
                       {{ $smart_contract->network->currency }}
                     @endif
@@ -360,6 +360,12 @@
                       {{ $message }}
                     </div>
                   @enderror
+                  @if ($artwork_price)
+                    <div class="font-semibold">
+                      {{ round(floatval($artwork_price)*70/100, 3) }} {{ $smart_contract && $smart_contract->network_id ? $smart_contract->network->currency : '' }} (70%) to you<br>
+                      {{ round(floatval($artwork_price)*30/100, 3) }} {{ $smart_contract && $smart_contract->network_id ? $smart_contract->network->currency : '' }} (30%) to NFT Factory
+                    </div>
+                  @endif
                 </div>
               </div>
               <div class="hidden md:block w-1 bg-gray-200"></div>

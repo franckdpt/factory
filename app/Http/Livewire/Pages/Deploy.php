@@ -162,7 +162,7 @@ class Deploy extends Component
             if (is_null($this->public_id)) {
                 $this->public_id = SmartContract::generatePublicId();
             }
-
+            
             $validatedData = $this->validateOnly($propertyName);
 
             $this->smart_contract = SmartContract::updateOrCreate(
