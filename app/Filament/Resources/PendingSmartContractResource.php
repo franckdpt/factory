@@ -24,7 +24,7 @@ class PendingSmartContractResource extends Resource
 
     protected static ?string $navigationGroup = 'To do';
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $slug = 'review-smart-contracts';
 

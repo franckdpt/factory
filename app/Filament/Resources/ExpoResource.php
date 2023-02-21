@@ -19,7 +19,7 @@ class ExpoResource extends Resource
 {
     protected static ?string $model = Expo::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-lightning-bolt';
 
     protected static ?string $recordTitleAttribute = 'name';
 
