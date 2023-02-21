@@ -60,7 +60,7 @@ class Deploy extends Component
     public $address;
     public $deployed = false;
     public $open_sales = true;
-    public $self_nfts_number = 0;
+    public $self_nfts_number;
 
     protected $listeners = [
         'readyToUploadIpfs',
@@ -81,6 +81,7 @@ class Deploy extends Component
 
             'artwork_title' => 'required|string|max:25',
             'artwork_description' => 'required|string|max:420',
+            'artwork_max_supply' => 'required',
             'artwork_price' => 'required|numeric|gt:0',
             'artwork_royalty_input' => 'required|numeric|max:10',
             'artwork_path' => 'required|string',
@@ -90,6 +91,7 @@ class Deploy extends Component
             'artist_contact_mail' => 'nullable|email',
 
             'open_sales' => 'required|boolean',
+            'self_nfts_number' => 'required',
         ];
     }
 
@@ -198,11 +200,6 @@ class Deploy extends Component
 
     private function checkSupplyAndSelf()
     {
-        $this->validate([
-            'self_nfts_number' => 'required|integer',
-            'artwork_max_supply' => 'required|integer|min:1|max:100',
-        ]);
-
         $this->withValidator(function (Validator $validator) {
             $validator->after(function ($validator) {
                 if ($this->self_nfts_number > $this->maxSelf()) {
@@ -213,10 +210,13 @@ class Deploy extends Component
                     }
                 }
             });
-        })->validate();
+        })->validate([
+            'self_nfts_number' => 'required|integer',
+            'artwork_max_supply' => 'required|integer|min:1|max:100',
+        ]);
 
-        $this->smart_contract->self_nfts_number = $this->self_nfts_number;
         $this->smart_contract->artwork_max_supply = $this->artwork_max_supply;
+        $this->smart_contract->self_nfts_number = $this->self_nfts_number;
         $this->smart_contract->save();
     }
 

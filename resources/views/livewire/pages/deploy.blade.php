@@ -455,7 +455,7 @@
                     {{ !$in_editing ? 'disabled' : '' }}
                     type="number" 
                     min="0"
-                    placeholder="10"
+                    placeholder="5"
                     name="royalty"
                     wire:model.lazy="artwork_royalty_input">
                     %
@@ -531,7 +531,7 @@
                   type="number" 
                   min="0" 
                   step="1"
-                  placeholder="10"
+                  placeholder="1"
                   name="self_nfts_number"
                   wire:model.lazy="self_nfts_number">
                   @error('self_nfts_number') 

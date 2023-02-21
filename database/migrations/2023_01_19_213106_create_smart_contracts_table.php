@@ -59,7 +59,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->boolean('open_sales')->default(true);
             $table->boolean('deployed')->default(false);
-            $table->integer('self_nfts_number')->default(0);
+            $table->integer('self_nfts_number')->nullable();
             
             $table->timestamps();
         });
