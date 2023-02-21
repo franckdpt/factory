@@ -7,5 +7,7 @@ use App\Http\Livewire\Traits\AuthRefreshed;
 
 class WalletButton extends Component
 {
+    public $classAdded = '';
+
     use AuthRefreshed;
 }

@@ -92,21 +92,20 @@ class Deploy extends Component
     public function mount($expo, $smart_contract = null)
     {
         $this->networks = Network::all();
+        
         $this->expo = $expo;
         $this->expo_name = $expo->name;
         $this->expo_symbol = $expo->symbol;
 
-        $this->walletAllowing();
+        $this->isWalletAllowed();
         
         if (is_null($smart_contract)) {
             $this->maybeRedirectToEdit();
         } else {
-            if (Auth::guest() ||
-                $smart_contract->user_id != Auth::user()->id ||
-                $smart_contract->expo_id != $this->expo->id ||
-                $smart_contract->deployed
-                ) {
+            if (Auth::guest() || $smart_contract->expo_id != $this->expo->id) {
                 abort(404);
+            } else if ($smart_contract->user_id != Auth::user()->id) {
+                return redirect()->route('deploy', ['expo' => $this->expo]);
             }
 
             $this->smart_contract = $smart_contract;
@@ -141,20 +140,13 @@ class Deploy extends Component
     
     public function userConnected()
     {
-        $this->walletAllowing();
+        $this->isWalletAllowed();
 
         if (is_null($this->smart_contract)) {
             $this->maybeRedirectToEdit();
-        }
-
-        if ($this->in_editing && $this->wallet_allowed) {
-            if ($this->smart_contract && !$this->smart_contract->deployed) {
-                $this->artist_portfolio_link = $this->smart_contract->artist_portfolio_link ? : Auth::user()->portfolio_link;
-                $this->artist_twitter_link = $this->smart_contract->artist_twitter_link ? : Auth::user()->twitter_link;
-                $this->artist_contact_mail = $this->smart_contract->artist_contact_mail ? : Auth::user()->contact_mail;
-
-                $this->smart_contract->user_id = Auth::user()->id;
-                $this->smart_contract->save();
+        } else {
+            if ($this->smart_contract->user_id != Auth::user()->id) {
+                return redirect()->route('deploy', ['expo' => $this->expo]);
             }
         }
     }
@@ -266,7 +258,7 @@ class Deploy extends Component
         }
 
         // Next
-        $this->state = 'Creating & uploading JSON token to IPFS...';
+        $this->state = 'Creating & uploading JSON to IPFS...';
         $this->emit('readyToCreateAndUploadJsonTokenIpfs');
     }
 
@@ -287,6 +279,8 @@ class Deploy extends Component
             dd('error on uploading IPFS');
         }
 
+        $this->createJsonContract();
+
         $this->smart_contract->status = 'in_review';
         $this->smart_contract->save();
 
@@ -297,8 +291,6 @@ class Deploy extends Component
     {
         $this->abi = config("contracts.artist.abi");
         $this->byte = config("contracts.artist.byte");
-
-        $this->createJsonContract();
 
         // Next on JS side.
         $this->state = 'Deploying smart contract...';
@@ -413,7 +405,7 @@ class Deploy extends Component
             }
         }
     }
-    private function walletAllowing()
+    private function isWalletAllowed()
     {
         if (Auth::check()) {
             $this->wallet_allowed = $this->expo->artists->contains(Auth::user());

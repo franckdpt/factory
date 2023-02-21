@@ -30,9 +30,19 @@
       <div class="text-white text-xl md:text-4xl font-black">
         @if (Auth::check())
           @if ($wallet_allowed)
-            Welcome {{ Auth::user()->name ? : '' }}
+            @if ($deployed)
+              This contract has been deployed
+            @elseif ($deployments_limit_reached)
+              You've already deployed for this expo
+            @elseif ($smart_contract && $smart_contract->inReview())
+              This collection needs to be approved before deployment
+            @elseif ($smart_contract && $smart_contract->readyToDeploy())
+              {{ Auth::user()->name. ' you can now deploy!' }}
+            @else
+              Welcome, {{ Auth::user()->name }}
+            @endif
           @else
-            Sorry, this wallet is not wallet_allowed to mint
+            Sorry, this wallet is not allowed to mint
           @endif
         @else
           Please connect your wallet
@@ -44,11 +54,7 @@
     </div>
   </div>
 
-  @if ($deployments_limit_reached)
-    You've already deploy for this expo.
-  @endif
-
-  @if (Auth::check() && $wallet_allowed && !$deployments_limit_reached)
+  @if (Auth::check() && $wallet_allowed && !$deployments_limit_reached && !$deployed)
     <div class="flex justify-center">
       <div class="h-10 w-0.5 bg-black"></div>
     </div>
@@ -190,7 +196,8 @@
                 </label>
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
-                  {{ $errors->has('artwork_title') ? '!border-red-600' : '' }}"
+                  {{ $errors->has('artwork_title') ? '!border-red-600' : '' }}
+                  {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
                   {{ !$in_editing ? 'disabled' : '' }}
                   type="text" 
                   id="artworktitle" 
@@ -225,7 +232,8 @@
                 </label>
                 <div>
                   <textarea class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
-                  {{ $errors->has('artwork_description') ? '!border-red-600' : '' }}"
+                  {{ $errors->has('artwork_description') ? '!border-red-600' : '' }}
+                  {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
                   {{ !$in_editing ? 'disabled' : '' }}
                   type="text" 
                   id="artworkdescription" 
@@ -335,7 +343,8 @@
                 <div>
                   <div class="flex gap-x-5 items-center text-xl md:text-2xl font-bold">
                     <input class="flex-1 mt-2 py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
-                    {{ $errors->has('artwork_price') ? '!border-red-600' : '' }}"
+                    {{ $errors->has('artwork_price') ? '!border-red-600' : '' }}
+                    {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
                     {{ !$in_editing ? 'disabled' : '' }}
                     type="number" 
                     min="0"
@@ -424,7 +433,8 @@
                 <div>
                   <div class="flex gap-x-5 items-center text-xl md:text-2xl font-bold">
                     <input class="flex-1 mt-2 py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
-                    {{ $errors->has('artwork_royalty') ? '!border-red-600' : '' }}"
+                    {{ $errors->has('artwork_royalty') ? '!border-red-600' : '' }}
+                    {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
                     {{ !$in_editing ? 'disabled' : '' }}
                     type="number" 
                     min="0"
@@ -461,7 +471,8 @@
                 </label>
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
-                  {{ $errors->has('artwork_max_supply') ? '!border-red-600' : '' }}"
+                  {{ $errors->has('artwork_max_supply') ? '!border-red-600' : '' }}
+                  {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
                   {{ !$in_editing ? 'disabled' : '' }}
                   type="number" 
                   min="0" 
@@ -497,7 +508,8 @@
                 </label>
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
-                  {{ $errors->has('self_nfts_number') ? '!border-red-600' : '' }}"
+                  {{ $errors->has('self_nfts_number') ? '!border-red-600' : '' }}
+                  {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
                   {{ !$in_editing ? 'disabled' : '' }}
                   type="number" 
                   min="0" 
@@ -544,7 +556,8 @@
                 </label>
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
-                  {{ $errors->has('artist_portfolio_link') ? '!border-red-600' : '' }}"
+                  {{ $errors->has('artist_portfolio_link') ? '!border-red-600' : '' }}
+                  {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
                   {{ !$in_editing ? 'disabled' : '' }}
                   type="text" 
                   id="portfoliolink" 
@@ -573,7 +586,8 @@
                   </label>
                   <div>
                     <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
-                    {{ $errors->has('artist_twitter_link') ? '!border-red-600' : '' }}"
+                    {{ $errors->has('artist_twitter_link') ? '!border-red-600' : '' }}
+                    {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
                     {{ !$in_editing ? 'disabled' : '' }}
                     type="text" 
                     id="twitterlink" 
@@ -603,7 +617,8 @@
                   </label>
                   <div>
                     <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
-                    {{ $errors->has('artist_contact_mail') ? '!border-red-600' : '' }}"
+                    {{ $errors->has('artist_contact_mail') ? '!border-red-600' : '' }}
+                    {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
                     {{ !$in_editing ? 'disabled' : '' }}
                     type="text" 
                     id="mail" 
@@ -627,11 +642,11 @@
           </div>
         </div>
       </div>
-
+      
       <button {{ ($smart_contract && $smart_contract->inReview()) ? 'disabled' : 'type="submit"'}}
         class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
         @if ($in_editing)
-          Submit for approval
+          {{ $state ? : 'Submit for approval' }}
         @elseif ($smart_contract && $smart_contract->inReview())
           Contract in review
         @elseif ($smart_contract && $smart_contract->readyToDeploy())
@@ -737,6 +752,7 @@
                   contractUrl,
                   @this.artwork_max_supply,
                   ethers.utils.parseEther(@this.artwork_price),
+                  @this.self_nfts_number,
                   @this.auth_address,
                   @this.artwork_royalty,
                   @this.open_sales

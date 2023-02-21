@@ -100,7 +100,7 @@ class PendingSmartContractResource extends Resource
             ])
             ->bulkActions([
                 
-            ]);
+            ])->poll('5s');
     }
     
     public static function getRelations(): array
