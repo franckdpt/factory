@@ -47,10 +47,14 @@ class PendingSmartContractResource extends Resource
         return parent::getEloquentQuery()->whereStatus('in_review');
     }
 
+    protected static function getNavigationBadgeColor(): ?string
+    {
+        return static::$model::where('status', 'in_review')->count() > 0 ? 'danger' : 'primary';
+    }
+
     protected static function getNavigationBadge(): ?string
     {
-        $nb = static::$model::where('status', 'in_review')->count();
-        return $nb > 0 ? $nb : null;
+        return static::$model::where('status', 'in_review')->count();
     }
 
     public static function form(Form $form): Form
