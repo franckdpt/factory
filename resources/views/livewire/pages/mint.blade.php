@@ -124,7 +124,7 @@
         </h2>
 
         <div class="mt-2 text-6xl md:text-5xl lg:text-7xl font-black">
-          {{ $this->smart_contract->artwork_price }} ETH
+          {{ $this->smart_contract->artwork_price }} {{ $this->smart_contract->network->currency }}
         </div>
         <div class="text-lg font-bold">
           xx of {{ $this->smart_contract->artwork_max_supply }} Editions Available
@@ -162,9 +162,9 @@
           <li>
             <span class="font-bold">File format:</span> {{ $this->smart_contract->artwork_hd_extension }}
           </li>
-          <li>
+          {{-- <li>
             <span class="font-bold">HD file size:</span> {{ $this->smart_contract->artwork_size }}
-          </li>
+          </li> --}}
         </ul>
       </div>
 
@@ -182,13 +182,10 @@
             <span class="font-bold">Type:</span> ERC-721
           </li>
           <li>
-            <span class="font-bold">Token ID:</span> xx
-          </li>
-          <li>
             <span class="font-bold">Blockchain:</span> {{ $this->smart_contract->network->name }}
           </li>
           <li>
-            <span class="font-bold">Second market royalties:</span> {{ $this->smart_contract->artwork_royalty }}%
+            <span class="font-bold">Second market royalties:</span> {{ $this->smart_contract->getRoyaltyInput() }}%
           </li>
         </ul>
       </div>
@@ -200,7 +197,7 @@
           Useful links
         </h2>
         <ul class="mt-6 flex gap-4 flex-wrap text-lg">
-          <li>
+          {{-- <li>
             <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
             href="#"
             target="_blank"
@@ -212,7 +209,7 @@
             </svg>
               Smart contract audit
             </a>
-          </li>
+          </li> --}}
           <li>
             <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
             href="{{ $this->smart_contract->network->explorer.'address/'.$this->smart_contract->address }}"
