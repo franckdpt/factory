@@ -24,6 +24,8 @@ class SmartContractResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
+    protected static ?string $navigationLabel = 'Collections';
+
     protected static ?string $recordTitleAttribute = 'artwork_title';
 
     public static function getGloballySearchableAttributes(): array

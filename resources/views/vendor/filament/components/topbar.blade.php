@@ -24,7 +24,7 @@
         </button>
 
         <div class="flex items-center justify-between flex-1">
-            <x-filament::layouts.app.topbar.breadcrumbs :breadcrumbs="$breadcrumbs" />
+            {{-- <x-filament::layouts.app.topbar.breadcrumbs :breadcrumbs="$breadcrumbs" /> --}}
 
             @livewire('filament.core.global-search')
 
