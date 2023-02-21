@@ -1,5 +1,5 @@
 <div class="{{ $classAdded ?? '' }}">
-    <button x-data @click="openWalletModal()">{{ Auth::check() ? Auth::user()->reduced_wallet_address : 'Connect wallet' }}</button>
+    <button x-data @click="openWalletModal()" class="{{ $buttonClassAdded ?? '' }}">{{ Auth::check() ? Auth::user()->reduced_wallet_address : 'Connect wallet' }}</button>
     <!-- <w3m-core-button></w3m-core-button> -->
     <!-- <w3m-network-switch></w3m-network-switch> -->
     <script>

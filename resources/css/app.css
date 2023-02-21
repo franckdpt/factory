@@ -11,6 +11,19 @@ body {
   --form-control-color: black;
 }
 
+.button-container button {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+  padding-right: 2rem;
+  padding-left: 2rem;
+  font-weight: bold;
+}
+
+.button-container button:hover {
+  background-color: black;
+  color: white;
+}
+
 .NFTF-transition {
   @apply transition duration-150 
 }

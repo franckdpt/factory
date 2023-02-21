@@ -1,8 +1,7 @@
 <div>
 
   {{-- Logo --}}
-  <a class="m-10 block mx-auto text-center" 
-    href="https://nftfactoryparis.com/">
+  <div class="m-10 block mx-auto text-center">
     <svg class="inline-block w-[100px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.789 77.556">
       <g id="Groupe_7" data-name="Groupe 7" transform="translate(-1501.179 -797.635)">
         <g id="Groupe_7-2" data-name="Groupe 7">
@@ -22,7 +21,7 @@
         <path id="Tracé_23" data-name="Tracé 23" d="M1523.863,858.178v-2.836h-5.671v-2.836h-5.671v-5.671h-5.671v14.178h-5.671v14.178h28.355V858.178Z" fill="#2ef52f"/>
       </g>
     </svg>
-  </a>
+</div>
 
   {{-- Header --}}
   <div class="px-4 md:px-8 relative w-full lg:mx-auto lg:container xl:max-w-screen-lg">
@@ -262,7 +261,7 @@
           <div class="mt-10">
             <div class="md:flex gap-x-10">
               <div class="flex-1 relative flex flex-col">
-                <div class="text-xl md:text-2xl font-bold">
+                <div class="mb-2 text-xl md:text-2xl font-bold">
                 High Definition media
                 </div>
 
@@ -280,7 +279,13 @@
                           JPEG or MP4<br>(max 10Mb)
                       </div>
                       <div class="mt-5 flex justify-center">
-                          <svg class="h-16 w-16" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><g fill="#000" fill-rule="evenodd" clip-rule="evenodd"><path d="m20 7-4-4H5a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1zm-1 13H5V4h10.5v2.5a1 1 0 0 0 1 1H19zm-.914-13.5L16.5 4.914V6.5z" fill="#000000" data-original="#000000"></path><path d="M11.5 13.5V16h1v-2.5H15v-1h-2.5V10h-1v2.5H9v1z" fill="#000000" data-original="#000000"></path></g></g></svg>
+                      @if ($hd_media && $refresh_preview)
+                        <img class="h-32" src="{{ $hd_media->temporaryUrl() }}" alt="" />
+                      @elseif ($artwork_path)
+                        <img class="h-32" src="{{ config('app.url').$artwork_path }}" alt="" />
+                      @else
+                        <svg class="h-32 w-32" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><g fill="#000" fill-rule="evenodd" clip-rule="evenodd"><path d="m20 7-4-4H5a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1zm-1 13H5V4h10.5v2.5a1 1 0 0 0 1 1H19zm-.914-13.5L16.5 4.914V6.5z" fill="#000000" data-original="#000000"></path><path d="M11.5 13.5V16h1v-2.5H15v-1h-2.5V10h-1v2.5H9v1z" fill="#000000" data-original="#000000"></path></g></g></svg>
+                      @endif
                       </div>
                       <div class="text-center font-bold">
                         {{ is_null($hd_media) ? 'Upload your media here' : $hd_media->getClientOriginalName() }}
@@ -307,12 +312,6 @@
                     {{ $message }}
                   </div>
                 @enderror
-                
-                @if ($hd_media && $refresh_preview)
-                  <img src="{{ $hd_media->temporaryUrl() }}" />
-                @elseif ($artwork_path)
-                  <img src="{{ config('app.url').$artwork_path }}" />
-                @endif
 
               </div>
               <div class="hidden md:block w-1 bg-gray-200"></div>
@@ -455,6 +454,7 @@
                     {{ !$in_editing ? 'disabled' : '' }}
                     type="number" 
                     min="0"
+                    max="10"
                     placeholder="5"
                     name="royalty"
                     wire:model.lazy="artwork_royalty_input">
@@ -661,7 +661,7 @@
       </div>
       
       <button {{ ($smart_contract && $smart_contract->inReview()) ? 'disabled' : 'type="submit"'}}
-        class="block mx-auto mt-10 mb-14  px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
+        class="block mx-auto mt-10 px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
         @if ($in_editing)
           {{ $state ? : 'Submit for approval' }}
         @elseif ($smart_contract && $smart_contract->inReview())
@@ -678,11 +678,12 @@
       </button>
 
       @if (count($errors->all()) > 0)
-        <div class="text-red-600 font-semibold">
+        <div class="text-red-600 font-semibold text-center">
           There is some errors above
         </div>
       @endif
     </form>
+    <div class="h-32"></div>
   @endif
 
   <script>
