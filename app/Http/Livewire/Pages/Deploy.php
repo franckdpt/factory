@@ -427,9 +427,12 @@ class Deploy extends Component
         $contract_data = [
             "name" => $this->expo->contracts_name,
             "description" => $this->expo->contracts_description,
-            "image" => $this->smart_contract->getArtworkUrl(),
-            "external_link" => $this->smart_contract->getArtworkUrl(),
-            "seller_fee_basis_points" => 100, # Indicates a 1% seller fee.
+            "image" => "https://nftfactoryparis.com/wp-content/uploads/2022/10/Plan-de-travail-%E2%80%93-1.png",
+            "external_link" => route('mint', [
+                'expo' => $this->expo,
+                'smart_contract_publicid' => $this->public_id,
+            ]),
+            "seller_fee_basis_points" => $this->smart_contract->artwork_royalty,
             "fee_recipient" => Auth::user()->wallet_address
         ];
         
@@ -502,7 +505,7 @@ class Deploy extends Component
     private function getArtworkUrlForIpfsUpload()
     {
         if (env('APP_ENV') == 'local') {
-            return '/Users/franckdupont/Valet/factory/storage/app/public/nft_media/'.
+            return env('LOCAL_PATH').
                     $this->smart_contract->public_id.
                     '_hd.'.
                     $this->smart_contract->artwork_hd_extension;

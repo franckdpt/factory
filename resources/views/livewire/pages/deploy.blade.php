@@ -37,7 +37,7 @@
             @elseif ($smart_contract && $smart_contract->inReview())
               This collection needs to be approved before deployment
             @elseif ($smart_contract && $smart_contract->readyToDeploy())
-              {{ Auth::user()->name. ' you can now deploy!' }}
+              {{ Auth::user()->name. ', you can now deploy!' }}
             @else
               Welcome, {{ Auth::user()->name }}
             @endif
@@ -781,7 +781,6 @@
                 @this.artwork_max_supply,
                 ethers.utils.parseEther(@this.artwork_price),
                 @this.self_nfts_number,
-                @this.auth_address,
                 @this.factory_address,
                 @this.artwork_royalty,
                 @this.open_sales
