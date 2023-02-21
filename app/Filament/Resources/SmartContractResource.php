@@ -57,17 +57,16 @@ class SmartContractResource extends Resource
                     ]),
 
                     Forms\Components\Section::make('Artwork')->schema([
+                        Forms\Components\TextInput::make('artwork_title'),
+                        Forms\Components\Textarea::make('artwork_description'),
                         Grid::make(2)->schema([
-                            Forms\Components\TextInput::make('artwork_title'),
-                            Forms\Components\Textarea::make('artwork_description'),
-                        ]),
-                        Grid::make(2)->schema([
-                            Forms\Components\TextInput::make('artwork_hd_extension'),
                             Forms\Components\TextInput::make('artwork_max_supply'),
+                            Forms\Components\TextInput::make('self_nfts_number')->label('Reserved copies'),
                         ]),
-                        Grid::make(2)->schema([
+                        Grid::make(3)->schema([
                             Forms\Components\TextInput::make('artwork_price'),
                             Forms\Components\TextInput::make('artwork_royalty'),
+                            Forms\Components\TextInput::make('artwork_hd_extension'),
                         ]),
                         Forms\Components\TextInput::make('artwork_ipfs_hash')
                             ->label('Artwork IPFS hash'),

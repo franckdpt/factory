@@ -13,7 +13,7 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Group;
 
 class ExpoResource extends Resource
 {
@@ -32,53 +32,51 @@ class ExpoResource extends Resource
     {
         return $form
             ->schema([
-                Fieldset::make('Exposition info displayed on the website')->schema([
-                    Grid::make(2)->schema([
+                Group::make()->schema([
+                    Forms\Components\Section::make('Exposition info')->schema([
                         Forms\Components\TextInput::make('name')
-                        ->maxLength(255)
-                        ->required(),
-                    ]),
-                    Grid::make(2)->schema([
+                            ->maxLength(255)
+                            ->required(),
                         Forms\Components\Textarea::make('description')
-                        ->maxLength(65535)
-                        ->required(),
+                            ->maxLength(65535)
+                            ->required(),
                     ]),
-                    Grid::make(2)->schema([
-                        Forms\Components\TextInput::make('nb_deployment_authorized')
-                        ->label("Maximum of smart contracts for each artist")
-                        ->required(),
-                    ])
-                ]),
+                ])->columnSpan(['lg' => 1]),
 
-                Fieldset::make('Web3 info')->schema([
-                    Grid::make(4)->schema([
-                        Forms\Components\TextInput::make('contracts_name')
-                        ->label("Collections name")
-                        ->maxLength(255)
-                        ->required(),
-                        Forms\Components\TextInput::make('contracts_symbol')
-                        ->label("Collections Symbol")
-                        ->maxLength(255)
-                        ->required(),
+                Group::make()->schema([
+                    Forms\Components\Section::make('Deployment allowing')->schema([
+                        Forms\Components\Select::make('artists')
+                            ->multiple()
+                            ->relationship('artists', 'name_and_wallet', fn (Builder $query) => $query->whereNotNull("name"))
+                            ->preload()
                     ]),
-                    Grid::make(2)->schema([
+                ])->columnSpan(['lg' => 1]),
+
+                Group::make()->schema([
+                    Forms\Components\Section::make('Web3 info')->schema([
+                        Grid::make(2)->schema([
+                            Forms\Components\TextInput::make('contracts_name')
+                                ->label("Collections name")
+                                ->maxLength(255)
+                                ->required(),
+                            Forms\Components\TextInput::make('contracts_symbol')
+                                ->label("Collections Symbol")
+                                ->maxLength(255)
+                                ->required(),
+                        ]),
                         Forms\Components\Textarea::make('contracts_description')
-                        ->label("Collections description")
-                        ->maxLength(65535)
-                        ->required(),
-                    ]),
-                    Grid::make(2)->schema([
+                            ->label("Collections description")
+                            ->maxLength(65535)
+                            ->required(),
                         Forms\Components\TextInput::make('factory_address')
-                        ->label("30% Royalty wallet receiver")
-                        ->required(),
-                    ])
-                ]),
-                
-            Forms\Components\Select::make('artists')
-            ->multiple()
-            ->relationship('artists', 'name_and_wallet', fn (Builder $query) => $query->whereNotNull("name"))
-            ->preload()
-            ]);
+                            ->label("30% Royalty wallet receiver")
+                            ->required(),
+                        Forms\Components\TextInput::make('nb_deployment_authorized')
+                            ->label("Maximum of smart contracts for each artist")
+                            ->required(),
+                    ]),
+                ])->columnSpan(['lg' => 1]),
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table

@@ -62,19 +62,21 @@ class PendingSmartContractResource extends Resource
         return $form
         ->schema([
                 Group::make()->schema([
-                    Forms\Components\Section::make('Artwork')->schema([
-                        Grid::make(2)->schema([
-                            Forms\Components\TextInput::make('artwork_title'),
-                            Forms\Components\Textarea::make('artwork_description'),
+                    Forms\Components\Section::make('Collection')->schema([
+                        Forms\Components\TextInput::make('artwork_title'),
+                        Forms\Components\Textarea::make('artwork_description'),
+                        Grid::make(3)->schema([
+                            Forms\Components\Select::make('network')->relationship('network', 'name'),
+                            Forms\Components\TextInput::make('artwork_max_supply')->label('Max Supply'),
+                            Forms\Components\TextInput::make('self_nfts_number')->label('Reserved copies'),
                         ]),
-                        Grid::make(2)->schema([
-                            Forms\Components\TextInput::make('artwork_hd_extension'),
-                            Forms\Components\TextInput::make('artwork_max_supply'),
-                        ]),
-                        Grid::make(2)->schema([
+                        Grid::make(3)->schema([
                             Forms\Components\TextInput::make('artwork_price'),
                             Forms\Components\TextInput::make('artwork_royalty'),
+                            Forms\Components\TextInput::make('artwork_hd_extension'),
                         ]),
+                        Forms\Components\TextInput::make('artwork_sha_hash')->label('Artwork SHA hash'),
+                        Forms\Components\Checkbox::make('open_sales'),
                     ]),
                 ])->columnSpan(['lg' => 2]),
 

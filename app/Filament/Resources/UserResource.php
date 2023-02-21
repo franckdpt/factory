@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Group;
 
 class UserResource extends Resource
 {
@@ -41,33 +42,30 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Grid::make(2)->schema([
-                    Forms\Components\TextInput::make('name')
-                    ->maxLength(255)
-                    ->required(),
-                ]),
-                Grid::make(2)->schema([
-                    Forms\Components\TextInput::make('wallet_address')
-                    ->maxLength(255)
-                    ->required(),
-                ]),
-                Grid::make(2)->schema([
-                    Forms\Components\Select::make('expos')
-                    ->multiple()
-                    ->relationship('expos', 'name')
-                    ->preload()
-                ]),
-                Fieldset::make('Displayed on mint page')->schema([
-                    Grid::make(4)->schema([
-                        Forms\Components\TextInput::make('portfolio_link')
-                        ->maxLength(255),
-                        Forms\Components\TextInput::make('twitter_link')
-                        ->maxLength(255),
+
+                Group::make()->schema([
+                    Forms\Components\Section::make('Identity')->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->maxLength(255)
+                            ->required(),
+                        Forms\Components\TextInput::make('wallet_address')
+                            ->maxLength(255)
+                            ->required(),
+                        Forms\Components\Select::make('expos')
+                            ->multiple()
+                            ->relationship('expos', 'name')
+                            ->preload()
                     ]),
-                    Forms\Components\TextInput::make('contact_mail')
-                        ->maxLength(255),
-                ]),
-            ]);
+                ])->columnSpan(['lg' => 1]),
+
+                Group::make()->schema([
+                    Forms\Components\Section::make('On mint page')->schema([
+                        Forms\Components\TextInput::make('portfolio_link'),
+                        Forms\Components\TextInput::make('twitter_link'),
+                        Forms\Components\TextInput::make('contact_mail'),
+                    ]),
+                ])->columnSpan(['lg' => 1]),
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table
