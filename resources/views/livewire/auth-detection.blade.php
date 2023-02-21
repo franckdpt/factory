@@ -30,7 +30,10 @@
             })
 
             const unwatchNetwork = watchNetwork((network) => {
-                Livewire.emit('onNetworkChanged', network.chain.id)
+                if (typeof network.chain !== "undefined")
+                    Livewire.emit('onNetworkChanged', network.chain.id)
+                else
+                    Livewire.emit('onNetworkChanged', null)
             })
 
         })

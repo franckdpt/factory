@@ -362,8 +362,19 @@
                   @enderror
                   @if ($artwork_price)
                     <div class="font-semibold">
-                      {{ round(floatval($artwork_price)*70/100, 3) }} {{ $smart_contract && $smart_contract->network_id ? $smart_contract->network->currency : '' }} (70%) to you<br>
-                      {{ round(floatval($artwork_price)*30/100, 3) }} {{ $smart_contract && $smart_contract->network_id ? $smart_contract->network->currency : '' }} (30%) to NFT Factory
+                      {{ round(floatval($artwork_price)*70/100, 3) }}
+                      {{ $smart_contract && $smart_contract->network_id ?
+                          $smart_contract->network->currency.
+                          ' ('.strval(round(floatval($network_rates[$smart_contract->network->id])*(floatval($artwork_price)*70/100), 2)).' USD)'
+                          : '' }}
+                          to you<br>
+
+                      {{ round(floatval($artwork_price)*30/100, 3) }}
+                      {{ $smart_contract && $smart_contract->network_id ?
+                          $smart_contract->network->currency.
+                          ' ('.strval(round(floatval($network_rates[$smart_contract->network->id])*(floatval($artwork_price)*30/100), 2)).' USD)'
+                          : '' }}
+                          to NFT Factory<br>
                     </div>
                   @endif
                 </div>
@@ -667,7 +678,9 @@
       </button>
 
       @if (count($errors->all()) > 0)
-        <p>There is some errors above</p>
+        <div class="text-red-600 font-semibold">
+          There is some errors above
+        </div>
       @endif
     </form>
   @endif

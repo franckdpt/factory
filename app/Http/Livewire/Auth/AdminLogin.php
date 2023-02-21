@@ -21,6 +21,11 @@ class AdminLogin extends Component
         $this->tryToConnect();
     }
 
+    public function userChangedNetwork($id)
+    {
+        
+    }
+
     private function tryToConnect()
     {
         if (Filament::auth()->check() && Auth::user()->admin) {

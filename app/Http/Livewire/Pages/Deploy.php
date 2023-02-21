@@ -20,6 +20,7 @@ class Deploy extends Component
     public ?SmartContract $smart_contract = null;
     public Expo $expo;
     public $networks;
+    public $network_rates;
 
     public $abi, $byte, $arweave_key;
     public $hd_media, $state;
@@ -95,6 +96,8 @@ class Deploy extends Component
     public function mount($expo, $smart_contract = null)
     {
         $this->networks = Network::all();
+
+        $this->network_rates = Network::getUsdConversions();
 
         $this->expo = $expo;
         $this->expo_name = $expo->name;
