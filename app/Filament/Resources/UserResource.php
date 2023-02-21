@@ -55,6 +55,7 @@ class UserResource extends Resource
                     Forms\Components\Select::make('expos')
                     ->multiple()
                     ->relationship('expos', 'name')
+                    ->preload()
                 ]),
                 Fieldset::make('Displayed on mint page')->schema([
                     Grid::make(4)->schema([
