@@ -433,17 +433,17 @@
                 <div>
                   <div class="flex gap-x-5 items-center text-xl md:text-2xl font-bold">
                     <input class="flex-1 mt-2 py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
-                    {{ $errors->has('artwork_royalty') ? '!border-red-600' : '' }}
+                    {{ $errors->has('artwork_royalty_input') ? '!border-red-600' : '' }}
                     {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
                     {{ !$in_editing ? 'disabled' : '' }}
                     type="number" 
                     min="0"
                     placeholder="10"
                     name="royalty"
-                    wire:model.lazy="artwork_royalty">
+                    wire:model.lazy="artwork_royalty_input">
                     %
                   </div>
-                  @error('artwork_royalty') 
+                  @error('artwork_royalty_input') 
                     <div class="text-red-600 font-semibold">
                       {{ $message }}
                     </div>

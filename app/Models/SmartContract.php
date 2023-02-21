@@ -127,6 +127,11 @@ class SmartContract extends Model
         return self::ARWEAVE_GATEWAY.$this->artwork_arweave_hash;
     }
 
+    public function getRoyaltyInput(): string
+    {
+        return strval($this->artwork_royalty/100);
+    }
+
     public static function generatePublicId(int $length = 8): string
     {
         $public_id = Str::random($length);

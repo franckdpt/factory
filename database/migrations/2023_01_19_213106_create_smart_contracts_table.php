@@ -42,7 +42,7 @@ return new class extends Migration
             $table->string('artwork_hd_mime')->nullable();
             $table->string('artwork_hd_extension')->nullable();
             $table->integer('artwork_max_supply')->nullable();
-            $table->integer('artwork_price')->nullable();
+            $table->string('artwork_price')->nullable();
             $table->integer('artwork_royalty')->nullable();
 
             // Artist

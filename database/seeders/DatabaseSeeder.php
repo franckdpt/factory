@@ -69,21 +69,5 @@ class DatabaseSeeder extends Seeder
             'user_id' => 2,
             'expo_id' => 1,
         ]);
-
-        DB::table('smart_contracts')->insert([
-            'public_id' => 'EfYj3d',
-            'artwork_title' => 'Test Artwork',
-            'user_id' => 1,
-            'expo_id' => 1,
-            'network_id' => 1,
-        ]);
-
-        DB::table('smart_contracts')->insert([
-            'public_id' => 'lkgRez8',
-            'artwork_title' => 'Test Artwork 2',
-            'user_id' => 2,
-            'expo_id' => 1,
-            'network_id' => 2,
-        ]);
     }
 }

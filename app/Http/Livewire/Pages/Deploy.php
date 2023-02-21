@@ -27,7 +27,8 @@ class Deploy extends Component
     public $wallet_allowed = false;
     public $refresh_preview = false;
     public $deployments_limit_reached = false;
-
+    public $artwork_royalty_input;
+    
     public $expo_name;
     public $expo_symbol;
     public $factory_address;
@@ -72,13 +73,13 @@ class Deploy extends Component
         return [
             'public_id' => 'required|string',
             
-            'network_id' => 'required|numeric',
+            'network_id' => 'required|integer',
 
             'artwork_title' => 'required|string|max:25',
             'artwork_description' => 'required|string|max:420',
-            'artwork_max_supply' => 'required|numeric|min:1|max:100',
-            'artwork_price' => 'required|numeric',
-            'artwork_royalty' => 'required|numeric|max:10',
+            'artwork_max_supply' => 'required|integer|min:2|max:100',
+            'artwork_price' => 'required|numeric|gt:0',
+            'artwork_royalty_input' => 'required|numeric|max:10',
             'artwork_path' => 'required|string',
 
             'artist_portfolio_link' => 'nullable|url',
@@ -86,7 +87,7 @@ class Deploy extends Component
             'artist_contact_mail' => 'nullable|email',
 
             'open_sales' => 'required|boolean',
-            'self_nfts_number' => 'required|numeric',
+            'self_nfts_number' => 'required|integer|lt:artwork_max_supply',
         ];
     }
 
@@ -111,6 +112,8 @@ class Deploy extends Component
             }
 
             $this->smart_contract = $smart_contract;
+            // dd($this->smart_contract->getRoyaltyInput());
+            $this->artwork_royalty_input = $this->smart_contract->getRoyaltyInput();
 
             $this->in_editing = $this->smart_contract->inEditing();
 
@@ -168,6 +171,17 @@ class Deploy extends Component
                     [ 'user_id' => Auth::user()->id, 'expo_id' => $this->expo->id])
             );
         }
+    }
+
+    public function updatedArtworkMaxSupply()
+    {
+        $this->validateOnly('self_nfts_number');
+    }
+
+    public function updatedArtworkRoyaltyInput()
+    {
+        $this->smart_contract->artwork_royalty = $this->artwork_royalty_input*100;
+        $this->smart_contract->save();
     }
 
     public function updatedHdMedia()
