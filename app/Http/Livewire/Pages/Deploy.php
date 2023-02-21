@@ -29,6 +29,7 @@ class Deploy extends Component
     public $refresh_preview = false;
     public $deployments_limit_reached = false;
     public $artwork_royalty_input;
+    public $client_network_id;
     
     public $expo_name;
     public $expo_symbol;
@@ -37,6 +38,7 @@ class Deploy extends Component
     // SmartContract object
     public $public_id = null;
     public $network_id;
+    public $network_public_id;
     
     public $artwork_title;
     public $artwork_description;
@@ -118,6 +120,10 @@ class Deploy extends Component
 
             $this->public_id = $this->smart_contract->public_id;
             $this->network_id = $this->smart_contract->network_id;
+
+            if ($this->smart_contract->network_id) {
+                $this->network_public_id = Network::ID[$this->smart_contract->network->public_id][env('BLOCKCHAIN_ENV')];
+            }
             
             $this->artwork_title = $this->smart_contract->artwork_title;
             $this->artwork_description = $this->smart_contract->artwork_description;
@@ -170,6 +176,11 @@ class Deploy extends Component
                     [ 'user_id' => Auth::user()->id, 'expo_id' => $this->expo->id])
             );
         }
+    }
+
+    public function userChangedNetwork($id)
+    {
+        $this->client_network_id = $id;
     }
 
     public function updatedArtworkMaxSupply()
@@ -271,8 +282,17 @@ class Deploy extends Component
         } else if ($this->smart_contract->inReview()) {
             // nothing
         } else if ($this->smart_contract->readyToDeploy()) {
-            $this->emit('readyToDeploySmartContract');
+            if ($this->client_network_id != $this->network_public_id) {
+                $this->emit('switchNetworkOnJs', $this->network_public_id);
+            } else {
+                $this->emit('readyToDeploySmartContract');
+            }
         }
+    }
+
+    private function getNetworkPublicId()
+    {
+
     }
 
     public function readyToUploadIpfs()

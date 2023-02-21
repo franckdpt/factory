@@ -9,7 +9,8 @@ trait AuthRefreshed
     {
         $this->listeners = array_merge($this->listeners, [
             'userConnected',
-            'userDisconnected'
+            'userDisconnected',
+            'userChangedNetwork'
         ]);
     }
 
@@ -19,6 +20,11 @@ trait AuthRefreshed
     }
 
     public function userDisconnected()
+    {
+        // blank. It's juste to refresh the component, to refresh Auth:: facade user on view side.
+    }
+
+    public function userChangedNetwork($id)
     {
         // blank. It's juste to refresh the component, to refresh Auth:: facade user on view side.
     }

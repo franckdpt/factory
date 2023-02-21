@@ -9,6 +9,17 @@ class Network extends Model
 {
     use HasFactory;
 
+    const ID = [
+        1 => [
+            "main" => 1,
+            "test" => 5,
+        ],
+        137 => [
+            "main" => 137,
+            "test" => 80001,
+        ],
+    ];
+
     protected $fillable = [
         'name',
         'public_id',

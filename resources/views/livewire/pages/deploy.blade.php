@@ -656,7 +656,11 @@
         @elseif ($smart_contract && $smart_contract->inReview())
           Contract in review
         @elseif ($smart_contract && $smart_contract->readyToDeploy())
-          {{ $state ? : 'Deploy' }}
+          @if ($client_network_id != $network_public_id)
+            Switch network to deploy
+          @else
+            {{ $state ? : 'Deploy now' }}
+          @endif
         @else 
           Submit for approval
         @endif
@@ -733,60 +737,70 @@
         };
     }
 
-      // async function test() {
-      //     const config = await prepareSendTransaction({
-      //     request: { to: 'moxey.eth', value: ethers.BigNumber.from('10000000000000000') },
-      //     })
-      //     const { hash } = await sendTransaction(config)
-      // }
+    // async function test() {
+    //     const config = await prepareSendTransaction({
+    //     request: { to: 'moxey.eth', value: ethers.BigNumber.from('10000000000000000') },
+    //     })
+    //     const { hash } = await sendTransaction(config)
+    // }
 
-      
-      async function deploy(tokenUrl, ipfsUrl, arweaveUrl, contractUrl) {
-          // prevent wallet error
-          if (@this.auth_address == formatAddress(getAccount().address)) {
-              const signer = await fetchSigner()
-              const Factory = new ethers.ContractFactory(@this.abi, @this.byte, signer);
-              // const factoryContract = await Factory.deploy("Hello, Hardhat!");
-              const factoryContract = await Factory.deploy(
-                  @this.expo_name,
-                  @this.expo_symbol,
-                  @this.artwork_description,
-                  ipfsUrl,
-                  tokenUrl,
-                  arweaveUrl,
-                  @this.artwork_sha_hash,
-                  contractUrl,
-                  @this.artwork_max_supply,
-                  ethers.utils.parseEther(@this.artwork_price),
-                  @this.self_nfts_number,
-                  @this.auth_address,
-                  @this.factory_address,
-                  @this.artwork_royalty,
-                  @this.open_sales
-              );
-
-              await factoryContract.deployed();
-              
-              Livewire.emit('smartContractDeployed', factoryContract.address)
-              console.log(" address", factoryContract.address);
-          } else {
-              console.log('error: this.auth_address differ getAccount().address')
-          }
-          
-      }
-      
-
-      document.addEventListener('DOMContentLoaded', function () {
-        Livewire.on('uploadArweaveOnJs', function (type, file) {
-          // file = document.querySelector('input[type=file]').files[0]
-          arweaveUpload(type, file)
-        });
-
-        Livewire.on('deploySmartContractOnJs', function (tokenUrl, ipfsUrl, arweaveUrl, contractUrl) {
-          //deploy(tokenUrl, ipfsUrl, arweaveUrl, contractUrl)
-        });
-
+    async function switchTheNetwork(networkId) {
+      const network = await switchNetwork({
+        chainId: networkId,
       })
+    }
+
+    async function deploy(tokenUrl, ipfsUrl, arweaveUrl, contractUrl) {
+        // prevent wallet error
+        if (@this.auth_address == formatAddress(getAccount().address)) {
+            const signer = await fetchSigner()
+            const Factory = new ethers.ContractFactory(@this.abi, @this.byte, signer);
+            // const factoryContract = await Factory.deploy("Hello, Hardhat!");
+            const factoryContract = await Factory.deploy(
+                @this.expo_name,
+                @this.expo_symbol,
+                @this.artwork_description,
+                ipfsUrl,
+                tokenUrl,
+                arweaveUrl,
+                @this.artwork_sha_hash,
+                contractUrl,
+                @this.artwork_max_supply,
+                ethers.utils.parseEther(@this.artwork_price),
+                @this.self_nfts_number,
+                @this.auth_address,
+                @this.factory_address,
+                @this.artwork_royalty,
+                @this.open_sales
+            );
+
+            await factoryContract.deployed();
+            
+            Livewire.emit('smartContractDeployed', factoryContract.address)
+            console.log(" address", factoryContract.address);
+        } else {
+            console.log('error: this.auth_address differ getAccount().address')
+        }
+        
+    }
+    
+
+    document.addEventListener('DOMContentLoaded', function () {
+      
+      Livewire.on('uploadArweaveOnJs', function (type, file) {
+        // file = document.querySelector('input[type=file]').files[0]
+        arweaveUpload(type, file)
+      });
+
+      Livewire.on('deploySmartContractOnJs', function (tokenUrl, ipfsUrl, arweaveUrl, contractUrl) {
+        //deploy(tokenUrl, ipfsUrl, arweaveUrl, contractUrl)
+      });
+
+      Livewire.on('switchNetworkOnJs', function (networkId) {
+        switchTheNetwork(networkId)
+      });
+
+    })
       
   </script>
 </div>

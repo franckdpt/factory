@@ -16,44 +16,43 @@ Alpine.start();
 import { ethers } from "ethers";
 window.ethers = ethers;
 
-// Wagmi & Web3modal
-import { 
-    configureChains,
-    createClient,
-    sendTransaction,
-    prepareSendTransaction
-  } from "@wagmi/core";
-window.prepareSendTransaction = prepareSendTransaction;
-window.sendTransaction = sendTransaction;
+import {
+  configureChains,
+  createClient,
 
-import { 
+  prepareSendTransaction,
+  sendTransaction,
+  connect,
   fetchSigner,
   getAccount,
   watchAccount,
   watchNetwork,
   waitForTransaction,
-  signMessage
+  signMessage,
+  switchNetwork,
 } from '@wagmi/core'
+window.prepareSendTransaction = prepareSendTransaction;
+window.sendTransaction = sendTransaction;
+window.connect = connect;
 window.fetchSigner = fetchSigner;
 window.getAccount = getAccount;
 window.watchAccount = watchAccount;
 window.watchNetwork = watchNetwork;
 window.waitForTransaction = waitForTransaction;
 window.signMessage = signMessage;
+window.switchNetwork = switchNetwork;
 
-import { connect } from '@wagmi/core'
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
-window.connect = connect;
 window.InjectedConnector = InjectedConnector;
 
-import { arbitrum, mainnet, polygon } from "@wagmi/core/chains";
+import { mainnet, polygon, goerli } from "@wagmi/core/chains";
 import { alchemyProvider } from '@wagmi/core/providers/alchemy'
 import { publicProvider } from '@wagmi/core/providers/public'
 import { Web3Modal } from "@web3modal/html";
 import { EthereumClient, modalConnectors } from "@web3modal/ethereum";
 
 // **** Setting Wagmi Client & Web3modal
-  const chains = [arbitrum, mainnet, polygon];
+  const chains = [mainnet, polygon, goerli];
   const { provider } = configureChains(chains, 
     [alchemyProvider({ apiKey: 'V75jiJtBsKTCcAfCeuWkZkc8xLR76gWb' }), publicProvider()],
   );

@@ -17,6 +17,7 @@ class AuthDetection extends Component
         'onWalletConnected',
         'onWalletConnecting',
         'onWalletDisconnected',
+        'onNetworkChanged',
         // 'onRegisterMessageSigned'
     ];
 
@@ -52,6 +53,11 @@ class AuthDetection extends Component
     {
         Auth::logout();
         $this->emit('userDisconnected');
+    }
+
+    public function onNetworkChanged($id)
+    {
+        $this->emit('userChangedNetwork', $id);
     }
 
     // Signature stuff

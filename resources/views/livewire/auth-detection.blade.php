@@ -20,7 +20,6 @@
         document.addEventListener('DOMContentLoaded', function () {
 
             const unwatchAccount = watchAccount((account) => {
-                console.log(account)
                 if (account.isConnected) {
                     Livewire.emit('onWalletConnected', formatAddress(account.address))
                 } else if (account.isConnecting) {
@@ -31,7 +30,7 @@
             })
 
             const unwatchNetwork = watchNetwork((network) => {
-                console.log(network)
+                Livewire.emit('onNetworkChanged', network.chain.id)
             })
 
         })
