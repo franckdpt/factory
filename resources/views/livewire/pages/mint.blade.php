@@ -38,9 +38,9 @@
     {{-- if portrait --}}
     <div class="w-1/2 pr-5 sticky top-10">
       <div class="relative w-full"
-      x-data="{ openModal: false }">
+      x-data="{ showImage: false }">
       <div class="relative cursor-pointer text-NFTF-greenDark group"
-      x-on:click="openModal = true">
+      x-on:click="showImage = true">
         <img class="" 
         src="https://expo.nftfactoryparis.com/artworks/MDMA.jpg">
         <div class="hidden absolute inset-0 group-hover:flex justify-center items-center bg-black bg-opacity-50">
@@ -49,17 +49,15 @@
       </div>
     
         <div 
-          x-show="openModal" 
-          x-bind:class="{'!flex': openModal }"
-          class="hidden fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-75 items-center justify-center"
+          x-show="showImage"
+          x-bind:class="{'!flex': showImage }"
+          class="fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-75 items-center justify-center"
         >
           <img class="p-16 max-w-full max-h-full pointer-events-none"
-            src="https://expo.nftfactoryparis.com/artworks/MDMA.jpg"
-            x-on:click.away=" openModal ? openModal = false" 
-          >
+            src="https://expo.nftfactoryparis.com/artworks/MDMA.jpg">
           <button 
             class="fixed top-3 right-4 p-2 text-white hover:text-NFTF-green NFTFtransistion"
-            x-on:click="openModal = false"
+            x-on:click="showImage = false"
           >
             <svg class="fill-current w-8" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 386.667 386.667" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M386.667 45.564 341.103 0l-147.77 147.769L45.564 0 0 45.564l147.769 147.769L0 341.103l45.564 45.564 147.769-147.769 147.769 147.769 45.564-45.564-147.768-147.77z"></path></g></svg>
           </button>
@@ -223,7 +221,7 @@
           </li>
           <li>
             <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
-            href={{ $this->smart_contract->network->explorer."address/".$this->smart_contract->address }}
+            href="{{ $this->smart_contract->network->explorer.'address/'.$this->smart_contract->address }}"
             target="_blank"
             rel="noopener noreferrer">
             <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">

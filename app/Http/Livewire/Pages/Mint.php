@@ -12,9 +12,9 @@ class Mint extends Component
 
     public ?SmartContract $smart_contract = null;
 
-    public function mount($smart_contract_address)
+    public function mount($smart_contract_publicid)
     {
-        // $this->smart_contract = SmartContract::whereAddress($smart_contract_address)->firstOrFail();
-        $this->smart_contract = SmartContract::wherePublicId($smart_contract_address)->firstOrFail();
+        // $this->smart_contract = SmartContract::whereAddress($smart_contract_publicid)->firstOrFail();
+        $this->smart_contract = SmartContract::wherePublicId($smart_contract_publicid)->firstOrFail();
     }
 }

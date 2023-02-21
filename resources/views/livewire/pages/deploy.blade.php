@@ -30,8 +30,8 @@
       <div class="text-white text-xl md:text-4xl font-black">
         @if (Auth::check())
           @if ($wallet_allowed)
-            @if ($deployed)
-              This contract has been deployed
+            @if ($deployed && $smart_contract && $smart_contract->address)
+              This contract has been deployed : {{ $smart_contract->address }}
             @elseif ($deployments_limit_reached)
               You've already deployed for this expo
             @elseif ($smart_contract && $smart_contract->inReview())

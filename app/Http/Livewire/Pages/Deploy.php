@@ -92,7 +92,7 @@ class Deploy extends Component
     public function mount($expo, $smart_contract = null)
     {
         $this->networks = Network::all();
-        
+
         $this->expo = $expo;
         $this->expo_name = $expo->name;
         $this->expo_symbol = $expo->symbol;
@@ -314,6 +314,11 @@ class Deploy extends Component
         if (empty($this->address)) {
             dd('error on deploying contract');
         }
+
+        return redirect()->route('mint', [
+            'expo' => $this->expo,
+            'smart_contract_publicid' => $this->public_id,
+        ]);
     }
 
     //////////////

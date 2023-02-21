@@ -20,7 +20,7 @@ Route::get('/{expo}', [\App\Http\Controllers\ExpoController::class, 'index'])->n
 Route::get('/{expo}/deploy', \App\Http\Livewire\Pages\Deploy::class)->name('deploy');
 Route::get('/{expo}/deploy/{smart_contract}', \App\Http\Livewire\Pages\Deploy::class)->name('continue_deploy');
 
-Route::get('/{expo}/mint/{smart_contract_address}', \App\Http\Livewire\Pages\Mint::class)->name('mint');
+Route::get('/{expo}/mint/{smart_contract_publicid}', \App\Http\Livewire\Pages\Mint::class)->name('mint');
 
 // Route::middleware([
 //     'auth',
