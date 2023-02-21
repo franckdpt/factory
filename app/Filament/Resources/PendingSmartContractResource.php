@@ -20,9 +20,9 @@ class PendingSmartContractResource extends Resource
 {
     protected static ?string $model = SmartContract::class;
  
-    protected static ?string $navigationLabel = 'In review';
+    protected static ?string $navigationLabel = 'Collections in review';
 
-    protected static ?string $navigationGroup = 'Smart Contracts';
+    protected static ?string $navigationGroup = 'To do';
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 

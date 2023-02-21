@@ -211,20 +211,18 @@ class Deploy extends Component
             $validatedData = $this->validate();
 
             $this->smart_contract = SmartContract::updateOrCreate(
-                [ 'public_id' => $this->public_id ], array_merge(
-                    $validatedData,
-                    [ 'status' => 'in_review' ])
+                [ 'public_id' => $this->public_id ],
+                $validatedData
             );
 
-            $this->state = 'Submitted!';
-            return redirect(request()->header('Referer'));
+            $this->wallet = Auth::user()->wallet_address;
+            $this->state = 'Uploading media on IPFS...';
+            $this->emit('readyToUploadIpfs');
 
         } else if ($this->smart_contract->inReview()) {
             // nothing
         } else if ($this->smart_contract->readyToDeploy()) {
-            $this->wallet = Auth::user()->wallet_address;
-            $this->state = 'Uploading media on IPFS...';
-            $this->emit('readyToUploadIpfs');
+            $this->emit('readyToDeploySmartContract');
         }
     }
 
@@ -289,9 +287,10 @@ class Deploy extends Component
             dd('error on uploading IPFS');
         }
 
-        // Next
-        $this->state = 'Creating smart contract...';
-        $this->emit('readyToDeploySmartContract');
+        $this->smart_contract->status = 'in_review';
+        $this->smart_contract->save();
+
+        return redirect(request()->header('Referer'));
     }
 
     public function readyToDeploySmartContract()

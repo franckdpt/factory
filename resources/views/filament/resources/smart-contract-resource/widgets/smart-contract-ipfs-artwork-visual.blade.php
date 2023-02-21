@@ -1,7 +1,7 @@
 <x-filament::widget>
     <x-filament::card>
-        <h2>IPFS artwork</h2>
         @if ($record->artwork_ipfs_hash)
+            <h2>IPFS artwork</h2>
             <a href="{{ $record->getArtworkIpfsUrl() }}" target="_blank">
                 <img src="{{ $record->getArtworkIpfsUrl() }}" />
             </a>

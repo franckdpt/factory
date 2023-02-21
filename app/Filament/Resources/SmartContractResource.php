@@ -22,10 +22,6 @@ class SmartContractResource extends Resource
 {
     protected static ?string $model = SmartContract::class;
 
-    protected static ?string $navigationLabel = 'All';
-
-    protected static ?string $navigationGroup = 'Smart Contracts';
-
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
     protected static ?string $recordTitleAttribute = 'artwork_title';
