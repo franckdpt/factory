@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Pages;
 
+use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Livewire\Traits\AuthRefreshed;
@@ -77,7 +78,6 @@ class Deploy extends Component
 
             'artwork_title' => 'required|string|max:25',
             'artwork_description' => 'required|string|max:420',
-            'artwork_max_supply' => 'required|integer|min:2|max:100',
             'artwork_price' => 'required|numeric|gt:0',
             'artwork_royalty_input' => 'required|numeric|max:10',
             'artwork_path' => 'required|string',
@@ -87,7 +87,6 @@ class Deploy extends Component
             'artist_contact_mail' => 'nullable|email',
 
             'open_sales' => 'required|boolean',
-            'self_nfts_number' => 'required|integer|lt:artwork_max_supply',
         ];
     }
 
@@ -175,7 +174,49 @@ class Deploy extends Component
 
     public function updatedArtworkMaxSupply()
     {
-        $this->validateOnly('self_nfts_number');
+        $this->checkSupplyAndSelf();
+    }
+
+    public function updatedSelfNftsNumber()
+    {
+        $this->checkSupplyAndSelf();
+    }
+
+    private function checkSupplyAndSelf()
+    {
+        $this->validate([
+            'self_nfts_number' => 'required|integer',
+            'artwork_max_supply' => 'required|integer|min:1|max:100',
+        ]);
+
+        $this->withValidator(function (Validator $validator) {
+            $validator->after(function ($validator) {
+                if ($this->self_nfts_number > $this->maxSelf()) {
+                    if ($this->maxSelf() == 0) {
+                        $validator->errors()->add('self_nfts_number', 'Max supply too low to reserve NFT for you.');
+                    } else {
+                        $validator->errors()->add('self_nfts_number', 'Maximum of '.$this->maxSelf().' with this max supply.');
+                    }
+                }
+            });
+        })->validate();
+
+        $this->smart_contract->self_nfts_number = $this->self_nfts_number;
+        $this->smart_contract->artwork_max_supply = $this->artwork_max_supply;
+        $this->smart_contract->save();
+    }
+
+    private function maxSelf()
+    {
+        if ($this->artwork_max_supply == 1) {
+            return 0;
+        } else if ($this->artwork_max_supply <= 10) {
+            return 1;
+        } else if ($this->artwork_max_supply <= 20) {
+            return 2;
+        } else {
+            return 5;
+        }
     }
 
     public function updatedArtworkRoyaltyInput()
