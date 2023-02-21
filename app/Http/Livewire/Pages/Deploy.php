@@ -30,6 +30,7 @@ class Deploy extends Component
 
     public $expo_name;
     public $expo_symbol;
+    public $factory_address;
 
     // SmartContract object
     public $public_id = null;
@@ -96,6 +97,7 @@ class Deploy extends Component
         $this->expo = $expo;
         $this->expo_name = $expo->name;
         $this->expo_symbol = $expo->symbol;
+        $this->factory_address = $expo->factory_address;
 
         $this->isWalletAllowed();
         

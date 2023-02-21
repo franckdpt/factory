@@ -72,7 +72,7 @@
     <div class="w-1/2 pl-5">
       <div>
         <h1 class="-mt-5 text-6xl md:text-5xl lg:text-7xl font-bold">
-          {{ $this->smart_contract->artwork_name }}
+          {{ $this->smart_contract->artwork_title }}
         </h1>
         <p class="mt-3 text-lg">
           {{ $this->smart_contract->artwork_description }}
@@ -157,19 +157,13 @@
         </h2>
         <ul class="mt-6 text-lg">
           <li>
-            <span class="font-bold">Published:</span> xxx date
-          </li>
-          <li>
-            <span class="font-bold">Resolution:</span> xxx px
+            <span class="font-bold">Published:</span> {{ $this->smart_contract->updated_at }}
           </li>
           <li>
             <span class="font-bold">File format:</span> {{ $this->smart_contract->artwork_hd_extension }}
           </li>
           <li>
-            <span class="font-bold">HD file size:</span> xxx MB
-          </li>
-          <li>
-            <span class="font-bold">LD file size:</span> xxx MB
+            <span class="font-bold">HD file size:</span> {{ $this->smart_contract->artwork_size }}
           </li>
         </ul>
       </div>
@@ -194,7 +188,7 @@
             <span class="font-bold">Blockchain:</span> {{ $this->smart_contract->network->name }}
           </li>
           <li>
-            <span class="font-bold">Second market royalities:</span> {{ $this->smart_contract->artwork_royalty }}%
+            <span class="font-bold">Second market royalties:</span> {{ $this->smart_contract->artwork_royalty }}%
           </li>
         </ul>
       </div>

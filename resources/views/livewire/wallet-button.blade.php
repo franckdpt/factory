@@ -6,7 +6,7 @@
 
         async function openWalletModal() {
             try {
-                provider = await Web3modal.openWalletModal();
+                provider = await Web3modal.openModal();
             } catch(e) {
                 console.log("Could not get a wallet connection", e);
                 return;

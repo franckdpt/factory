@@ -754,6 +754,7 @@
                   ethers.utils.parseEther(@this.artwork_price),
                   @this.self_nfts_number,
                   @this.auth_address,
+                  @this.factory_address,
                   @this.artwork_royalty,
                   @this.open_sales
               );

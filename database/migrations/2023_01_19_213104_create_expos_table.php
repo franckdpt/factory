@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->text('description')->nullable();
             $table->integer('nb_deployment_authorized')->default(1);
+            $table->string('factory_address')->nullable();
 
             $table->string('contracts_name')->nullable();
             $table->text('contracts_description')->nullable();

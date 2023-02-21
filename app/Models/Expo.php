@@ -15,6 +15,7 @@ class Expo extends Model
         'name',
         'description',
         'nb_deployment_authorized',
+        'factory_address',
 
         'contracts_name',
         'contracts_description',

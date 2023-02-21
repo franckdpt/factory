@@ -50,7 +50,7 @@ class ExpoResource extends Resource
                     ])
                 ]),
 
-                Fieldset::make('Collections info on web3 marketplaces')->schema([
+                Fieldset::make('Web3 info')->schema([
                     Grid::make(4)->schema([
                         Forms\Components\TextInput::make('contracts_name')
                         ->label("Collections name")
@@ -67,6 +67,11 @@ class ExpoResource extends Resource
                         ->maxLength(65535)
                         ->required(),
                     ]),
+                    Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('factory_address')
+                        ->label("30% Royalty wallet receiver")
+                        ->required(),
+                    ])
                 ]),
                 
             Forms\Components\Select::make('artists')
