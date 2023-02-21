@@ -776,14 +776,12 @@
 
             await factoryContract.deployed();
             
-            Livewire.emit('smartContractDeployed', factoryContract.address)
+            //Livewire.emit('smartContractDeployed', factoryContract.address)
             console.log(" address", factoryContract.address);
         } else {
             console.log('error: this.auth_address differ getAccount().address')
         }
-        
     }
-    
 
     document.addEventListener('DOMContentLoaded', function () {
       
