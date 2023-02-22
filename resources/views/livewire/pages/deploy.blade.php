@@ -281,25 +281,27 @@
                       <div class="mt-5 flex justify-center">
                       @if ($hd_media && $refresh_preview)
                         @if (Str::startsWith(mime_content_type($hd_media->getRealPath()), 'video/mp4'))
-                        <video src="{{ $hd_media->temporaryUrl() }}" 
-                          poster=""
+                        <video poster=""
                           preload="auto"
                           autoplay="autoplay"
                           loop="loop"
                           muted="muted"
-                          controls></video>
+                          controls>
+                          <source src="{{ $hd_media->temporaryUrl() }}"  type="video/mp4">
+                          </video>
                         @else
                           <img class="h-32" src="{{ $hd_media->temporaryUrl() }}" alt="" />
                         @endif
                       @elseif ($artwork_path)
                         @if (Str::endsWith($artwork_path, '.mp4'))
-                          <video src="{{ config('app.url').$artwork_path }}" 
-                          poster=""
+                          <video poster=""
                           preload="auto"
                           autoplay="autoplay"
                           loop="loop"
                           muted="muted"
-                          controls></video>
+                          controls>
+                            <source src="{{ config('app.url').$artwork_path }}"  type="video/mp4">
+                          </video>
                         @else
                         <img class="h-32" src="{{ config('app.url').$artwork_path }}" alt="" />
                         @endif
