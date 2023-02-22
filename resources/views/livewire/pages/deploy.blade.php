@@ -683,7 +683,8 @@
       </div>
       
       <button {{ ($smart_contract && $smart_contract->inReview()) ? 'disabled' : 'type="submit"'}}
-        class="block mx-auto mt-10 px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease {{ !$in_editing ? '!bg-gray-600' : '' }}">
+        class="block mx-auto mt-10 px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease 
+        {{ ($smart_contract && $smart_contract->inReview()) ? '!bg-gray-600' : '' }}">
         @if ($in_editing)
           {{ $state ? : 'Submit for approval' }}
         @elseif ($smart_contract && $smart_contract->inReview())

@@ -23,7 +23,7 @@
     </a>
     <div class="flex gap-4">
       <div class="text-2xl font-semibold">
-        {{ $this->smart_contract->expo->name }}
+        {{ $smart_contract->expo->name }}
         <div class="ml-4 px-4 py-2 font-black text-lg bg-NFTF-green hover:bg-black text-white NFTF-transition">
           @livewire('wallet-button')
         </div>
@@ -44,7 +44,7 @@
       <div class="relative cursor-pointer text-NFTF-greenDark group"
       x-on:click="showImage = true">
         <img class="" 
-        src="https://expo.nftfactoryparis.com/artworks/MDMA.jpg">
+        src="{{ $smart_contract->getArtworkUrl() }}">
         <div class="hidden absolute inset-0 group-hover:flex justify-center items-center bg-black bg-opacity-50">
           <svg class="w-10 fill-current" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="512" height="512" x="0" y="0" viewBox="0 0 488.85 488.85" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><path d="M244.425 98.725c-93.4 0-178.1 51.1-240.6 134.1-5.1 6.8-5.1 16.3 0 23.1 62.5 83.1 147.2 134.2 240.6 134.2s178.1-51.1 240.6-134.1c5.1-6.8 5.1-16.3 0-23.1-62.5-83.1-147.2-134.2-240.6-134.2zm6.7 248.3c-62 3.9-113.2-47.2-109.3-109.3 3.2-51.2 44.7-92.7 95.9-95.9 62-3.9 113.2 47.2 109.3 109.3-3.3 51.1-44.8 92.6-95.9 95.9zm-3.1-47.4c-33.4 2.1-61-25.4-58.8-58.8 1.7-27.6 24.1-49.9 51.7-51.7 33.4-2.1 61 25.4 58.8 58.8-1.8 27.7-24.2 50-51.7 51.7z"</path></g></svg>
         </div>
@@ -56,7 +56,7 @@
           class="fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-75 items-center justify-center"
         >
           <img class="p-16 max-w-full max-h-full pointer-events-none"
-            src="https://expo.nftfactoryparis.com/artworks/MDMA.jpg">
+            src="{{ $smart_contract->getArtworkUrl() }}">
           <button 
             class="fixed top-3 right-4 p-2 text-white hover:text-NFTF-green NFTFtransistion"
             x-on:click="showImage = false"
@@ -67,26 +67,26 @@
       </div>
       
       {{-- <img class="w-full" 
-      src="https://expo.nftfactoryparis.com/artworks/MDMA.jpg" 
+      src="{{ $smart_contract->getArtworkUrl() }}" 
       alt=""> --}}
     </div>
 
     <div class="w-1/2 pl-5">
       <div>
         <h1 class="-mt-5 text-6xl md:text-5xl lg:text-7xl font-bold">
-          {{ $this->smart_contract->artwork_title }}
+          {{ $smart_contract->artwork_title }}
         </h1>
         <p class="mt-3 text-lg">
-          {{ $this->smart_contract->artwork_description }}
+          {{ $smart_contract->artwork_description }}
         </p>
         <div class="mt-6 flex justify-between items-center text-xl">
           <div>
-            by <a class="hover:text-NFTF-green font-bold" href="#">{{ $this->smart_contract->user->name }}</a>
+            by <a class="hover:text-NFTF-green font-bold" href="#">{{ $smart_contract->user->name }}</a>
           </div>
           <div class="flex gap-4">
-            @if ($this->smart_contract->artist_portfolio_link)
+            @if ($smart_contract->artist_portfolio_link)
               <a class="hover:text-NFTF-green NFTF-transition" 
-              href="{{ $this->smart_contract->artist_portfolio_link }}"
+              href="{{ $smart_contract->artist_portfolio_link }}"
               target="_blank" 
               rel="noopener noreferrer">
                 <svg class="w-8 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19">
@@ -94,9 +94,9 @@
                 </svg>              
               </a>
             @endif
-            @if ($this->smart_contract->artist_twitter_link)
+            @if ($smart_contract->artist_twitter_link)
               <a class="hover:text-NFTF-green NFTF-transition" 
-              href="{{ $this->smart_contract->artist_twitter_link }}" 
+              href="{{ $smart_contract->artist_twitter_link }}" 
               target="_blank" 
               rel="noopener noreferrer">
                 <svg class="w-8 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19">
@@ -104,9 +104,9 @@
                 </svg>
               </a>
             @endif
-            @if ($this->smart_contract->artist_contact_mail)
+            @if ($smart_contract->artist_contact_mail)
               <a class="hover:text-NFTF-green NFTF-transition" 
-              href="{{ $this->smart_contract->artist_contact_mail }}" 
+              href="{{ $smart_contract->artist_contact_mail }}" 
               target="_blank" 
               rel="noopener noreferrer">
                 <svg class="w-8 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19">
@@ -126,10 +126,10 @@
         </h2>
 
         <div class="mt-2 text-6xl md:text-5xl lg:text-7xl font-black">
-          {{ $this->smart_contract->artwork_price }} {{ $this->smart_contract->network->currency }}
+          {{ $smart_contract->artwork_price }} {{ $smart_contract->network->currency }}
         </div>
         <div class="text-lg font-bold">
-          xx of {{ $this->smart_contract->artwork_max_supply }} Editions Available
+          {{ $smart_contract->artwork_max_supply }} of {{ $smart_contract->artwork_max_supply }} Editions Available
         </div>
 
         <div class="flex gap-10">
@@ -159,13 +159,13 @@
         </h2>
         <ul class="mt-6 text-lg">
           <li>
-            <span class="font-bold">Published:</span> {{ $this->smart_contract->updated_at }}
+            <span class="font-bold">Published:</span> {{ $smart_contract->updated_at }}
           </li>
           <li>
-            <span class="font-bold">File format:</span> {{ $this->smart_contract->artwork_hd_extension }}
+            <span class="font-bold">File format:</span> {{ $smart_contract->artwork_hd_extension }}
           </li>
           {{-- <li>
-            <span class="font-bold">HD file size:</span> {{ $this->smart_contract->artwork_size }}
+            <span class="font-bold">HD file size:</span> {{ $smart_contract->artwork_size }}
           </li> --}}
         </ul>
       </div>
@@ -178,16 +178,16 @@
         </h2>
         <ul class="mt-6 text-lg">
           <li>
-            <span class="font-bold">Contract address:</span> {{ $this->smart_contract->address }}
+            <span class="font-bold">Contract address:</span> {{ $smart_contract->address }}
           </li>
           <li>
             <span class="font-bold">Type:</span> ERC-721
           </li>
           <li>
-            <span class="font-bold">Blockchain:</span> {{ $this->smart_contract->network->name }}
+            <span class="font-bold">Blockchain:</span> {{ $smart_contract->network->name }}
           </li>
           <li>
-            <span class="font-bold">Second market royalties:</span> {{ $this->smart_contract->getRoyaltyInput() }}%
+            <span class="font-bold">Second market royalties:</span> {{ $smart_contract->getRoyaltyInput() }}%
           </li>
         </ul>
       </div>
@@ -214,7 +214,7 @@
           </li> --}}
           <li>
             <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
-            href="{{ $this->smart_contract->network->explorer.'address/'.$this->smart_contract->address }}"
+            href="{{ $smart_contract->network->explorer.'address/'.$smart_contract->address }}"
             target="_blank"
             rel="noopener noreferrer">
             <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">
@@ -227,7 +227,7 @@
           </li>
           <li>
             <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
-            href="{{ $this->smart_contract->getArtworkIpfsUrl() }}"
+            href="{{ $smart_contract->getArtworkIpfsUrl() }}"
             target="_blank"
             rel="noopener noreferrer">
             <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">
@@ -240,7 +240,7 @@
           </li>
           <li>
             <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
-            href="{{ $this->smart_contract->getArtworkArweaveUrl() }}"
+            href="{{ $smart_contract->getArtworkArweaveUrl() }}"
             target="_blank"
             rel="noopener noreferrer">
               <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">
@@ -260,10 +260,10 @@
   <hr class="my-16 border-gray-400">
 
   <h1 class="-mt-5 text-6xl md:text-5xl lg:text-7xl font-bold">
-    {{ $this->smart_contract->expo->name }}
+    {{ $smart_contract->expo->name }}
   </h1>
   <p class="mt-3 text-lg">
-    {{ $this->smart_contract->expo->description }}
+    {{ $smart_contract->expo->description }}
   </p>
 
 
