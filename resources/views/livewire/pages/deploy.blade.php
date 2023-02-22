@@ -21,7 +21,7 @@
         <path id="Tracé_23" data-name="Tracé 23" d="M1523.863,858.178v-2.836h-5.671v-2.836h-5.671v-5.671h-5.671v14.178h-5.671v14.178h28.355V858.178Z" fill="#2ef52f"/>
       </g>
     </svg>
-</div>
+  </div>
 
   {{-- Header --}}
   <div class="px-4 md:px-8 relative w-full lg:mx-auto lg:container xl:max-w-screen-lg">
@@ -73,7 +73,7 @@
           <div class="mt-10 flex flex-wrap gap-y-4 gap-x-16">
 
             @foreach ($networks as $network)
-              <label class="flex-1 p-4 flex items-start gap-x-4 border-2 border-transparent hover:border-NFTF-green cursor-pointer">
+                <label class="flex-1 p-4 flex items-start gap-x-4 border-2 border-transparent  {{ !$in_editing ? '' : 'hover:border-NFTF-green cursor-pointer' }}">
                 <input class="w-10 h-10 cursor-pointer shrink-0"
                 {{ !$in_editing ? 'disabled' : '' }}
                 type="radio"
@@ -280,9 +280,29 @@
                       </div>
                       <div class="mt-5 flex justify-center">
                       @if ($hd_media && $refresh_preview)
-                        <img class="h-32" src="{{ $hd_media->temporaryUrl() }}" alt="" />
+                        @if (Str::startsWith(mime_content_type($hd_media->getRealPath()), 'video/mp4'))
+                        <video src="{{ $hd_media->temporaryUrl() }}" 
+                          poster=""
+                          preload="auto"
+                          autoplay="autoplay"
+                          loop="loop"
+                          muted="muted"
+                          controls></video>
+                        @else
+                          <img class="h-32" src="{{ $hd_media->temporaryUrl() }}" alt="" />
+                        @endif
                       @elseif ($artwork_path)
+                        @if (Str::endsWith($artwork_path, '.mp4'))
+                          <video src="{{ config('app.url').$artwork_path }}" 
+                          poster=""
+                          preload="auto"
+                          autoplay="autoplay"
+                          loop="loop"
+                          muted="muted"
+                          controls></video>
+                        @else
                         <img class="h-32" src="{{ config('app.url').$artwork_path }}" alt="" />
+                        @endif
                       @else
                         <svg class="h-32 w-32" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><g fill="#000" fill-rule="evenodd" clip-rule="evenodd"><path d="m20 7-4-4H5a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1zm-1 13H5V4h10.5v2.5a1 1 0 0 0 1 1H19zm-.914-13.5L16.5 4.914V6.5z" fill="#000000" data-original="#000000"></path><path d="M11.5 13.5V16h1v-2.5H15v-1h-2.5V10h-1v2.5H9v1z" fill="#000000" data-original="#000000"></path></g></g></svg>
                       @endif
@@ -399,10 +419,10 @@
                 </label>
                 <div>
                   <div class="flex gap-x-10">
-                    <label class="mt-6 flex items-start gap-x-4 cursor-pointer">
+                    <label class="mt-6 flex items-start gap-x-4 {{ !$in_editing ? '' : 'cursor-pointer' }}">
                       <input
                         {{ !$in_editing ? 'disabled' : '' }}
-                        class="w-10 h-10 cursor-pointer shrink-0"
+                        class="w-10 h-10 shrink-0 {{ !$in_editing ? '' : 'cursor-pointer' }}"
                         type="radio"
                         wire:model.lazy="open_sales"
                         value="1">
@@ -412,8 +432,8 @@
                         </span>
                       </span>
                     </label>
-                    <label class="mt-6 flex items-start gap-x-4 cursor-pointer">
-                      <input class="w-10 h-10 cursor-pointer shrink-0"
+                    <label class="mt-6 flex items-start gap-x-4 {{ !$in_editing ? '' : 'cursor-pointer' }}">
+                      <input class="w-10 h-10 {{ !$in_editing ? '' : 'cursor-pointer' }} shrink-0"
                         {{ !$in_editing ? 'disabled' : '' }}
                         type="radio"
                         wire:model.lazy="open_sales"
@@ -661,7 +681,7 @@
       </div>
       
       <button {{ ($smart_contract && $smart_contract->inReview()) ? 'disabled' : 'type="submit"'}}
-        class="block mx-auto mt-10 px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease">
+        class="block mx-auto mt-10 px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease {{ !$in_editing ? '!bg-gray-600' : '' }}">
         @if ($in_editing)
           {{ $state ? : 'Submit for approval' }}
         @elseif ($smart_contract && $smart_contract->inReview())
