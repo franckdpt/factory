@@ -136,12 +136,12 @@ class SmartContract extends Model
 
     public function isVideo(): string
     {
-        return in_array(['mp4', 'mov'], $this->artwork_hd_extension);
+        return in_array($this->artwork_hd_extension, ['mp4', 'mov']);
     }
 
     public function isImage(): string
     {
-        return in_array(['jpeg', 'jpg', 'png'], $this->artwork_hd_extension);
+        return in_array($this->artwork_hd_extension, ['jpeg', 'jpg', 'png']);
     }
 
     public static function generatePublicId(int $length = 8): string
