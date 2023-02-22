@@ -41,27 +41,31 @@
       {{-- <div class="w-full"> --}}
       {{-- if portrait --}}
       <div class="w-1/2 pr-5 sticky top-10">
-        <div class="relative w-full"
-        x-data="{ showImage: false }">
-          <div class="relative cursor-pointer text-NFTF-greenDark group"
-          x-on:click="showImage = true">
-            <img class="" 
-            src="{{ $smart_contract->getArtworkUrl() }}">
-            <div class="hidden absolute inset-0 group-hover:flex justify-center items-center bg-black bg-opacity-50">
-              <svg class="w-10 fill-current" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="512" height="512" x="0" y="0" viewBox="0 0 488.85 488.85" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><path d="M244.425 98.725c-93.4 0-178.1 51.1-240.6 134.1-5.1 6.8-5.1 16.3 0 23.1 62.5 83.1 147.2 134.2 240.6 134.2s178.1-51.1 240.6-134.1c5.1-6.8 5.1-16.3 0-23.1-62.5-83.1-147.2-134.2-240.6-134.2zm6.7 248.3c-62 3.9-113.2-47.2-109.3-109.3 3.2-51.2 44.7-92.7 95.9-95.9 62-3.9 113.2 47.2 109.3 109.3-3.3 51.1-44.8 92.6-95.9 95.9zm-3.1-47.4c-33.4 2.1-61-25.4-58.8-58.8 1.7-27.6 24.1-49.9 51.7-51.7 33.4-2.1 61 25.4 58.8 58.8-1.8 27.7-24.2 50-51.7 51.7z"</path></g></svg>
+        @if ($smart_contract->artwork_path)
+          <div class="relative w-full"
+            x-data="{ showImage: false }">
+            <div class="relative cursor-pointer text-NFTF-greenDark group"
+            x-on:click="showImage = true">
+              <img class="" 
+              src="{{ $smart_contract->getArtworkUrl() }}">
+              <div class="hidden absolute inset-0 group-hover:flex justify-center items-center bg-black bg-opacity-50">
+                <svg class="w-10 fill-current" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="512" height="512" x="0" y="0" viewBox="0 0 488.85 488.85" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><path d="M244.425 98.725c-93.4 0-178.1 51.1-240.6 134.1-5.1 6.8-5.1 16.3 0 23.1 62.5 83.1 147.2 134.2 240.6 134.2s178.1-51.1 240.6-134.1c5.1-6.8 5.1-16.3 0-23.1-62.5-83.1-147.2-134.2-240.6-134.2zm6.7 248.3c-62 3.9-113.2-47.2-109.3-109.3 3.2-51.2 44.7-92.7 95.9-95.9 62-3.9 113.2 47.2 109.3 109.3-3.3 51.1-44.8 92.6-95.9 95.9zm-3.1-47.4c-33.4 2.1-61-25.4-58.8-58.8 1.7-27.6 24.1-49.9 51.7-51.7 33.4-2.1 61 25.4 58.8 58.8-1.8 27.7-24.2 50-51.7 51.7z"</path></g></svg>
+              </div>
             </div>
-          </div>
-      
-          <div x-show="showImage"
-            x-bind:class="{'!flex': showImage }"
-            class="fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-75 items-center justify-center">
-            <img class="p-16 max-w-full max-h-full pointer-events-none"
-              src="{{ $smart_contract->getArtworkUrl() }}" />
-            <button class="fixed top-3 right-4 p-2 text-white hover:text-NFTF-green NFTFtransistion"
-              x-on:click="showImage = false">
-              <svg class="fill-current w-8" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 386.667 386.667" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M386.667 45.564 341.103 0l-147.77 147.769L45.564 0 0 45.564l147.769 147.769L0 341.103l45.564 45.564 147.769-147.769 147.769 147.769 45.564-45.564-147.768-147.77z"></path></g></svg>
-            </button>
-          </div>
+        
+            <div x-show="showImage"
+              x-bind:class="{'!flex': showImage }"
+              class="fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-75 items-center justify-center">
+              <img class="p-16 max-w-full max-h-full pointer-events-none"
+                src="{{ $smart_contract->getArtworkUrl() }}" />
+              <button class="fixed top-3 right-4 p-2 text-white hover:text-NFTF-green NFTFtransistion"
+                x-on:click="showImage = false">
+                <svg class="fill-current w-8" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 386.667 386.667" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M386.667 45.564 341.103 0l-147.77 147.769L45.564 0 0 45.564l147.769 147.769L0 341.103l45.564 45.564 147.769-147.769 147.769 147.769 45.564-45.564-147.768-147.77z"></path></g></svg>
+              </button>
+            </div>
+          @else
+            No artwork uploaded
+          @endif
         </div>
         
         {{-- <img class="w-full" 
@@ -124,7 +128,7 @@
           </h2>
 
           <div class="mt-2 text-6xl md:text-5xl lg:text-7xl font-black">
-            {{ $smart_contract->artwork_price }} {{ $smart_contract->network->currency }}
+            {{ $smart_contract->artwork_price }} {{ $smart_contract->network ? $smart_contract->network->currency : '' }}
           </div>
           <div class="text-lg font-bold">
             {{ $smart_contract->artwork_max_supply - $smart_contract->self_nfts_number }} of {{ $smart_contract->artwork_max_supply }} Editions Available
@@ -198,7 +202,7 @@
               <span class="font-bold">Type:</span> ERC-721
             </li>
             <li>
-              <span class="font-bold">Blockchain:</span> {{ $smart_contract->network->name }}
+              <span class="font-bold">Blockchain:</span> {{ $smart_contract->network ? $smart_contract->network->name : '' }}
             </li>
             <li>
               <span class="font-bold">Second market royalties:</span> {{ $smart_contract->getRoyaltyInput() }}%
@@ -228,7 +232,7 @@
             </li> --}}
             <li>
               <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
-              href="{{ $smart_contract->network->explorer.'address/'.$smart_contract->address }}"
+              href="{{ $smart_contract->network ? $smart_contract->network->explorer.'address/'.$smart_contract->address : '' }}"
               target="_blank"
               rel="noopener noreferrer">
               <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">

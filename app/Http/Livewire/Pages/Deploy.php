@@ -389,6 +389,7 @@ class Deploy extends Component
         $this->deployed = true;
         $this->address = $address;
 
+        $this->smart_contract->status = 'deployed';
         $this->smart_contract->deployed = $this->deployed;
         $this->smart_contract->address = $this->address;
         $this->smart_contract->save();

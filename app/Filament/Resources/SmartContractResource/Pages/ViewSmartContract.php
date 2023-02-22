@@ -12,19 +12,22 @@ class ViewSmartContract extends ViewRecord
 
     protected function getActions(): array
     {
+        $actions = [];
+        $actions[] = Action::make('Mint page')
+                    ->icon('heroicon-o-document-text')
+                    ->url(route('mint', ['expo' => $this->record->expo, 'smart_contract_publicid' => $this->record->public_id]));
+
         if ($this->record->status == 'in_review') {
-            return [
-                Action::make('approve contract')
-                    ->action(function() {
-                        $this->record->status = 'ready_to_deploy';
-                        $this->record->save();
-                        redirect()->to($this->getResource()::getUrl('index'));
-                    })
-                    ->requiresConfirmation()
-            ];
-        } else {
-            return [];
+            $actions[] = Action::make('approve contract')
+                            ->action(function() {
+                                $this->record->status = 'ready_to_deploy';
+                                $this->record->save();
+                                redirect()->to($this->getResource()::getUrl('index'));
+                            })
+                            ->requiresConfirmation();
         }
+
+        return $actions;
     }
 
     protected function getFooterWidgets(): array
