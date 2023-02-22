@@ -769,29 +769,41 @@
             const signer = await fetchSigner()
             const Factory = new ethers.ContractFactory(@this.abi, @this.byte, signer);
             // const factoryContract = await Factory.deploy("Hello, Hardhat!");
+            console.log(@this.expo_name)
+            console.log(@this.expo_symbol)
+            console.log(@this.artwork_title)
+            console.log(@this.artwork_description)
+            console.log(ipfsUrl)
+            console.log(arweaveUrl)
+            console.log(contractUrl)
+            console.log(tokenUrl)
+            console.log(@this.artwork_sha_hash)
+            console.log(@this.factory_address)
+            console.log(ethers.utils.parseEther(@this.artwork_price))
+            console.log(@this.artwork_max_supply)
+            console.log(@this.self_nfts_number)
+            console.log(@this.artwork_royalty)
+            console.log(@this.open_sales)
             const factoryContract = await Factory.deploy(
-                @this.expo_name,
-                @this.expo_symbol,
-                @this.artwork_description,
-                ipfsUrl,
-                tokenUrl,
-                arweaveUrl,
-                @this.artwork_sha_hash,
-                contractUrl,
-                @this.artwork_max_supply,
-                ethers.utils.parseEther(@this.artwork_price),
-                @this.self_nfts_number,
+                [@this.expo_name, @this.expo_symbol],
+                [@this.artwork_title, @this.artwork_description],
+                [ipfsUrl,arweaveUrl,contractUrl,tokenUrl,@this.artwork_sha_hash],
                 @this.factory_address,
+                ethers.utils.parseEther(@this.artwork_price),
+                @this.artwork_max_supply,
+                @this.self_nfts_number,
                 @this.artwork_royalty,
                 @this.open_sales
             );
 
             await factoryContract.deployed();
             
-            //Livewire.emit('smartContractDeployed', factoryContract.address)
+            Livewire.emit('smartContractDeployed', factoryContract.address)
             console.log(" address", factoryContract.address);
         } else {
-            console.log('error: this.auth_address differ getAccount().address')
+          console.log(@this.auth_address)
+          console.log(formatAddress(getAccount().address))
+          console.log('error: this.auth_address differ getAccount().address')
         }
     }
 
@@ -803,7 +815,7 @@
       });
 
       Livewire.on('deploySmartContractOnJs', function (tokenUrl, ipfsUrl, arweaveUrl, contractUrl) {
-        //deploy(tokenUrl, ipfsUrl, arweaveUrl, contractUrl)
+        deploy(tokenUrl, ipfsUrl, arweaveUrl, contractUrl)
       });
 
       Livewire.on('switchNetworkOnJs', function (networkId) {
