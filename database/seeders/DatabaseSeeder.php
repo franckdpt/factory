@@ -23,15 +23,15 @@ class DatabaseSeeder extends Seeder
         DB::table('smart_contracts')->truncate();
 
         DB::table('expos')->insert([
-            'name' => 'Expo test 1',
+            'name' => 'Premiere expo',
             'description' => 'Expo desc',
-            'slug' => 'expo-test-1',
+            'slug' => 'premiere-expo',
             'nb_deployment_authorized' => 1,
             'factory_address' => "0x4Ed0E25829030e4f58111dDaC1528DcEcfd1C4E2",
 
-            'contracts_name' => 'Expo nb 1',
-            'contracts_description' => 'Description of expo',
-            'contracts_symbol' => 'ETN',
+            'contracts_name' => 'contract Expo nb 1',
+            'contracts_description' => 'contract desc expo',
+            'contracts_symbol' => 'PE',
         ]);
 
         DB::table('networks')->insert([

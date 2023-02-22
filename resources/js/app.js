@@ -27,9 +27,12 @@ import {
   watchAccount,
   watchNetwork,
   waitForTransaction,
+  watchPendingTransactions,
+  prepareWriteContract,
   writeContract,
   signMessage,
   switchNetwork,
+  getProvider,
 } from '@wagmi/core'
 window.connect = connect;
 window.fetchSigner = fetchSigner;
@@ -38,9 +41,11 @@ window.getNetwork = getNetwork;
 window.watchAccount = watchAccount;
 window.watchNetwork = watchNetwork;
 window.waitForTransaction = waitForTransaction;
+window.watchPendingTransactions = watchPendingTransactions;
+window.prepareWriteContract = prepareWriteContract;
 window.writeContract = writeContract;
 window.signMessage = signMessage;
-window.switchNetwork = switchNetwork;
+window.getProvider = getProvider;
 
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
 window.InjectedConnector = InjectedConnector;

@@ -1,5 +1,4 @@
 <div>
-
   <div class="py-7 px-4 md:px-8 relative w-full lg:mx-auto lg:container xl:max-w-screen-lg">
     <div class="flex justify-between items-center">
       <a href="https://nftfactoryparis.com/">
@@ -64,7 +63,7 @@
               </button>
             </div>
           @else
-            No artwork uploaded
+            Not artwork uploaded
           @endif
         </div>
         
@@ -305,8 +304,7 @@
         console.log(@this.smart_contract_address)
         console.log(@this.smart_contract_price)
 
-        const { hash } = await writeContract({
-          mode: 'recklesslyUnprepared',
+        const config = await prepareWriteContract({
           address: @this.smart_contract_address,
           abi: @this.abi,
           functionName: 'mint',
@@ -314,8 +312,23 @@
             value: ethers.utils.parseEther(@this.smart_contract_price),
           },
         })
+        const writeContrac = await writeContract(config)
+        console.log(writeContrac.hash)
 
-        console.log(hash);
+        //const provider = getProvider()
+
+        //setTimeout(() => {
+          // res = await provider.getTransactionReceipt(writeContrac.hash);
+          // if (res !== null) {
+          //  console.log(res)
+          // }
+        //}, 1000);
+        
+
+        console.log('minted');
+        
+        //console.log(hash)
+        
       } else {
         console.log(@this.network_public_id)
         console.log(getNetwork())
