@@ -19,6 +19,7 @@ class Deploy extends Component
     // Livewire variables
     public ?SmartContract $smart_contract = null;
     public Expo $expo;
+    public $auth_address;
     public $networks;
     public $network_rates;
 
@@ -103,7 +104,7 @@ class Deploy extends Component
 
         $this->expo = $expo;
         $this->expo_name = $expo->name;
-        $this->expo_symbol = $expo->symbol;
+        $this->expo_symbol = $expo->contracts_symbol;
         $this->factory_address = $expo->factory_address;
 
         $this->isWalletAllowed();
@@ -371,6 +372,7 @@ class Deploy extends Component
     {
         $this->abi = config("contracts.artist.abi");
         $this->byte = config("contracts.artist.byte");
+        $this->auth_address = Auth::user()->wallet_address;
 
         // Next on JS side.
         $this->state = 'Deploying smart contract...';
