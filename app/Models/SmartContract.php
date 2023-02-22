@@ -134,6 +134,16 @@ class SmartContract extends Model
         return strval($this->artwork_royalty/100);
     }
 
+    public function isVideo(): string
+    {
+        return in_array(['mp4', 'mov'], $this->artwork_hd_extension);
+    }
+
+    public function isImage(): string
+    {
+        return in_array(['jpeg', 'jpg', 'png'], $this->artwork_hd_extension);
+    }
+
     public static function generatePublicId(int $length = 8): string
     {
         $public_id = Str::random($length);
