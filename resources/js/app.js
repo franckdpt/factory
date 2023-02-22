@@ -19,26 +19,26 @@ window.ethers = ethers;
 import {
   configureChains,
   createClient,
-
-  prepareSendTransaction,
-  sendTransaction,
+  
   connect,
   fetchSigner,
   getAccount,
+  getNetwork,
   watchAccount,
   watchNetwork,
   waitForTransaction,
+  writeContract,
   signMessage,
   switchNetwork,
 } from '@wagmi/core'
-window.prepareSendTransaction = prepareSendTransaction;
-window.sendTransaction = sendTransaction;
 window.connect = connect;
 window.fetchSigner = fetchSigner;
 window.getAccount = getAccount;
+window.getNetwork = getNetwork;
 window.watchAccount = watchAccount;
 window.watchNetwork = watchNetwork;
 window.waitForTransaction = waitForTransaction;
+window.writeContract = writeContract;
 window.signMessage = signMessage;
 window.switchNetwork = switchNetwork;
 

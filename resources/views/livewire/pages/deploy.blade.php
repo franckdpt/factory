@@ -1,5 +1,4 @@
 <div>
-
   {{-- Logo --}}
   <div class="m-10 block mx-auto text-center">
     <svg class="inline-block w-[100px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.789 77.556">
@@ -789,7 +788,9 @@
 
     async function deploy(tokenUrl, ipfsUrl, arweaveUrl, contractUrl) {
         // prevent wallet error
-        if (@this.auth_address == formatAddress(getAccount().address)) {
+        if (@this.auth_address == formatAddress(getAccount().address) &&
+            @this.network_public_id == getNetwork().chain.id) {
+
             const signer = await fetchSigner()
             const Factory = new ethers.ContractFactory(@this.abi, @this.byte, signer);
             // const factoryContract = await Factory.deploy("Hello, Hardhat!");
@@ -808,6 +809,7 @@
             console.log(@this.self_nfts_number)
             console.log(@this.artwork_royalty)
             console.log(@this.open_sales)
+
             const factoryContract = await Factory.deploy(
                 [@this.expo_name, @this.expo_symbol],
                 [@this.artwork_title, @this.artwork_description],
@@ -826,8 +828,9 @@
             console.log(" address", factoryContract.address);
         } else {
           console.log(@this.auth_address)
-          console.log(formatAddress(getAccount().address))
-          console.log('error: this.auth_address differ getAccount().address')
+          console.log(formatAddress(getAccount()))
+          console.log(@this.network_public_id)
+          console.log(formatAddress(getNetwork()()))
         }
     }
 
