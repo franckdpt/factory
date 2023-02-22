@@ -15,7 +15,7 @@ class EditExpo extends EditRecord
     {
         $action = [];
         // $action[] = Actions\DeleteAction::make();
-        $action[] = Action::make('Gallery page')->icon('heroicon-o-document-text')->url(route('expo', ['expo' => $this->record]));
+        $action[] = Action::make('Expo page')->icon('heroicon-o-document-text')->url(route('expo', ['expo' => $this->record]));
         $action[] = Action::make('Deployment page')->icon('heroicon-o-document-text')->url(route('deploy', ['expo' => $this->record]));
 
         return $action;

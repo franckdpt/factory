@@ -127,7 +127,7 @@
             {{ $smart_contract->artwork_price }} {{ $smart_contract->network->currency }}
           </div>
           <div class="text-lg font-bold">
-            {{ $smart_contract->artwork_max_supply }} of {{ $smart_contract->artwork_max_supply }} Editions Available
+            {{ $smart_contract->artwork_max_supply - $smart_contract->self_nfts_number }} of {{ $smart_contract->artwork_max_supply }} Editions Available
           </div>
 
           <div class="flex gap-10">

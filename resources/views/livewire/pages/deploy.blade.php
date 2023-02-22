@@ -368,6 +368,7 @@
                     {{ !$in_editing ? 'disabled' : '' }}
                     type="number" 
                     min="0"
+                    step=".01"
                     placeholder="10"
                     name="price"
                     wire:model="artwork_price">
@@ -473,7 +474,7 @@
                     {{ $errors->has('artwork_royalty_input') ? '!border-red-600' : '' }}
                     {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
                     {{ !$in_editing ? 'disabled' : '' }}
-                    type="number" 
+                    type="decimal" 
                     min="0"
                     max="10"
                     placeholder="5"

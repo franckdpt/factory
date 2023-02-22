@@ -129,9 +129,9 @@ class SmartContract extends Model
         return self::ARWEAVE_GATEWAY.$this->artwork_arweave_hash;
     }
 
-    public function getRoyaltyInput(): string
+    public function getRoyaltyInput()
     {
-        return strval($this->artwork_royalty/100);
+        return is_null($this->artwork_royalty) ? null : strval($this->artwork_royalty/100);
     }
 
     public function isVideo(): string
