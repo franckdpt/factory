@@ -25,7 +25,7 @@
             Sorry, this wallet is not allowed
         @endif
         @livewire('wallet-button', [
-                    'buttonClassAdded' => 'bg-NFTF-green text-xl button-container'
+                    'classAdded' => 'bg-NFTF-green text-xl button-container'
                 ])
     </div>
 </div>
