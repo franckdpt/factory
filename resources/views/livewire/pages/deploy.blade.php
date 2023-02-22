@@ -280,7 +280,7 @@
                       </div>
                       <div class="mt-5 flex justify-center">
                       @if ($hd_media && $refresh_preview)
-                        @if (Str::startsWith(mime_content_type($hd_media->getRealPath()), 'video/mp4'))
+                        @if ($hd_media->getMimeType() == 'video/mp4')
                         <video poster=""
                           preload="auto"
                           autoplay="autoplay"
@@ -293,17 +293,17 @@
                           <img class="h-32" src="{{ $hd_media->temporaryUrl() }}" alt="" />
                         @endif
                       @elseif ($artwork_path)
-                        @if (Str::endsWith($artwork_path, '.mp4'))
+                        @if ($smart_contract->isVideo())
                           <video poster=""
                           preload="auto"
                           autoplay="autoplay"
                           loop="loop"
                           muted="muted"
                           controls>
-                            <source src="{{ config('app.url').$artwork_path }}"  type="video/mp4">
+                            <source src="{{ $smart_contract->getArtworkUrl() }}"  type="video/mp4">
                           </video>
-                        @else
-                        <img class="h-32" src="{{ config('app.url').$artwork_path }}" alt="" />
+                        @elseif ($smart_contract->isImage())
+                          <img class="h-32" src="{{ $smart_contract->getArtworkUrl() }}" alt="" />
                         @endif
                       @else
                         <svg class="h-32 w-32" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><g fill="#000" fill-rule="evenodd" clip-rule="evenodd"><path d="m20 7-4-4H5a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1zm-1 13H5V4h10.5v2.5a1 1 0 0 0 1 1H19zm-.914-13.5L16.5 4.914V6.5z" fill="#000000" data-original="#000000"></path><path d="M11.5 13.5V16h1v-2.5H15v-1h-2.5V10h-1v2.5H9v1z" fill="#000000" data-original="#000000"></path></g></g></svg>
