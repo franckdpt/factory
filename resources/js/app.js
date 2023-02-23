@@ -46,6 +46,7 @@ window.prepareWriteContract = prepareWriteContract;
 window.writeContract = writeContract;
 window.signMessage = signMessage;
 window.getProvider = getProvider;
+window.switchNetwork = switchNetwork;
 
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
 window.InjectedConnector = InjectedConnector;

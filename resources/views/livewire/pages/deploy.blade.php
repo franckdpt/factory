@@ -474,8 +474,9 @@
                     {{ $errors->has('artwork_royalty_input') ? '!border-red-600' : '' }}
                     {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
                     {{ !$in_editing ? 'disabled' : '' }}
-                    type="decimal" 
+                    type="number" 
                     min="0"
+                    step=".01"
                     max="10"
                     placeholder="5"
                     name="royalty"

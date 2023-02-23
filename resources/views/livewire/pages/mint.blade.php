@@ -324,9 +324,6 @@
           // }
         //}, 1000);
         
-
-        console.log('minted');
-        
         //console.log(hash)
         
       } else {

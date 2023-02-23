@@ -84,8 +84,8 @@ class Deploy extends Component
             'artwork_description' => 'required|string|max:420',
             'artwork_max_supply' => 'required',
             'artwork_price' => 'required|numeric|gt:0',
-            'artwork_royalty_input' => 'required|numeric|max:10',
             'artwork_path' => 'required|string',
+            'artwork_royalty_input' => 'required|numeric|max:10',
 
             'artist_portfolio_link' => 'nullable|url',
             'artist_twitter_link' => 'nullable|url',
@@ -139,9 +139,9 @@ class Deploy extends Component
             $this->artwork_price = $this->smart_contract->artwork_price;
             $this->artwork_royalty = $this->smart_contract->artwork_royalty;
             
-            $this->artist_portfolio_link = $this->smart_contract->artist_portfolio_link;
-            $this->artist_twitter_link = $this->smart_contract->artist_twitter_link;
-            $this->artist_contact_mail = $this->smart_contract->artist_contact_mail;
+            $this->artist_portfolio_link = $this->smart_contract->artist_portfolio_link ? : Auth::user()->portfolio_link;
+            $this->artist_twitter_link = $this->smart_contract->artist_twitter_link ? : Auth::user()->twitter_link;
+            $this->artist_contact_mail = $this->smart_contract->artist_contact_mail ? : Auth::user()->contact_mail;
 
             $this->artwork_ipfs_hash = $this->smart_contract->artwork_ipfs_hash;
             $this->token_ipfs_hash = $this->smart_contract->token_ipfs_hash;
@@ -187,6 +187,27 @@ class Deploy extends Component
     public function userChangedNetwork($id)
     {
         $this->client_network_id = $id;
+    }
+
+    public function updatedArtistPortfolioLink()
+    {
+        $user = Auth::user();
+        $user->portfolio_link = $this->smart_contract->artist_portfolio_link;
+        $user->save();
+    }
+
+    public function updatedArtistTwitterLink()
+    {
+        $user = Auth::user();
+        $user->twitter_link = $this->smart_contract->artist_twitter_link;
+        $user->save();
+    }
+
+    public function updatedArtistContactMail()
+    {
+        $user = Auth::user();
+        $user->contact_mail = $this->smart_contract->artist_contact_mail;
+        $user->save();
     }
 
     public function updatedArtworkMaxSupply()
