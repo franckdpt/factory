@@ -28,6 +28,7 @@ class SmartContract extends Model
         'artwork_hd_extension',
         'artwork_hd_mime',
         'artwork_max_supply',
+        'artwork_total_supply',
         'artwork_price',
         'artwork_royalty',
 

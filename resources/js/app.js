@@ -32,6 +32,8 @@ import {
   writeContract,
   signMessage,
   switchNetwork,
+  readContract,
+  readContracts,
   getProvider,
 } from '@wagmi/core'
 window.connect = connect;
@@ -45,20 +47,22 @@ window.watchPendingTransactions = watchPendingTransactions;
 window.prepareWriteContract = prepareWriteContract;
 window.writeContract = writeContract;
 window.signMessage = signMessage;
+window.readContract = readContract;
+window.readContracts = readContracts;
 window.getProvider = getProvider;
 window.switchNetwork = switchNetwork;
 
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
 window.InjectedConnector = InjectedConnector;
 
-import { mainnet, polygon, goerli } from "@wagmi/core/chains";
+import { mainnet, polygon, goerli, polygonMumbai } from "@wagmi/core/chains";
 import { alchemyProvider } from '@wagmi/core/providers/alchemy'
 import { publicProvider } from '@wagmi/core/providers/public'
 import { Web3Modal } from "@web3modal/html";
 import { EthereumClient, modalConnectors } from "@web3modal/ethereum";
 
 // **** Setting Wagmi Client & Web3modal
-  const chains = [mainnet, polygon, goerli];
+  const chains = [mainnet, polygon, goerli, polygonMumbai];
   const { provider } = configureChains(chains, 
     [alchemyProvider({ apiKey: 'V75jiJtBsKTCcAfCeuWkZkc8xLR76gWb' }), publicProvider()],
   );

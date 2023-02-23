@@ -20,6 +20,14 @@ class Mint extends Component
     public $client_network_id;
     public $auth_address;
     public $state;
+    public $soldout = false;
+    public $is_minting = false;
+
+    protected $listeners = [
+        'fetchedSupply',
+        'minting',
+        'minted',
+    ];
 
     public function mount($smart_contract_publicid)
     {
@@ -33,6 +41,37 @@ class Mint extends Component
         if ($this->smart_contract->network_id) {
             $this->network_public_id = Network::ID[$this->smart_contract->network->public_id][env('BLOCKCHAIN_ENV')];
         }
+
+        $this->checkIfSoldout();
+    }
+
+    public function checkIfSoldout()
+    {
+        if ($this->smart_contract->artwork_max_supply == $this->smart_contract->artwork_total_supply) {
+            $this->soldout = true;
+        }
+    }
+
+    public function minting()
+    {
+        $this->is_minting = true;
+    }
+
+    public function minted($hash, $tokenid)
+    {
+        $this->is_minting = false;
+        $this->smart_contract->artwork_total_supply = $this->smart_contract->artwork_total_supply + 1;
+        $this->smart_contract->save();
+    }
+
+    public function fetchedSupply($maxSupply, $totalSupply)
+    {
+        if ($maxSupply && $totalSupply) {
+            $this->smart_contract->artwork_max_supply = $maxSupply;
+            $this->smart_contract->artwork_total_supply = $totalSupply;
+            $this->smart_contract->save();
+        }
+        $this->checkIfSoldout();
     }
 
     public function userChangedNetwork($id)

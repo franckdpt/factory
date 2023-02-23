@@ -130,19 +130,30 @@
             {{ $smart_contract->artwork_price }} {{ $smart_contract->network ? $smart_contract->network->currency : '' }}
           </div>
           <div class="text-lg font-bold">
-            {{ $smart_contract->artwork_max_supply - $smart_contract->self_nfts_number }} of {{ $smart_contract->artwork_max_supply }} Editions Available
+              {{ $smart_contract->artwork_max_supply - $smart_contract->artwork_total_supply }} of {{ $smart_contract->artwork_max_supply }} Editions Available
           </div>
 
           <div class="flex gap-10">
+          @if ($soldout)
+            <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green text-white text-6xl font-black border-gray-500 bg-gray-200">
+              Soldout
+            </button>
+          @else
             @if (Auth::check())
               @if (!$smart_contract->deployed)
                 <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green text-white text-6xl font-black border-gray-500 bg-gray-200">
                   Not deployed yet
                 </button>
               @elseif ($network_public_id === $client_network_id)
-                <button onclick="mint()" class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-6xl font-black NFTF-transition">
-                  BUY
-                </button>
+                @if ($is_minting)
+                  <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green text-white text-6xl font-black border-gray-500 bg-gray-200">
+                    Minting...
+                  </button>
+                @else
+                  <button onclick="mint()" class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-6xl font-black NFTF-transition">
+                    BUY
+                  </button>
+                @endif
               @else
                 <button onclick="switchTheNetwork()" class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-6xl font-black NFTF-transition">
                   Switch network
@@ -153,7 +164,7 @@
                 @livewire('wallet-button')
               </div>
             @endif
-
+          @endif
             {{-- <div class="flex-1 relative"
             x-data="{ showMessage: false }">
               <button class="relative flex w-full justify-center mt-10 px-5 pt-5 pb-7 border-2 border-black bg-white hover:bg-black hover:text-white text-6xl font-black NFTF-transition z-30"
@@ -312,8 +323,20 @@
             value: ethers.utils.parseEther(@this.smart_contract_price),
           },
         })
-        const writeContrac = await writeContract(config)
-        console.log(writeContrac.hash)
+
+        const { hash } = await writeContract(config)
+
+        Livewire.emit('minting')
+        
+        const waitFor = await waitForTransaction({
+          chainId: @this.network_public_id,
+          hash: hash,
+        })
+
+        console.log(waitFor);
+        Livewire.emit('minted', waitFor.transactionHash, parseInt(waitFor.logs[3].topics[3]))
+
+        
 
         //const provider = getProvider()
 
@@ -336,9 +359,25 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-      
+    async function fetchData()
+    {
+      const contract = {
+        address: @this.smart_contract_address,
+        abi: @this.abi,
+      }
 
+      const data = await readContracts({
+        contracts: [
+          { ...contract, functionName: 'maxSupply' },
+          { ...contract, functionName: 'totalSupply' },
+        ],
+      })
+
+      Livewire.emit('fetchedSupply', ethers.utils.formatUnits(data[0], 0), ethers.utils.formatUnits(data[1], 0))
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      fetchData()
     })
   </script>
 </div>
