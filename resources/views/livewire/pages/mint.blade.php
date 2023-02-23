@@ -22,25 +22,18 @@
           </g>
         </svg>
       </a>
-      <div class="flex gap-4">
-        <div class="text-2xl font-semibold">
+      <div class="flex gap-4 items-center text-2xl font-semibold">
           {{ $smart_contract->expo->name }}
           <div class="ml-4 px-4 py-2 font-black text-lg bg-NFTF-green hover:bg-black text-white NFTF-transition">
             @livewire('wallet-button')
           </div>
-        </div>
       </div>
     </div>
 
-    {{-- if landscape --}}
-    {{-- <div class="mt-10 flex-row"> --}}
-    {{-- if portrait --}}
     <div class="mt-16 md:flex items-start">
-      {{-- if landscape --}}
-      {{-- <div class="w-full"> --}}
-      {{-- if portrait --}}
-      <div class="w-1/2 pr-5 sticky top-10">
+      <div class="md:w-1/2 pr-5 md:sticky top-10">
         @if ($smart_contract->artwork_path)
+          @if (!$smart_contract->isVideo())
           <div class="relative w-full"
             x-data="{ showImage: false }">
             <div class="relative cursor-pointer text-NFTF-greenDark group"
@@ -62,17 +55,19 @@
                 <svg class="fill-current w-8" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 386.667 386.667" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M386.667 45.564 341.103 0l-147.77 147.769L45.564 0 0 45.564l147.769 147.769L0 341.103l45.564 45.564 147.769-147.769 147.769 147.769 45.564-45.564-147.768-147.77z"></path></g></svg>
               </button>
             </div>
+          </div>
           @else
-            Not artwork uploaded
+            <video class="w-full" controls poster="" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;">
+                <source src="{{ $smart_contract->getArtworkUrl() }}" type="video/mp4">
+            </video>
           @endif
-        </div>
+        @else
+          No artwork uploaded
+        @endif
         
-        {{-- <img class="w-full" 
-        src="{{ $smart_contract->getArtworkUrl() }}" 
-        alt=""> --}}
       </div>
 
-      <div class="w-1/2 pl-5">
+      <div class="md:w-1/2 pt-10 md:pt-0 md:pl-5">
         <div>
           <h1 class="-mt-5 text-6xl md:text-5xl lg:text-7xl font-bold">
             {{ $smart_contract->artwork_title }}
@@ -81,8 +76,8 @@
             {{ $smart_contract->artwork_description }}
           </p>
           <div class="mt-6 flex justify-between items-center text-xl">
-            <div>
-              by <a class="hover:text-NFTF-green font-bold" href="#">{{ $smart_contract->user->name }}</a>
+            <div class="font-bold">
+              by {{ $smart_contract->user->name }}</a>
             </div>
             <div class="flex gap-4">
               @if ($smart_contract->artist_portfolio_link)
