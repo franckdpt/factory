@@ -132,7 +132,7 @@
 
           <div class="flex gap-10">
           @if ($soldout)
-            <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green text-white text-6xl font-black border-gray-500 bg-gray-200">
+            <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-6xl font-black border-gray-500 bg-gray-200">
               Soldout
             </button>
           @else
