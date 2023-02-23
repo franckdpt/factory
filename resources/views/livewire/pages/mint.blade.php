@@ -1,6 +1,6 @@
 <div>
-  <div class="py-7 px-4 md:px-8 relative w-full lg:mx-auto lg:container xl:max-w-screen-lg">
-    <div class="flex justify-between items-center">
+  <div class="py-4 d:py-7 px-4 md:px-8 relative w-full lg:mx-auto lg:container xl:max-w-screen-lg">
+    <div class="md:flex justify-between items-center">
       <a href="https://nftfactoryparis.com/">
         <svg class="inline-block w-[100px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.789 77.556">
           <g id="Groupe_7" data-name="Groupe 7" transform="translate(-1501.179 -797.635)">
@@ -22,11 +22,13 @@
           </g>
         </svg>
       </a>
-      <div class="flex gap-4 items-center text-2xl font-semibold">
+      <div class="mt-4 md:mt-0 flex justify-between md:justify-start gap-4 items-center text-2xl font-semibold">
+        <div>
           {{ $smart_contract->expo->name }}
-          <div class="ml-4 px-4 py-2 font-black text-lg bg-NFTF-green hover:bg-black text-white NFTF-transition">
-            @livewire('wallet-button')
-          </div>
+        </div>
+        <div class="ml-4 px-4 py-2 font-black text-lg bg-NFTF-green hover:bg-black text-white NFTF-transition">
+          @livewire('wallet-button')
+        </div>
       </div>
     </div>
 
@@ -136,26 +138,26 @@
           @else
             @if (Auth::check())
               @if (!$smart_contract->deployed)
-                <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green text-white text-6xl font-black border-gray-500 bg-gray-200">
+                <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-4xl md:text-6xl font-black border-gray-500 bg-gray-200">
                   Not deployed yet
                 </button>
               @elseif ($network_public_id === $client_network_id)
                 @if ($is_minting)
-                  <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green text-white text-6xl font-black border-gray-500 bg-gray-200">
+                  <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-4xl md:text-6xl font-black border-gray-500 bg-gray-200">
                     Minting...
                   </button>
                 @else
-                  <button onclick="mint()" class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-6xl font-black NFTF-transition">
+                  <button onclick="mint()" class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-4xl md:text-6xl font-black NFTF-transition">
                     BUY
                   </button>
                 @endif
               @else
-                <button onclick="switchTheNetwork()" class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-6xl font-black NFTF-transition">
+                <button onclick="switchTheNetwork()" class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-4xl md:text-6xl font-black NFTF-transition">
                   Switch network
                 </button>
               @endif
             @else
-              <div class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-6xl font-black NFTF-transition">
+              <div class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-4xl md:text-6xl font-black NFTF-transition">
                 @livewire('wallet-button')
               </div>
             @endif
