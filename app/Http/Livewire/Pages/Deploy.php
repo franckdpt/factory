@@ -430,12 +430,21 @@ class Deploy extends Component
         $data = [
             "name" => $this->artwork_title,
             "collection" => $this->smart_contract->getContractName(),
-            "description" => $this->artwork_description,
-            "image" => $this->smart_contract->getArtworkIpfsUrl(),
-            "image_arweave" => $this->smart_contract->getArtworkArweaveUrl(),
-            "image_ipfs" => $this->smart_contract->getArtworkIpfsUrl(),
-            "image_sha256" => $this->artwork_sha_hash,
+            "description" => $this->artwork_description
         ];
+
+        if ($this->smart_contract->isVideo()) {
+            $data["image"] = "";
+            $data["animation_url"] = $this->smart_contract->getArtworkIpfsUrl();
+            $data["video_arweave"] = $this->smart_contract->getArtworkArweaveUrl();
+            $data["video_ipfs"] = $this->smart_contract->getArtworkIpfsUrl();
+            $data["video_sha256"] = $this->artwork_sha_hash;
+        } else if ($this->smart_contract->isImage()) {
+            $data["image"] = $this->smart_contract->getArtworkIpfsUrl();
+            $data["image_arweave"] = $this->smart_contract->getArtworkArweaveUrl();
+            $data["image_ipfs"] = $this->smart_contract->getArtworkIpfsUrl();
+            $data["image_sha256"] = $this->artwork_sha_hash;
+        }
 
         if (file_put_contents('storage/jsons/'.$this->public_id.'.json', json_encode($data))) {
             
