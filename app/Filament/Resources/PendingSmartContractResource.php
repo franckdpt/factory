@@ -20,7 +20,7 @@ class PendingSmartContractResource extends Resource
 {
     protected static ?string $model = SmartContract::class;
  
-    protected static ?string $navigationLabel = 'Collections in review';
+    protected static ?string $navigationLabel = 'Editions in review';
 
     protected static ?string $navigationGroup = 'To do';
 
@@ -57,39 +57,6 @@ class PendingSmartContractResource extends Resource
         return static::$model::where('status', 'in_review')->count();
     }
 
-    public static function form(Form $form): Form
-    {
-        return $form
-        ->schema([
-                Group::make()->schema([
-                    Forms\Components\Section::make('Collection')->schema([
-                        Forms\Components\TextInput::make('artwork_title'),
-                        Forms\Components\Textarea::make('artwork_description'),
-                        Grid::make(3)->schema([
-                            Forms\Components\Select::make('network')->relationship('network', 'name'),
-                            Forms\Components\TextInput::make('artwork_max_supply')->label('Max Supply'),
-                            Forms\Components\TextInput::make('self_nfts_number')->label('Reserved copies'),
-                        ]),
-                        Grid::make(3)->schema([
-                            Forms\Components\TextInput::make('artwork_price'),
-                            Forms\Components\TextInput::make('artwork_royalty'),
-                            Forms\Components\TextInput::make('artwork_hd_extension'),
-                        ]),
-                        Forms\Components\TextInput::make('artwork_sha_hash')->label('Artwork SHA hash'),
-                        Forms\Components\Checkbox::make('open_sales'),
-                    ]),
-                ])->columnSpan(['lg' => 2]),
-
-                Group::make()->relationship('user')->schema([
-                    Forms\Components\Section::make('Owner')->schema([
-                        Forms\Components\TextInput::make('name'),
-                        Forms\Components\TextInput::make('wallet_address')
-                    ])
-                ])->columnSpan(['lg' => 1]),
-                
-            ])->columns(3);
-    }
-
     public static function table(Table $table): Table
     {
         return $table
@@ -107,13 +74,6 @@ class PendingSmartContractResource extends Resource
             ->bulkActions([
                 
             ])->poll('5s');
-    }
-    
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
     
     public static function getPages(): array

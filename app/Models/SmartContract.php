@@ -105,6 +105,16 @@ class SmartContract extends Model
         return $this->status == "ready_to_deploy";
     }
 
+    public function getContractName(): string
+    {
+        return $this->expo->contracts_name.$this->user->name;
+    }
+
+    public function getContractSymbol(): string
+    {
+        return $this->expo->contracts_symbol.$this->id;
+    }
+
     public function getContractUrl(): string
     {
         return config('app.url').'/storage/jsons/'.$this->public_id.'_contract.json';

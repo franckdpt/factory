@@ -15,6 +15,7 @@ class LandingController extends Controller
                 'expo' => $expo
             ]);
         }
+        
         return view('landing');
     }
 }

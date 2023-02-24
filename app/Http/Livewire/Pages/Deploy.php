@@ -33,8 +33,8 @@ class Deploy extends Component
     public $artwork_royalty_input;
     public $client_network_id;
     
-    public $expo_name;
-    public $expo_symbol;
+    public $smart_contract_name;
+    public $smart_contract_symbol;
     public $factory_address;
 
     // SmartContract object
@@ -60,7 +60,6 @@ class Deploy extends Component
     public $artwork_sha_hash;
     public $address;
     public $deployed = false;
-    public $open_sales = true;
     public $self_nfts_number;
 
     protected $listeners = [
@@ -91,7 +90,6 @@ class Deploy extends Component
             'artist_twitter_link' => 'nullable|url',
             'artist_contact_mail' => 'nullable|email',
 
-            'open_sales' => 'required|boolean',
             'self_nfts_number' => 'required',
         ];
     }
@@ -103,8 +101,6 @@ class Deploy extends Component
         $this->network_rates = Network::getUsdConversions();
 
         $this->expo = $expo;
-        $this->expo_name = $expo->name;
-        $this->expo_symbol = $expo->contracts_symbol;
         $this->factory_address = $expo->factory_address;
 
         $this->isWalletAllowed();
@@ -149,7 +145,6 @@ class Deploy extends Component
             $this->artwork_sha_hash = $this->smart_contract->artwork_sha_hash;
             $this->address = $this->smart_contract->address;
             $this->deployed = $this->smart_contract->deployed;
-            $this->open_sales = $this->smart_contract->open_sales;
             $this->self_nfts_number = $this->smart_contract->self_nfts_number;
         }
     }
@@ -234,7 +229,7 @@ class Deploy extends Component
             });
         })->validate([
             'self_nfts_number' => 'required|integer',
-            'artwork_max_supply' => 'required|integer|min:1|max:100',
+            'artwork_max_supply' => 'required|integer|min:1',
         ]);
 
         $this->smart_contract->artwork_max_supply = $this->artwork_max_supply;
@@ -393,10 +388,13 @@ class Deploy extends Component
     {
         $this->abi = config("contracts.artist.abi");
         $this->byte = config("contracts.artist.byte");
+
+        $this->smart_contract_symbol = $this->smart_contract->getContractSymbol();
+        $this->smart_contract_name = $this->smart_contract->getContractName();
+        
         $this->auth_address = Auth::user()->wallet_address;
 
         // Next on JS side.
-        $this->state = 'Deploying smart contract...';
         $this->emit('deploySmartContractOnJs',
             $this->smart_contract->getTokenIpfsUrl(),
             $this->smart_contract->getArtworkIpfsUrl(),
@@ -431,7 +429,7 @@ class Deploy extends Component
     {
         $data = [
             "name" => $this->artwork_title,
-            "collection" => $this->expo->contracts_name,
+            "collection" => $this->smart_contract->getContractName(),
             "description" => $this->artwork_description,
             "image" => $this->smart_contract->getArtworkIpfsUrl(),
             "image_arweave" => $this->smart_contract->getArtworkArweaveUrl(),
@@ -449,7 +447,7 @@ class Deploy extends Component
     public function createJsonContract()
     {
         $contract_data = [
-            "name" => $this->expo->contracts_name,
+            "name" => $this->smart_contract->getContractName(),
             "description" => $this->expo->contracts_description,
             "image" => "https://nftfactoryparis.com/wp-content/uploads/2022/10/Plan-de-travail-%E2%80%93-1.png",
             "external_link" => route('mint', [

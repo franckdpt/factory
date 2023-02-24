@@ -22,17 +22,14 @@ class DatabaseSeeder extends Seeder
         DB::table('expo_user')->truncate();
         DB::table('smart_contracts')->truncate();
 
-        DB::table('expos')->insert([
-            'name' => 'Premiere expo',
-            'description' => 'Expo desc',
-            'slug' => 'premiere-expo',
-            'nb_deployment_authorized' => 1,
-            'factory_address' => "0x4Ed0E25829030e4f58111dDaC1528DcEcfd1C4E2",
+        // DB::table('expos')->insert([
+        //     'name' => 'Premiere expo',
+        //     'description' => 'Expo desc',
+        //     'slug' => 'premiere-expo',
 
-            'contracts_name' => 'contract Expo nb 1',
-            'contracts_description' => 'contract desc expo',
-            'contracts_symbol' => 'PE',
-        ]);
+        //     'contracts_name' => 'contract Expo nb 1',
+        //     'contracts_description' => 'contract desc expo',
+        // ]);
 
         DB::table('networks')->insert([
             'name' => 'Ethereum',
@@ -62,12 +59,12 @@ class DatabaseSeeder extends Seeder
 
         DB::table('expo_user')->insert([
             'user_id' => 1,
-            'expo_id' => 1,
+            // 'expo_id' => 1,
         ]);
 
         DB::table('expo_user')->insert([
             'user_id' => 2,
-            'expo_id' => 1,
+            // 'expo_id' => 1,
         ]);
     }
 }

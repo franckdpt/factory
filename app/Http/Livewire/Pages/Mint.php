@@ -22,6 +22,8 @@ class Mint extends Component
     public $state;
     public $soldout = false;
     public $is_minting = false;
+    public $sales_open = true;
+    public $is_deployed = false;
 
     protected $listeners = [
         'fetchedSupply',
@@ -37,6 +39,7 @@ class Mint extends Component
                                                 ->firstOrFail();
         $this->smart_contract_address = $this->smart_contract->address;
         $this->smart_contract_price = $this->smart_contract->artwork_price;
+        $this->is_deployed = $this->smart_contract->deployed;
 
         if ($this->smart_contract->network_id) {
             $this->network_public_id = Network::ID[$this->smart_contract->network->public_id][env('BLOCKCHAIN_ENV')];
@@ -66,6 +69,8 @@ class Mint extends Component
 
     public function fetchedSupply($maxSupply, $totalSupply)
     {
+        // $this->sales_open = $salesOpen;
+
         if ($maxSupply && $totalSupply) {
             $this->smart_contract->artwork_max_supply = $maxSupply;
             $this->smart_contract->artwork_total_supply = $totalSupply;

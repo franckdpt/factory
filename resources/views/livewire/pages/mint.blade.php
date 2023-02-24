@@ -131,36 +131,36 @@
           </div>
 
           <div class="flex gap-10">
-          @if ($soldout)
+          @if (!$is_deployed)
+            <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-4xl md:text-6xl font-black border-gray-500 bg-gray-200">
+              Not deployed yet
+            </button>
+          @elseif ($soldout)
             <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-6xl font-black border-gray-500 bg-gray-200">
               Soldout
             </button>
-          @else
-            @if (Auth::check())
-              @if (!$smart_contract->deployed)
-                <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-4xl md:text-6xl font-black border-gray-500 bg-gray-200">
-                  Not deployed yet
-                </button>
-              @elseif ($network_public_id === $client_network_id)
-                @if ($is_minting)
-                  <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-4xl md:text-6xl font-black border-gray-500 bg-gray-200">
-                    Minting...
-                  </button>
-                @else
-                  <button onclick="mint()" class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-4xl md:text-6xl font-black NFTF-transition">
-                    BUY
-                  </button>
-                @endif
-              @else
-                <button onclick="switchTheNetwork()" class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-4xl md:text-6xl font-black NFTF-transition">
-                  Switch network
-                </button>
-              @endif
+          @elseif (!$sales_open)
+            <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-4xl md:text-6xl font-black border-gray-500 bg-gray-200">
+              Sales closed
+            </button>
+          @elseif (Auth::check())
+            @if ($network_public_id !== $client_network_id)
+              <button onclick="switchTheNetwork()" class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-4xl md:text-6xl font-black NFTF-transition">
+                Switch network
+              </button>
+            @elseif($is_minting)
+              <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-4xl md:text-6xl font-black border-gray-500 bg-gray-200">
+                Minting...
+              </button>
             @else
-              <div class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-4xl md:text-6xl font-black NFTF-transition">
-                @livewire('wallet-button')
-              </div>
+              <button onclick="mint()" class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-4xl md:text-6xl font-black NFTF-transition">
+                BUY
+              </button>
             @endif
+          @else
+            <div class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-4xl md:text-6xl font-black NFTF-transition">
+              @livewire('wallet-button')
+            </div>
           @endif
             {{-- <div class="flex-1 relative"
             x-data="{ showMessage: false }">
@@ -237,45 +237,51 @@
                 Smart contract audit
               </a>
             </li> --}}
-            <li>
-              <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
-              href="{{ $smart_contract->network ? $smart_contract->network->explorer.'address/'.$smart_contract->address : '' }}"
-              target="_blank"
-              rel="noopener noreferrer">
-              <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">
-                <g id="Groupe_93" data-name="Groupe 93" transform="translate(-4 -4)">
-                  <path id="Tracé_147" data-name="Tracé 147" d="M17.865,4.462V8.622a.462.462,0,0,1-.924,0V5.578l-6.606,6.606a.462.462,0,1,1-.653-.653l6.606-6.606H13.243a.462.462,0,0,1,0-.924H17.4A.462.462,0,0,1,17.865,4.462ZM16.016,16.478V10.932a.462.462,0,1,0-.924,0v5.546a.462.462,0,0,1-.462.462H5.386a.462.462,0,0,1-.462-.462V7.235a.462.462,0,0,1,.462-.462h5.546a.462.462,0,0,0,0-.924H5.386A1.388,1.388,0,0,0,4,7.235v9.243a1.388,1.388,0,0,0,1.386,1.386H14.63A1.388,1.388,0,0,0,16.016,16.478Z" fill="#fff"/>
-                </g>
-              </svg>
-                Smart Contract
-              </a>
-            </li>
-            <li>
-              <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
-              href="{{ $smart_contract->getArtworkIpfsUrl() }}"
-              target="_blank"
-              rel="noopener noreferrer">
-              <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">
-                <g id="Groupe_93" data-name="Groupe 93" transform="translate(-4 -4)">
-                  <path id="Tracé_147" data-name="Tracé 147" d="M17.865,4.462V8.622a.462.462,0,0,1-.924,0V5.578l-6.606,6.606a.462.462,0,1,1-.653-.653l6.606-6.606H13.243a.462.462,0,0,1,0-.924H17.4A.462.462,0,0,1,17.865,4.462ZM16.016,16.478V10.932a.462.462,0,1,0-.924,0v5.546a.462.462,0,0,1-.462.462H5.386a.462.462,0,0,1-.462-.462V7.235a.462.462,0,0,1,.462-.462h5.546a.462.462,0,0,0,0-.924H5.386A1.388,1.388,0,0,0,4,7.235v9.243a1.388,1.388,0,0,0,1.386,1.386H14.63A1.388,1.388,0,0,0,16.016,16.478Z" fill="#fff"/>
-                </g>
-              </svg>
-              IPFS artwork
-              </a>
-            </li>
-            <li>
-              <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
-              href="{{ $smart_contract->getArtworkArweaveUrl() }}"
-              target="_blank"
-              rel="noopener noreferrer">
+            @if (!empty($smart_contract->address))
+              <li>
+                <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
+                href="{{ $smart_contract->network ? $smart_contract->network->explorer.'address/'.$smart_contract->address : '' }}"
+                target="_blank"
+                rel="noopener noreferrer">
                 <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">
                   <g id="Groupe_93" data-name="Groupe 93" transform="translate(-4 -4)">
                     <path id="Tracé_147" data-name="Tracé 147" d="M17.865,4.462V8.622a.462.462,0,0,1-.924,0V5.578l-6.606,6.606a.462.462,0,1,1-.653-.653l6.606-6.606H13.243a.462.462,0,0,1,0-.924H17.4A.462.462,0,0,1,17.865,4.462ZM16.016,16.478V10.932a.462.462,0,1,0-.924,0v5.546a.462.462,0,0,1-.462.462H5.386a.462.462,0,0,1-.462-.462V7.235a.462.462,0,0,1,.462-.462h5.546a.462.462,0,0,0,0-.924H5.386A1.388,1.388,0,0,0,4,7.235v9.243a1.388,1.388,0,0,0,1.386,1.386H14.63A1.388,1.388,0,0,0,16.016,16.478Z" fill="#fff"/>
                   </g>
                 </svg>
-                Arweave artwork
-              </a>
-            </li>
+                  Smart Contract
+                </a>
+              </li>
+            @endif
+            @if (!empty($smart_contract->artwork_ipfs_hash))
+              <li>
+                <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
+                href="{{ $smart_contract->getArtworkIpfsUrl() }}"
+                target="_blank"
+                rel="noopener noreferrer">
+                <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">
+                  <g id="Groupe_93" data-name="Groupe 93" transform="translate(-4 -4)">
+                    <path id="Tracé_147" data-name="Tracé 147" d="M17.865,4.462V8.622a.462.462,0,0,1-.924,0V5.578l-6.606,6.606a.462.462,0,1,1-.653-.653l6.606-6.606H13.243a.462.462,0,0,1,0-.924H17.4A.462.462,0,0,1,17.865,4.462ZM16.016,16.478V10.932a.462.462,0,1,0-.924,0v5.546a.462.462,0,0,1-.462.462H5.386a.462.462,0,0,1-.462-.462V7.235a.462.462,0,0,1,.462-.462h5.546a.462.462,0,0,0,0-.924H5.386A1.388,1.388,0,0,0,4,7.235v9.243a1.388,1.388,0,0,0,1.386,1.386H14.63A1.388,1.388,0,0,0,16.016,16.478Z" fill="#fff"/>
+                  </g>
+                </svg>
+                IPFS artwork
+                </a>
+              </li>
+            @endif
+            @if (!empty($smart_contract->artwork_arweave_hash))
+              <li>
+                <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
+                href="{{ $smart_contract->getArtworkArweaveUrl() }}"
+                target="_blank"
+                rel="noopener noreferrer">
+                  <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">
+                    <g id="Groupe_93" data-name="Groupe 93" transform="translate(-4 -4)">
+                      <path id="Tracé_147" data-name="Tracé 147" d="M17.865,4.462V8.622a.462.462,0,0,1-.924,0V5.578l-6.606,6.606a.462.462,0,1,1-.653-.653l6.606-6.606H13.243a.462.462,0,0,1,0-.924H17.4A.462.462,0,0,1,17.865,4.462ZM16.016,16.478V10.932a.462.462,0,1,0-.924,0v5.546a.462.462,0,0,1-.462.462H5.386a.462.462,0,0,1-.462-.462V7.235a.462.462,0,0,1,.462-.462h5.546a.462.462,0,0,0,0-.924H5.386A1.388,1.388,0,0,0,4,7.235v9.243a1.388,1.388,0,0,0,1.386,1.386H14.63A1.388,1.388,0,0,0,16.016,16.478Z" fill="#fff"/>
+                    </g>
+                  </svg>
+                  Arweave artwork
+                </a>
+              </li>
+            @endif
           </ul>
         </div>
 
@@ -367,6 +373,7 @@
         contracts: [
           { ...contract, functionName: 'maxSupply' },
           { ...contract, functionName: 'totalSupply' },
+          //{ ...contract, functionName: 'salesOpen' },
         ],
       })
 
@@ -374,7 +381,9 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      fetchData()
+      if (@this.is_deployed) {
+        fetchData()
+      }
     })
   </script>
 </div>

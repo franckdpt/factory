@@ -18,11 +18,11 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->text('description')->nullable();
             $table->integer('nb_deployment_authorized')->default(1);
-            $table->string('factory_address')->nullable();
+            $table->string('factory_address')->default(env('FACTORY_WALLET'));
 
             $table->string('contracts_name')->nullable();
             $table->text('contracts_description')->nullable();
-            $table->string('contracts_symbol')->nullable();
+            $table->string('contracts_symbol')->default(env('EXPO_SYMBOL_PREFIX'));
 
             $table->string('slug')->nullable();
 

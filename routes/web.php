@@ -13,7 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [\App\Http\Controllers\LandingController::class, 'index'])->name('landing');
+// Route::get('/', [\App\Http\Controllers\LandingController::class, 'index'])->name('landing');
+Route::get('/', function() {
+    return redirect()->to('https://nftfactoryparis.com/expositions');
+})->name('landing');
 
 Route::get('/{expo}', [\App\Http\Controllers\ExpoController::class, 'index'])->name('expo');
 

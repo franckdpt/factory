@@ -32,6 +32,7 @@ class Expo extends Model
         return Attribute::make(
             set: fn ($value) => [
                 'name' => $value,
+                'contracts_name' => $this->contracts_name ?? $value. ' X ',
                 'slug' => Str::slug($value, '-')
             ],
         );

@@ -58,6 +58,7 @@
     </div>
 
     <form wire:submit.prevent="submit">
+
       <div class="px-4 md:px-8 relative w-full lg:mx-auto lg:container xl:max-w-screen-lg">
 
         {{-- Blockchain --}}
@@ -110,7 +111,7 @@
             SMART CONTRACT
           </h1>
           <p class="sm:text-lg md:text-2xl font-semibold">
-            You will deploy your own smart contract to guarantee the sovereignty of your artwork.<br> This smart contract offer the best level of ownership for buyers.
+            The NFT Factory has pre-filled all information related to your smart contract to provide the best indexing process of your artwork. This smart contract offer the best level of ownership for buyers according to OpenGem standards.
           </p>
 
           <div class="mt-10">
@@ -120,13 +121,16 @@
                     Contract name
                 </label>
                 <div class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-gray-500 bg-gray-200">
-                  {{ $expo->contracts_name }}
+                  {{ $expo->contracts_name.Auth::user()->name }}
                 </div>
               </div>
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  Lorem ipsum
+                  On-chain & not editable.
+                </li>
+                <li class="text-lg">
+                  This is the name of the smart contract. It will be displayed in your smart contract as well as on the different art marketplaces. The contract name automatically indicates the name of the exhibition you’re part of as well as your artist name.
                 </li>
               </ul>
             </div>
@@ -138,13 +142,20 @@
                     Contract symbol
                   </label>
                   <div class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-gray-500 bg-gray-200">
-                    {{ $expo->contracts_symbol }}
+                    @if ($smart_contract)
+                      {{ $expo->contracts_symbol.$smart_contract->id }}
+                    @else
+                      {{ $expo->contracts_symbol }}
+                    @endif
                   </div>
                 </div>
                 <div class="hidden md:block w-1 bg-gray-200"></div>
                 <ul class="flex-1 self-end list-inside list-disc">
                   <li class="text-lg">
-                    Lorem ipsum
+                    On-chain & not editable.
+                  </li>
+                  <li class="text-lg">
+                    The contract symbol is automatically generated with “NFTF” prefix then the ID of the smart contract (which is a number).
                   </li>
                 </ul>
               </div>
@@ -163,7 +174,10 @@
                 <div class="hidden md:block w-1 bg-gray-200"></div>
                 <ul class="flex-1 self-end list-inside list-disc">
                   <li class="text-lg">
-                    Lorem ipsum
+                    On-chain & not editable.
+                  </li>
+                  <li class="text-lg">
+                    The NFT Factory provides the full description of your smart contract that will be similar to the one of the exhibition you are part of. The proposed description will be displayed on marketplaces by default. If needed, you’ll be able to modify it off-chain on external marketplaces (i.e. OpenSea, etc.).
                   </li>
                 </ul>
               </div>
@@ -181,8 +195,8 @@
             ARTWORK
           </h1>
           <p class="sm:text-lg md:text-2xl font-semibold">
-            NFTs will be created when buyer will mint it. <br>
-            The artwork will be persistent, nothing and nobody will be able to alter it.
+            You will deploy your smart contract and your NFT will only be created on-chain when a buyer mint it. Your artwork will appear on other platforms like Opensea once it has been effectively minted. 
+NFT Factory uses the highest standard to ensure the persistence and integrity of your artwork.
           </p>
 
           <div class="mt-10">
@@ -212,10 +226,10 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  On-chain. Can't be changed after the deployment.
+                  On-chain & not editable.
                 </li>
                 <li class="text-lg">
-                  Displayed on marketplaces.
+                  This is your final artwork title. It will be on-chain, also displayed on marketplaces and you won’t be able to change it later. Think about it carefully ;)
                 </li>
               </ul>
             </div>
@@ -248,10 +262,10 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  On-chain. Can't be changed after the deployment.
+                  On-chain & not editable.
                 </li>
                 <li class="text-lg">
-                  Displayed on marketplaces.
+                  This is your final artwork description. It will be on-chain, also displayed on marketplaces and you won’t be able to change it later. Think about it carefully ;)
                 </li>
               </ul>
             </div>
@@ -338,16 +352,22 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  Will be stored into IPFS.
+                  On-chain proved (SHA256).
                 </li>
                 <li class="text-lg">
-                  Will be stored into Arweave.
+                  On-chain backup uploadability (see more <b><a target="_blank" href="https://medium.com/art-for-all-nft-platform/how-to-retrieve-on-chain-large-sized-data-df65adef0c2a">here</a></b>).
                 </li>
                 <li class="text-lg">
-                  Will be on-chain prooved (SHA256).
+                  Stored on IPFS.
+                </li>
+                <li class="text-lg">
+                  Stored on Arweave.
                 </li>
                 <li class="text-lg">
                   Can't be changed after the deployment.
+                </li>
+                <li class="text-lg">
+                  As part of our persistent policy, this file is going to be stored in IPFS as well as Arweave. It will be on-chain proved with SHA256 encryption. Be cautious as you won’t be able to modify the file once the smart contract is deployed.
                 </li>
               </ul>
             </div>
@@ -403,59 +423,10 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  On-chain. Can't be changed after the deployment.
+                  On-chain & not editable.
                 </li>
                 <li class="text-lg">
-                  30% fees for the NFT Factory.
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="mt-10">
-            <div class="md:flex gap-x-10">
-              <div class="flex-1 relative flex flex-col">
-                <label class="text-xl md:text-2xl font-bold" 
-                for="contractname">
-                  Open the sales now
-                </label>
-                <div>
-                  <div class="flex gap-x-10">
-                    <label class="mt-6 flex items-start gap-x-4 {{ !$in_editing ? '' : 'cursor-pointer' }}">
-                      <input
-                        {{ !$in_editing ? 'disabled' : '' }}
-                        class="w-10 h-10 shrink-0 {{ !$in_editing ? '' : 'cursor-pointer' }}"
-                        type="radio"
-                        wire:model.lazy="open_sales"
-                        value="1">
-                      <span class="-mt-3 fex flex-col ">
-                        <span class="text-xl md:text-2xl font-bold">
-                          Yes
-                        </span>
-                      </span>
-                    </label>
-                    <label class="mt-6 flex items-start gap-x-4 {{ !$in_editing ? '' : 'cursor-pointer' }}">
-                      <input class="w-10 h-10 {{ !$in_editing ? '' : 'cursor-pointer' }} shrink-0"
-                        {{ !$in_editing ? 'disabled' : '' }}
-                        type="radio"
-                        wire:model.lazy="open_sales"
-                        value="0">
-                      <span class="-mt-3 fex flex-col">
-                        <span class="text-xl md:text-2xl font-bold">
-                          No
-                        </span>
-                      </span>
-                    </label>
-                  </div>
-                  <div class="text-red-600 font-semibold">
-                    {{-- error here --}}
-                  </div>
-                </div>
-              </div>
-              <div class="hidden md:block w-1 bg-gray-200"></div>
-              <ul class="flex-1 self-end list-inside list-disc">
-                <li class="text-lg">
-                  If not, you will be able to open it later.
+                  This is the price of each edition of your artwork. You can’t modify it once your smart contract is deployed. The NFT Factory is charging a 30% fee based on the price indicated.
                 </li>
               </ul>
             </div>
@@ -493,10 +464,7 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  Second market royalties.
-                </li>
-                <li class="text-lg">
-                  On-chain. Can't be changed after the deployment.
+                  These are the fees you will get if your artwork is sold on the second market. The common practice is between 5% and 10% max of the resale price. The NFT Factory can’t make sure the royalties will be applied by the marketplaces, however we have implemented the most used standards by the platforms.
                 </li>
               </ul>
             </div>
@@ -507,7 +475,7 @@
               <div class="flex-1 relative flex flex-col">
                 <label class="text-xl md:text-2xl font-bold" 
                 for="maxsupply">
-                  Max supply
+                  Number of editions (e.g. max supply)
                 </label>
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
@@ -530,10 +498,7 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  The max supply is the maximum number of mintable NFT.
-                </li>
-                <li class="text-lg">
-                  Will be automatically updated in case of non-soldout when you'll close & lock sales.
+                  This is your limited number of NFT that can be created for this specific artwork. We don’t propose “open edition”. At the end of the sale, if all the editions are not minted, the maximum supply will be automatically updated. For example, if 8 NFTs of an edition of 10 are sold, the artwork will automatically become an edition of 8.
                 </li>
               </ul>
             </div>
@@ -544,7 +509,7 @@
               <div class="flex-1 relative flex flex-col">
                 <label class="text-xl md:text-2xl font-bold" 
                 for="self_nfts_number">
-                  Number of NFT you want in your wallet
+                  Number of NFT reserved in your crypto wallet
                 </label>
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
@@ -567,7 +532,19 @@
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
-                  These copies will be minted & sent just after the deployment.
+                  The NFT Factory lets you put aside a specific number of NFTs for your own. Below, the maximum number of NFTs you can reserve for you ;)
+                </li>
+                <li class="text-lg">
+                  Edition 1/1: 0 reserve
+                </li>
+                <li class="text-lg">
+                  Edition of 2 to 10: 1 reserve max
+                </li>
+                <li class="text-lg">
+                  Edition of 11 to 20: 2 reserves max
+                </li>
+                <li class="text-lg">
+                  Edition of 21 and more: 5 reserves max
                 </li>
               </ul>
             </div>
@@ -584,7 +561,7 @@
             MINT PAGE
           </h1>
           <p class="sm:text-lg md:text-2xl font-semibold">
-            Web2 info to added on the mint page.
+            Artist information that will be shown on our website.
           </p>
 
           <div class="mt-10">
@@ -683,7 +660,7 @@
         </div>
       </div>
       
-      <button {{ ($smart_contract && $smart_contract->inReview()) ? 'disabled' : 'type="submit"'}}
+      <button {{ (($smart_contract && $smart_contract->inReview()) || $state) ? 'disabled' : 'type="submit"'}}
         class="block mx-auto mt-10 px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease 
         {{ ($smart_contract && $smart_contract->inReview()) ? '!bg-gray-600' : '' }}">
         @if ($in_editing)
@@ -796,8 +773,8 @@
             const signer = await fetchSigner()
             const Factory = new ethers.ContractFactory(@this.abi, @this.byte, signer);
             // const factoryContract = await Factory.deploy("Hello, Hardhat!");
-            console.log(@this.expo_name)
-            console.log(@this.expo_symbol)
+            console.log(@this.smart_contract_name)
+            console.log(@this.smart_contract_symbol)
             console.log(@this.artwork_title)
             console.log(@this.artwork_description)
             console.log(ipfsUrl)
@@ -810,20 +787,19 @@
             console.log(@this.artwork_max_supply)
             console.log(@this.self_nfts_number)
             console.log(@this.artwork_royalty)
-            console.log(@this.open_sales)
 
             const factoryContract = await Factory.deploy(
-                [@this.expo_name, @this.expo_symbol],
+                [@this.smart_contract_name, @this.smart_contract_symbol], //
                 [@this.artwork_title, @this.artwork_description],
                 [ipfsUrl,arweaveUrl,contractUrl,tokenUrl,@this.artwork_sha_hash],
                 @this.factory_address,
                 ethers.utils.parseEther(@this.artwork_price),
                 @this.artwork_max_supply,
                 @this.self_nfts_number,
-                @this.artwork_royalty,
-                @this.open_sales
+                @this.artwork_royalty
             );
 
+            @this.set('state', 'Deploying smart contract...')
             await factoryContract.deployed();
             
             Livewire.emit('smartContractDeployed', factoryContract.address)
