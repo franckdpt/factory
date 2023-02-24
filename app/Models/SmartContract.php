@@ -125,6 +125,15 @@ class SmartContract extends Model
         return config('app.url').'/storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension;
     }
 
+    public static function getPreviewUrlIfNeeded($string, $length)
+    {
+        if (strlen($string) > $length) {
+            return substr($string, 0, $length).'...';
+        } else {
+            return $string;
+        }
+    }
+
     public function getTokenIpfsUrl(): string
     {
         return self::IPFS_GATEWAY.$this->token_ipfs_hash;

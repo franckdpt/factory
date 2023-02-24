@@ -2,16 +2,19 @@
 
 namespace App\Filament\Resources\SmartContractResource\Pages;
 
+use Illuminate\Support\HtmlString;
+
+use App\Models\SmartContract;
 use App\Filament\Resources\SmartContractResource;
 use App\Filament\Resources\PendingSmartContractResource;
 
 use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
 
-use Filament\Forms;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Fieldset;
 
 class ViewPendingSmartContract extends ViewRecord
 {
@@ -21,31 +24,73 @@ class ViewPendingSmartContract extends ViewRecord
     {
         return [
             Group::make()->schema([
-                Group::make()->schema([
-                    Forms\Components\Section::make('Collection')->schema([
-                        Forms\Components\TextInput::make('artwork_title'),
-                        Forms\Components\Textarea::make('artwork_description'),
-                        Grid::make(3)->schema([
-                            Forms\Components\Select::make('network')->relationship('network', 'name'),
-                            Forms\Components\TextInput::make('artwork_max_supply')->label('Max Supply'),
-                            Forms\Components\TextInput::make('self_nfts_number')->label('Reserved copies'),
-                        ]),
-                        Grid::make(3)->schema([
-                            Forms\Components\TextInput::make('artwork_price'),
-                            Forms\Components\TextInput::make('artwork_royalty'),
-                            Forms\Components\TextInput::make('artwork_hd_extension'),
-                        ]),
-                        Forms\Components\TextInput::make('artwork_sha_hash')->label('Artwork SHA hash'),
+                Fieldset::make('On-chain info')
+                ->extraAttributes(['style' => 'border-color: #ffc100;'])
+                ->schema([
+                    Grid::make(3)->schema([
+                        Placeholder::make('Smart contract name')
+                        ->content(new HtmlString('<b>'.$this->record->getContractName().'</b>')),
+                        Placeholder::make('Smart contract symbol')
+                        ->content(new HtmlString('<b>'.$this->record->getContractSymbol().'</b>')),
+                        Placeholder::make('Network')
+                        ->content(new HtmlString('<b>'.$this->record->network->name.'</b>')),
                     ]),
-                ])->columnSpan(['lg' => 2]),
 
-                Group::make()->relationship('user')->schema([
-                    Forms\Components\Section::make('Owner')->schema([
-                        Forms\Components\TextInput::make('name'),
-                        Forms\Components\TextInput::make('wallet_address')
-                    ])
-                ])->columnSpan(['lg' => 1]),
-            ])->columns(3)
+                    Grid::make(2)->schema([
+                        Placeholder::make('Artwork title')
+                        ->content(new HtmlString('<b>'.$this->record->artwork_title.'</b>')),
+                        Placeholder::make('Artwork description')
+                        ->content(new HtmlString('<b>'.$this->record->artwork_description.'</b>')),
+                    ]),
+
+                    Grid::make(4)->schema([
+                        Placeholder::make('Max supply')
+                        ->content(new HtmlString('<b>'.$this->record->artwork_max_supply.'</b>')),
+                        Placeholder::make('Reserved copies')
+                        ->content(new HtmlString('<b>'.$this->record->self_nfts_number.'</b>')),
+                        Placeholder::make('Price')
+                        ->content(new HtmlString('<b>'.$this->record->artwork_price.' '.$this->record->network->currency.'</b>')),
+                        Placeholder::make('Artist royalties')
+                        ->content(new HtmlString('<b>'.$this->record->getRoyaltyInput().'%</b>')),
+                    ]),
+
+                    Grid::make(1)->schema([
+                        Placeholder::make('nft factory wallet royalty')
+                        ->content(new HtmlString('<b>30% to <i>'.$this->record->expo->factory_address.'</i></b>')),
+                    ]),
+
+                    Grid::make(1)->schema([
+                        Placeholder::make('sha proof')
+                        ->content(new HtmlString('<b>'.$this->record->artwork_sha_hash.'</b>')),
+                    ]),
+
+                    Grid::make(1)->schema([
+                        Placeholder::make('contract uri')
+                        ->content(new HtmlString('
+                        <b><u><a href="'.$this->record->getContractUrl().'">'.SmartContract::getPreviewUrlIfNeeded($this->record->getContractUrl(), 80).'</a></u></b>')),
+                    ]),
+
+                    Grid::make(1)->schema([
+                        Placeholder::make('token uri')
+                        ->content(new HtmlString('
+                        <b><u><a href="'.$this->record->getTokenIpfsUrl().'">'.SmartContract::getPreviewUrlIfNeeded($this->record->getTokenIpfsUrl(), 80).'</a></u></b>')),
+                    ]),
+
+                    Grid::make(1)->schema([
+                        Placeholder::make('artwork ipfs uri')
+                        ->content(new HtmlString('
+                        <b><u><a href="'.$this->record->getArtworkIpfsUrl().'">'.SmartContract::getPreviewUrlIfNeeded($this->record->getArtworkIpfsUrl(), 80).'</a></u></b>')),
+                    ]),
+
+                    Grid::make(1)->schema([
+                        Placeholder::make('artwork arweave uri')
+                        ->content(new HtmlString('
+                        <b><u><a href="'.$this->record->getArtworkArweaveUrl().'">'.SmartContract::getPreviewUrlIfNeeded($this->record->getArtworkArweaveUrl(), 80).'</a></u></b>')),
+                    ]),
+
+                ])
+
+            ])
         ];
     }
 
@@ -77,11 +122,9 @@ class ViewPendingSmartContract extends ViewRecord
     protected function getFooterWidgets(): array
     {
         return [
-            SmartContractResource\Widgets\SmartContractArtworkVisual::class,
             SmartContractResource\Widgets\SmartContractArweaveArtworkVisual::class,
             SmartContractResource\Widgets\SmartContractIpfsArtworkVisual::class,
-            SmartContractResource\Widgets\SmartContractContractJson::class,
-            SmartContractResource\Widgets\SmartContractTokenJson::class,
+            SmartContractResource\Widgets\SmartContractArtworkVisual::class,
         ];
     }
 }

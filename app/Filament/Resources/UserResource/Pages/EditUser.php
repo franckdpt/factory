@@ -33,7 +33,9 @@ class EditUser extends EditRecord
         return [
             Group::make()->schema([
                 Group::make()->schema([
-                    Forms\Components\Section::make('Identity')->schema([
+                    Forms\Components\Section::make('Identity')
+                    ->description('Off-chain & editable except the wallet address.')
+                    ->schema([
                         Forms\Components\TextInput::make('name')
                             ->maxLength(255)
                             ->required(),
@@ -47,7 +49,9 @@ class EditUser extends EditRecord
                 ])->columnSpan(['lg' => 1]),
 
                 Group::make()->schema([
-                    Forms\Components\Section::make('On mint page')->schema([
+                    Forms\Components\Section::make('On mint page')
+                    ->description('Off-chain & editable. Info displayed on the website.')
+                    ->schema([
                         Forms\Components\TextInput::make('portfolio_link'),
                         Forms\Components\TextInput::make('twitter_link'),
                         Forms\Components\TextInput::make('contact_mail'),

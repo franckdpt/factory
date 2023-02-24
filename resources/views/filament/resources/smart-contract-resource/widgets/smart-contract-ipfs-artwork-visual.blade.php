@@ -1,7 +1,7 @@
 <x-filament::widget>
-    <x-filament::card>
+    <x-filament::card style="border-width:1px;border-color: #ffc100 !important;">
         @if ($record->artwork_path)
-            <a href="{{ $record->getArtworkArweaveUrl() }}">IPFS artwork</a>
+            <a href="{{ $record->getArtworkArweaveUrl() }}"><b>IPFS artwork</b></a>
             <a class="relative group" href="{{ $record->getArtworkIpfsUrl() }}" target="_blank">
                 @if ($record->isVideo())
                     <video poster=""

@@ -29,7 +29,7 @@ class CreateExpo extends CreateRecord
             Group::make()->schema([
                 Group::make()->schema([
                     Forms\Components\Section::make('Exposition info')
-                    ->description('Off-chain. Info displayed on the website')
+                    ->description('Off-chain & editable. Info displayed on the website')
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->maxLength(255)
@@ -43,7 +43,7 @@ class CreateExpo extends CreateRecord
 
                 Group::make()->schema([
                     Forms\Components\Section::make('Deployment allowing')
-                    ->description('Editable later')
+                    ->description('Off-chain & editable')
                     ->schema([
                         Forms\Components\Select::make('artists')
                             ->multiple()
@@ -54,6 +54,7 @@ class CreateExpo extends CreateRecord
                 
                 Group::make()->schema([
                     Forms\Components\Section::make('Smart contracts info')
+                    ->extraAttributes(['style' => 'border-color: #ffc100;'])
                     ->description("⚠️ On-chain. Be aware, you won't be able to edit it later.")
                     ->schema([
                         Placeholder::make('Collections name')

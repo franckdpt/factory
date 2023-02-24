@@ -39,7 +39,7 @@ class EditExpo extends EditRecord
             Group::make()->schema([
                 Group::make()->schema([
                     Forms\Components\Section::make('Exposition info')
-                    ->description('Off-chain. Info displayed on the website')
+                    ->description('Off-chain & editable. Info displayed on the website')
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->maxLength(255)
@@ -52,7 +52,7 @@ class EditExpo extends EditRecord
 
                 Group::make()->schema([
                     Forms\Components\Section::make('Deployment allowing')
-                    ->description('Editable later')
+                    ->description('Off-chain & editable')
                     ->schema([
                         Forms\Components\Select::make('artists')
                             ->multiple()
@@ -61,21 +61,23 @@ class EditExpo extends EditRecord
                     ]),
                 ])->columnSpan(['lg' => 1]),
 
-                Fieldset::make('Web3 info')->schema([
-                        Grid::make(1)->schema([
-                            Placeholder::make('Collections name')
-                                ->content(new HtmlString('<b>'.$this->record->contracts_name.'<i>(artist name)</i></b>')),
-                        ]),
-                        Grid::make(1)->schema([
-                            Placeholder::make('Collections Symbol prefix')
-                                ->content(new HtmlString('<b>'.$this->record->contracts_symbol.'</b>')),
-                        ]),
-                        Grid::make(1)->schema([
-                            Placeholder::make('Collections description')
-                                ->content(new HtmlString('<b>'.$this->record->contracts_description.'</b>')),
-                        ]),
-                        Placeholder::make('30% royalty wallet :')
-                            ->content(new HtmlString('<b>'.$this->record->factory_address.'</b>')),
+                Fieldset::make('On-chain info')
+                ->extraAttributes(['style' => 'border-color: #ffc100;'])
+                ->schema([
+                    Grid::make(1)->schema([
+                        Placeholder::make('Collections name')
+                            ->content(new HtmlString('<b>'.$this->record->contracts_name.'<i>(artist name)</i></b>')),
+                    ]),
+                    Grid::make(1)->schema([
+                        Placeholder::make('Collections Symbol prefix')
+                            ->content(new HtmlString('<b>'.$this->record->contracts_symbol.'</b>')),
+                    ]),
+                    Grid::make(1)->schema([
+                        Placeholder::make('Collections description')
+                            ->content(new HtmlString('<b>'.$this->record->contracts_description.'</b>')),
+                    ]),
+                    Placeholder::make('30% royalty wallet :')
+                        ->content(new HtmlString('<b>'.$this->record->factory_address.'</b>')),
                 ])->columnSpan(['lg' => 1]),
             ])->columns(2)
         ];

@@ -1,7 +1,7 @@
 <x-filament::widget>
     <x-filament::card>
         @if ($record->artwork_path)
-            <a href="{{ $record->getArtworkUrl() }}"">Original artwork</a>
+            <a href="{{ $record->getArtworkUrl() }}""><b>Original artwork</b></a>
             <a class="relative group" href="{{ $record->getArtworkUrl() }}" target="_blank">
                 @if ($record->isVideo())
                     <video poster=""
