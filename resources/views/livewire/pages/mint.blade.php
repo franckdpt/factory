@@ -152,6 +152,10 @@
               <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-4xl md:text-6xl font-black border-gray-500 bg-gray-200">
                 Minting...
               </button>
+            @elseif($is_minted)
+              <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-4xl md:text-6xl font-black border-gray-500 bg-gray-200">
+                Minted!
+              </button>
             @else
               <button onclick="mint()" class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-4xl md:text-6xl font-black NFTF-transition">
                 BUY
