@@ -54,7 +54,7 @@ class ViewSmartContract extends ViewRecord
 
                     Grid::make(1)->schema([
                         Placeholder::make('nft factory wallet royalty')
-                        ->content(new HtmlString('<b>30% to <i>'.$this->record->expo->factory_address.'</i></b>')),
+                        ->content(new HtmlString('<b>30%</b> to <b><i>'.$this->record->expo->factory_address.'</i></b>')),
                     ]),
 
                     Grid::make(1)->schema([
