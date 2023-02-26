@@ -130,7 +130,7 @@
               {{ $smart_contract->artwork_max_supply - $smart_contract->artwork_total_supply }} of {{ $smart_contract->artwork_max_supply }} Editions Available
           </div>
 
-          <div class="flex gap-10">
+          <div class="flex gap-10" x-data="{ openModal: false }" >
           @if (!$is_deployed)
             <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-4xl md:text-6xl font-black border-gray-500 bg-gray-200">
               Not deployed yet
@@ -156,6 +156,30 @@
               <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-4xl md:text-6xl font-black border-gray-500 bg-gray-200">
                 Minted!
               </button>
+
+              <div x-data="{ openModal: true }">
+                <div class="fixed inset-0 flex items-center justify-center font-bold bg-black bg-opacity-75"
+                x-show="openModal">
+                  <div class="relative bg-white p-10">
+                    <h1 class="mt-10 md:mt-0 text-5xl md:text-8xl text-center">Minted!</h1>
+                    <div class="mt-12 md:flex justify-between gap-8">
+                      <a class="px-8 py-4 block uppercase bg-NFTF-green hover:bg-black text-white hover:text-white font-black"
+                      href="#">
+                        See on Opensea
+                      </a>
+                      <a class="mt-6 md:mt-0 px-8 py-4 block uppercase bg-NFTF-green hover:bg-black text-white hover:text-white font-black"
+                      href="#">
+                        See on Etherscan
+                      </a>
+                      <button class="absolute top-3 right-4 p-2 text-black hover:text-Calis-orange z-50"
+                        x-on:click="openModal = false">
+                        <svg class="fill-current w-8" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 426.667 426.667" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M426.667 59.733 366.933 0l-153.6 153.6L59.733 0 0 59.733l153.6 153.6L0 366.933l59.733 59.734 153.6-153.6 153.6 153.6 59.734-59.734-153.6-153.6z" fill="#000000" data-original="#000000"></path></g></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             @else
               <button onclick="mint()" class="flex-1 mt-10 px-5 pt-5 pb-7 bg-NFTF-green hover:bg-black text-white text-4xl md:text-6xl font-black NFTF-transition">
                 BUY
