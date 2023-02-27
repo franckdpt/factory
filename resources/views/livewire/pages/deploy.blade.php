@@ -737,6 +737,12 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
       tx[i].addEventListener("input", OnInput, false);
     }
 
+    tx[0].addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+      }
+    });
+
 
     function OnInput() {
       this.style.minHeight = "0";
