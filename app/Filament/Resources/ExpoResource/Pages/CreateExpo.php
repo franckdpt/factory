@@ -33,6 +33,7 @@ class CreateExpo extends CreateRecord
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->maxLength(255)
+                            ->unique()
                             ->required()
                             ->reactive(),
                         Forms\Components\Textarea::make('description')
