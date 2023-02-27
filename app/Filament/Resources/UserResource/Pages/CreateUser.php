@@ -30,6 +30,7 @@ class CreateUser extends CreateRecord
                             ->required(),
                         Forms\Components\TextInput::make('wallet_address')
                             ->maxLength(255)
+                            ->unique()
                             ->required(),
                         Forms\Components\Select::make('expos')
                             ->multiple()
