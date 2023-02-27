@@ -39,7 +39,7 @@ class CreateExpo extends CreateRecord
                             ->maxLength(65535)
                             ->required(),
                         Forms\Components\DatePicker::make('start_date')
-                            ->minDate(now())
+                            ->minDate(today())
                             ->required(),
                         Forms\Components\DatePicker::make('end_date')
                             ->required(),
