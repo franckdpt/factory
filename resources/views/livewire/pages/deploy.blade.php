@@ -289,7 +289,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                       x-on:dragover.prevent="dropingFile = true"
                       x-on:dragleave.prevent="dropingFile = false">
                       <div class="text-center text-xl text-gray-500 font-semibold uppercase">
-                          JPEG or MP4<br>(max 10Mb)
+                          JPEG or MP4<br>(max 100Mb)
                       </div>
                       <div class="mt-5 flex justify-center">
                       @if ($hd_media && $refresh_preview)
