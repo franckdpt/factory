@@ -36,6 +36,7 @@ return new class extends Migration
                     ->onDelete('cascade');
 
             // Artwork
+            $table->string('artwork_artist')->nullable();
             $table->string('artwork_title')->nullable();
             $table->text('artwork_description')->nullable();
             $table->string('artwork_path')->nullable();

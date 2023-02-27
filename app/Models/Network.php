@@ -33,14 +33,14 @@ class Network extends Model
         return $this->hasMany(SmartContract::class);
     }
 
-    public static function getUsdConversions()
+    public static function getEurConversions()
     {
         $conversions = [];
         foreach (self::all() as $network) {
             $response = Http::get('https://api.coinbase.com/v2/exchange-rates?currency='.$network->currency);
             if ($response->successful()) {
-                if ($response->json()['data'] && $response->json()['data']['rates'] && $response->json()['data']['rates']['USD']) {
-                    $conversions[$network->id] = $response->json()['data']['rates']['USD'];
+                if ($response->json()['data'] && $response->json()['data']['rates'] && $response->json()['data']['rates']['EUR']) {
+                    $conversions[$network->id] = $response->json()['data']['rates']['EUR'];
                 }
             } else {
                 $conversions[$network->id] = null;

@@ -56,15 +56,5 @@ class DatabaseSeeder extends Seeder
             'admin' => 1,
             'wallet_address' => '0x4aeDF5fE928b852C96A6119bC5D035a29B762C5F',
         ]);
-
-        DB::table('expo_user')->insert([
-            'user_id' => 1,
-            // 'expo_id' => 1,
-        ]);
-
-        DB::table('expo_user')->insert([
-            'user_id' => 2,
-            // 'expo_id' => 1,
-        ]);
     }
 }

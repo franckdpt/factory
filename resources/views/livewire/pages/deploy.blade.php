@@ -121,7 +121,7 @@
                     Contract name
                 </label>
                 <div class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-gray-500 bg-gray-200">
-                  {{ $expo->contracts_name.Auth::user()->name }}
+                  {{ $expo->contracts_name.$artwork_artist }}
                 </div>
               </div>
               <div class="hidden md:block w-1 bg-gray-200"></div>
@@ -130,7 +130,7 @@
                   On-chain & not editable.
                 </li>
                 <li class="text-lg">
-                  This is the name of the smart contract. It will be displayed in your smart contract as well as on the different art marketplaces. The contract name automatically indicates the name of the exhibition you’re part of as well as your artist name.
+                  This is the name of the smart contract. It will be displayed in your smart contract as well as on the different art marketplaces. The contract name automatically indicates the name of the exhibition you’re part of as well as your artist name you will set below.
                 </li>
               </ul>
             </div>
@@ -203,8 +203,44 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
             <div class="md:flex gap-x-10">
               <div class="flex-1 relative flex flex-col">
                 <label class="text-xl md:text-2xl font-bold" 
+                for="artworkartist">
+                  Artist name
+                </label>
+                <div>
+                  <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
+                  {{ $errors->has('artwork_artist') ? '!border-red-600' : '' }}
+                  {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
+                  {{ !$in_editing ? 'disabled' : '' }}
+                  type="text" 
+                  id="artworkartist" 
+                  name="artworkartist" 
+                  wire:model.lazy="artwork_artist" 
+                  placeholder="My artwork title">
+                  @error('artwork_artist') 
+                    <div class="text-red-600 font-semibold">
+                      {{ $message }}
+                    </div>
+                  @enderror
+                </div>
+              </div>
+              <div class="hidden md:block w-1 bg-gray-200"></div>
+              <ul class="flex-1 self-end list-inside list-disc">
+                <li class="text-lg">
+                  On-chain & not editable.
+                </li>
+                <li class="text-lg">
+                  This is your artist name displayed for this artwork. It will be on-chain, also displayed on marketplaces and you won’t be able to change it later. Think about it carefully ;)
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="mt-10">
+            <div class="md:flex gap-x-10">
+              <div class="flex-1 relative flex flex-col">
+                <label class="text-xl md:text-2xl font-bold" 
                 for="artworktitle">
-                  Title
+                  Artwork Title
                 </label>
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
@@ -240,7 +276,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
               <div class="flex-1 relative flex flex-col">
                 <label class="text-xl md:text-2xl font-bold" 
                 for="artworkdescription">
-                Description
+                Artwork Description
                 </label>
                 <div>
                   <textarea class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
@@ -406,14 +442,14 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                       {{ round(floatval($artwork_price)*70/100, 3) }}
                       {{ $smart_contract && $smart_contract->network_id ?
                           $smart_contract->network->currency.
-                          ' ('.strval(round(floatval($network_rates[$smart_contract->network->id])*(floatval($artwork_price)*70/100), 2)).' USD)'
+                          ' ('.strval(round(floatval($network_rates[$smart_contract->network->id])*(floatval($artwork_price)*70/100), 2)).' EUR)'
                           : '' }}
                           to you<br>
 
                       {{ round(floatval($artwork_price)*30/100, 3) }}
                       {{ $smart_contract && $smart_contract->network_id ?
                           $smart_contract->network->currency.
-                          ' ('.strval(round(floatval($network_rates[$smart_contract->network->id])*(floatval($artwork_price)*30/100), 2)).' USD)'
+                          ' ('.strval(round(floatval($network_rates[$smart_contract->network->id])*(floatval($artwork_price)*30/100), 2)).' EUR)'
                           : '' }}
                           to NFT Factory<br>
                     </div>
@@ -783,6 +819,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
             console.log(@this.smart_contract_symbol)
             console.log(@this.artwork_title)
             console.log(@this.artwork_description)
+            console.log(@this.artwork_artist)
             console.log(ipfsUrl)
             console.log(arweaveUrl)
             console.log(contractUrl)
@@ -796,7 +833,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
 
             const factoryContract = await Factory.deploy(
                 [@this.smart_contract_name, @this.smart_contract_symbol], //
-                [@this.artwork_title, @this.artwork_description],
+                [@this.artwork_title, @this.artwork_description, @this.artwork_artist],
                 [ipfsUrl,arweaveUrl,contractUrl,tokenUrl,@this.artwork_sha_hash],
                 @this.factory_address,
                 ethers.utils.parseEther(@this.artwork_price),

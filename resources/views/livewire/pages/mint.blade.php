@@ -169,7 +169,7 @@
                     </a> --}}
                     <a class="mt-6 md:mt-0 px-8 py-4 block uppercase bg-NFTF-green hover:bg-black text-white hover:text-white font-black"
                     href="{{ $smart_contract->network->explorer . 'tx/'. $hash}}">
-                      See on Etherscan
+                      See the transaction
                     </a>
                     <button class="absolute top-3 right-4 p-2 text-black hover:text-Calis-orange z-50"
                       x-on:click="openModal = false">

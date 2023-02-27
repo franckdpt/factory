@@ -47,38 +47,48 @@ class EditExpo extends EditRecord
                         Forms\Components\Textarea::make('description')
                             ->maxLength(65535)
                             ->required(),
+                        Forms\Components\DatePicker::make('start_date')
+                            ->minDate(now())
+                            ->required(),
+                        Forms\Components\DatePicker::make('end_date')
+                            ->required(),
+                        Forms\Components\TextInput::make('nb_deployment_authorized')
+                            ->numeric()
+                            ->default(1)
+                            ->minValue(1)
+                            ->required(),
                     ]),
                 ])->columnSpan(['lg' => 1]),
 
                 Group::make()->schema([
-                    Forms\Components\Section::make('Deployment allowing')
-                    ->description('Off-chain & editable')
+                    Fieldset::make('On-chain info')
+                    ->extraAttributes(['style' => 'border-color: #ffc100;'])
                     ->schema([
-                        Forms\Components\Select::make('artists')
-                            ->multiple()
-                            ->relationship('artists', 'name_and_wallet', fn (Builder $query) => $query->whereNotNull("name"))
-                            ->preload()
-                    ]),
+                        Grid::make(1)->schema([
+                            Placeholder::make('Collections name')
+                                ->content(new HtmlString('<b>'.$this->record->contracts_name.'<i>(artist name)</i></b>')),
+                        ]),
+                        Grid::make(1)->schema([
+                            Placeholder::make('Collections Symbol prefix')
+                                ->content(new HtmlString('<b>'.$this->record->contracts_symbol.'</b>')),
+                        ]),
+                        Grid::make(1)->schema([
+                            Placeholder::make('Collections description')
+                                ->content(new HtmlString('<b>'.$this->record->contracts_description.'</b>')),
+                        ]),
+                        Placeholder::make('30% royalty wallet :')
+                            ->content(new HtmlString('<b>'.$this->record->factory_address.'</b>')),
+                    ])->columnSpan(['lg' => 1]),
                 ])->columnSpan(['lg' => 1]),
-
-                Fieldset::make('On-chain info')
-                ->extraAttributes(['style' => 'border-color: #ffc100;'])
+                
+                Forms\Components\Section::make('Deployment allowing')
+                ->description('Off-chain & editable')
                 ->schema([
-                    Grid::make(1)->schema([
-                        Placeholder::make('Collections name')
-                            ->content(new HtmlString('<b>'.$this->record->contracts_name.'<i>(artist name)</i></b>')),
-                    ]),
-                    Grid::make(1)->schema([
-                        Placeholder::make('Collections Symbol prefix')
-                            ->content(new HtmlString('<b>'.$this->record->contracts_symbol.'</b>')),
-                    ]),
-                    Grid::make(1)->schema([
-                        Placeholder::make('Collections description')
-                            ->content(new HtmlString('<b>'.$this->record->contracts_description.'</b>')),
-                    ]),
-                    Placeholder::make('30% royalty wallet :')
-                        ->content(new HtmlString('<b>'.$this->record->factory_address.'</b>')),
-                ])->columnSpan(['lg' => 1]),
+                    Forms\Components\Select::make('artists')
+                        ->multiple()
+                        ->relationship('artists', 'name_and_wallet', fn (Builder $query) => $query->whereNotNull("name"))
+                        ->preload()
+                ]),
             ])->columns(2)
         ];
     }

@@ -22,6 +22,7 @@ class SmartContract extends Model
         'expo_id',
         'network_id',
 
+        'artwork_artist',
         'artwork_title',
         'artwork_description',
         'artwork_path',
@@ -108,7 +109,7 @@ class SmartContract extends Model
 
     public function getContractName(): string
     {
-        return $this->expo->contracts_name.$this->user->name;
+        return $this->expo->contracts_name.$this->artwork_artist;
     }
 
     public function getContractSymbol(): string
@@ -119,6 +120,11 @@ class SmartContract extends Model
     public function getContractUrl(): string
     {
         return config('app.url').'/storage/jsons/'.$this->public_id.'_contract.json';
+    }
+
+    public function getPreviewArtworkUrl(): string
+    {
+        return config('app.url').'/storage/nft_media/'.$this->public_id.'_cover.jpeg';
     }
 
     public function getArtworkUrl(): string

@@ -42,6 +42,7 @@ class Deploy extends Component
     public $network_id;
     public $network_public_id;
     
+    public $artwork_artist;
     public $artwork_title;
     public $artwork_description;
     public $artwork_path = null;
@@ -79,6 +80,7 @@ class Deploy extends Component
             
             'network_id' => 'required|integer',
 
+            'artwork_artist' => 'required|string|max:50',
             'artwork_title' => 'required|string|max:50',
             'artwork_description' => 'required|string|max:200',
             'artwork_max_supply' => 'required',
@@ -98,7 +100,7 @@ class Deploy extends Component
     {
         $this->networks = Network::all();
 
-        $this->network_rates = Network::getUsdConversions();
+        $this->network_rates = Network::getEurConversions();
 
         $this->expo = $expo;
         $this->factory_address = $expo->factory_address;
@@ -127,6 +129,7 @@ class Deploy extends Component
                 $this->network_public_id = Network::ID[$this->smart_contract->network->public_id][env('BLOCKCHAIN_ENV')];
             }
             
+            $this->artwork_artist = $this->smart_contract->artwork_artist;
             $this->artwork_title = $this->smart_contract->artwork_title;
             $this->artwork_description = $this->smart_contract->artwork_description;
             $this->artwork_path = $this->smart_contract->artwork_path;

@@ -36,7 +36,9 @@ class ViewPendingSmartContract extends ViewRecord
                         ->content(new HtmlString('<b>'.$this->record->network->name.'</b>')),
                     ]),
 
-                    Grid::make(2)->schema([
+                    Grid::make(3)->schema([
+                        Placeholder::make('Artist name')
+                        ->content(new HtmlString('<b>'.$this->record->artwork_artist.'</b>')),
                         Placeholder::make('Artwork title')
                         ->content(new HtmlString('<b>'.$this->record->artwork_title.'</b>')),
                         Placeholder::make('Artwork description')

@@ -38,20 +38,19 @@ class CreateExpo extends CreateRecord
                         Forms\Components\Textarea::make('description')
                             ->maxLength(65535)
                             ->required(),
+                        Forms\Components\DatePicker::make('start_date')
+                            ->minDate(now())
+                            ->required(),
+                        Forms\Components\DatePicker::make('end_date')
+                            ->required(),
+                        Forms\Components\TextInput::make('nb_deployment_authorized')
+                            ->numeric()
+                            ->default(1)
+                            ->minValue(1)
+                            ->required(),
                     ]),
                 ])->columnSpan(['lg' => 1]),
 
-                Group::make()->schema([
-                    Forms\Components\Section::make('Deployment allowing')
-                    ->description('Off-chain & editable')
-                    ->schema([
-                        Forms\Components\Select::make('artists')
-                            ->multiple()
-                            ->relationship('artists', 'name_and_wallet', fn (Builder $query) => $query->whereNotNull("name"))
-                            ->preload()
-                    ]),
-                ])->columnSpan(['lg' => 1]),
-                
                 Group::make()->schema([
                     Forms\Components\Section::make('Smart contracts info')
                     ->extraAttributes(['style' => 'border-color: #ffc100;'])
@@ -73,6 +72,17 @@ class CreateExpo extends CreateRecord
                             ->required(),
                         Placeholder::make('30% royalty wallet :')
                             ->content(new HtmlString('<b>'.env('FACTORY_WALLET').'</b>')),
+                    ]),
+                ])->columnSpan(['lg' => 1]),
+                
+                Group::make()->schema([
+                    Forms\Components\Section::make('Deployment allowing')
+                    ->description('Off-chain & editable')
+                    ->schema([
+                        Forms\Components\Select::make('artists')
+                            ->multiple()
+                            ->relationship('artists', 'name_and_wallet', fn (Builder $query) => $query->whereNotNull("name"))
+                            ->preload()
                     ]),
                 ])->columnSpan(['lg' => 1]),
             ])->columns(2)

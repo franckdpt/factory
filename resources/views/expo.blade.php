@@ -180,12 +180,12 @@
     <h1 class="text-3xl sm:text-3xl md:text-5xl lg:text-7xl font-semibold  text-NFTF-green italic">
         {{ $expo->name }}
     </h1>
-    {{-- <p class="mt-4 font-black uppercase text-xl leading-none">
+    <p class="mt-4 font-black uppercase text-xl leading-none">
         <span class="mr-1 inline-block text-NFTF-green">
             <svg class="h-4 fill-current" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 34 34" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><g><path d="m29.6 2h-3v3c0 .6-.5 1-1 1s-1-.4-1-1v-3h-16v3c0 .6-.5 1-1 1s-1-.4-1-1v-3h-3c-1.5 0-2.6 1.3-2.6 3v3.6h32v-3.6c0-1.7-1.8-3-3.4-3zm-28.6 8.7v18.3c0 1.8 1.1 3 2.7 3h26c1.6 0 3.4-1.3 3.4-3v-18.3zm8.9 16.8h-2.4c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c-.1.5-.4.8-.9.8zm0-9h-2.4c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c-.1.5-.4.8-.9.8zm8 9h-2.5c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c0 .5-.3.8-.8.8zm0-9h-2.5c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c0 .5-.3.8-.8.8zm8 9h-2.5c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c0 .5-.3.8-.8.8zm0-9h-2.5c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c0 .5-.3.8-.8.8z"></path></g></g></svg>
         </span>
-        Du jeudi 15 décembre 2022 au dimanche 15 janvier 2023
-    </p> --}}
+        Du {{ dateToFrench($expo->start_date->format('l j F')) }} au {{ dateToFrench($expo->end_date->format('l j F Y')) }}
+    </p>
     <address class="not-italic font-semibold uppercase text-xl">
         <span class="mr-1 inline-block text-NFTF-green">
             <svg class="h-4 fill-current" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 64 64" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><g id="Pin"><path d="m32 0a24.0319 24.0319 0 0 0 -24 24c0 17.23 22.36 38.81 23.31 39.72a.99.99 0 0 0 1.38 0c.95-.91 23.31-22.49 23.31-39.72a24.0319 24.0319 0 0 0 -24-24zm0 35a11 11 0 1 1 11-11 11.0066 11.0066 0 0 1 -11 11z" ></path></g></g></svg>
@@ -214,7 +214,7 @@
             <div class="relative overflow-hidden">
               @if ($smart_contract->isVideo())
                 <div class=" group-hover:scale-105 transition duration-150 ease">
-                    <video class="w-full hover:scale-105 transition duration-150 ease" muted="" playsinline="" poster="https://expo.nftfactoryparis.com/artworks/wrekt_christmas_editionsize_25.png" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;">
+                    <video class="w-full hover:scale-105 transition duration-150 ease" muted="" playsinline="" poster="{{ $smart_contract->getPreviewArtworkUrl() }}" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;">
                         <source src="{{ $smart_contract->getArtworkUrl() }}" type="video/mp4">
                     </video>
                 </div>
