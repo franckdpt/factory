@@ -80,8 +80,6 @@ class Mint extends Component
 
     public function fetchedSupply($maxSupply, $totalSupply)
     {
-        // $this->sales_open = $salesOpen;
-        
         if (!is_null($maxSupply) && !is_null($totalSupply)) {
             $this->smart_contract->artwork_max_supply = intval($maxSupply);
             $this->smart_contract->artwork_total_supply = intval($totalSupply);

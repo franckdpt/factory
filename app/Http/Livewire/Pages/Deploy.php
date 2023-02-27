@@ -79,8 +79,8 @@ class Deploy extends Component
             
             'network_id' => 'required|integer',
 
-            'artwork_title' => 'required|string|max:25',
-            'artwork_description' => 'required|string|max:420',
+            'artwork_title' => 'required|string|max:50',
+            'artwork_description' => 'required|string|max:200',
             'artwork_max_supply' => 'required',
             'artwork_price' => 'required|numeric|gt:0',
             'artwork_path' => 'required|string',

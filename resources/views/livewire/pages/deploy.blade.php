@@ -662,9 +662,9 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
       
       <button {{ (($smart_contract && $smart_contract->inReview()) || $state) ? 'disabled' : 'type="submit"'}}
         class="block mx-auto mt-10 px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease 
-        {{ ($smart_contract && $smart_contract->inReview()) ? '!bg-gray-600' : '' }}">
+        {{ ($smart_contract && $smart_contract->inReview() || $state) ? '!bg-gray-600' : '' }}">
         @if ($in_editing)
-          {{ $state ? : 'Submit for approval' }}
+          Submit for approval
         @elseif ($smart_contract && $smart_contract->inReview())
           Contract in review
         @elseif ($smart_contract && $smart_contract->readyToDeploy())
@@ -677,6 +677,12 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
           Submit for approval
         @endif
       </button>
+
+      @if ($state)
+        <div class="font-semibold text-center">
+          Don't close the window, it can takes minutes...
+        </div>
+      @endif
 
       @if (count($errors->all()) > 0)
         <div class="text-red-600 font-semibold text-center">

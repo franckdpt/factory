@@ -180,12 +180,12 @@
     <h1 class="text-3xl sm:text-3xl md:text-5xl lg:text-7xl font-semibold  text-NFTF-green italic">
         {{ $expo->name }}
     </h1>
-    <p class="mt-4 font-black uppercase text-xl leading-none">
+    {{-- <p class="mt-4 font-black uppercase text-xl leading-none">
         <span class="mr-1 inline-block text-NFTF-green">
             <svg class="h-4 fill-current" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 34 34" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><g><path d="m29.6 2h-3v3c0 .6-.5 1-1 1s-1-.4-1-1v-3h-16v3c0 .6-.5 1-1 1s-1-.4-1-1v-3h-3c-1.5 0-2.6 1.3-2.6 3v3.6h32v-3.6c0-1.7-1.8-3-3.4-3zm-28.6 8.7v18.3c0 1.8 1.1 3 2.7 3h26c1.6 0 3.4-1.3 3.4-3v-18.3zm8.9 16.8h-2.4c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c-.1.5-.4.8-.9.8zm0-9h-2.4c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c-.1.5-.4.8-.9.8zm8 9h-2.5c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c0 .5-.3.8-.8.8zm0-9h-2.5c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c0 .5-.3.8-.8.8zm8 9h-2.5c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c0 .5-.3.8-.8.8zm0-9h-2.5c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c0 .5-.3.8-.8.8z"></path></g></g></svg>
         </span>
         Du jeudi 15 décembre 2022 au dimanche 15 janvier 2023
-    </p>
+    </p> --}}
     <address class="not-italic font-semibold uppercase text-xl">
         <span class="mr-1 inline-block text-NFTF-green">
             <svg class="h-4 fill-current" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 64 64" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><g id="Pin"><path d="m32 0a24.0319 24.0319 0 0 0 -24 24c0 17.23 22.36 38.81 23.31 39.72a.99.99 0 0 0 1.38 0c.95-.91 23.31-22.49 23.31-39.72a24.0319 24.0319 0 0 0 -24-24zm0 35a11 11 0 1 1 11-11 11.0066 11.0066 0 0 1 -11 11z" ></path></g></g></svg>
@@ -202,16 +202,7 @@
       
   <div class="pt-3 pb-5">
       <p class="mx-auto py-5 px-4 lg:container xl:max-w-screen-lg text-gray-800 leading-5 md:columns-2">
-          Le marché des NFTs et des crypto-monnaies, en berne depuis plus d’un an, continue de plonger à la veille des fêtes de fin d’année, notamment avec la faillite récente de la société FTX et ses conséquences.<br>
-          <br>
-          Celles et ceux qui avaient confié leurs fonds à cet acteur hyper-centralisé ont perdu gros et cet événement est souvent décrit comme la plus grande fraude financière de l’histoire de l’humanité, surpassant la fameuse affaire Madoff.<br>
-          <br>
-          Alors que les crypto-sceptiques s'emparent de cette actualité douloureuse pour prédire la mort des crypto-monnaies et que les régulateurs y voient une opportunité d’intensifier le contrôle de ce nouvel espace de liberté qui leur échappe, on peut le dire : “ça sent le crypto-sapin”.<br>
-          Pourtant, les crypto-artistes ont un point de vue différent.<br>
-          <br>
-          La centralisation dont la faillite de FTX est le symbole, comme la régulation à l’excès qui risque d’en résulter, sont à l’opposé des valeurs qu’ils et elles défendent. L’enterrement des crypto-monnaies, quant à lui, a trop souvent été annoncé pour être encore crédible.<br>
-          <br>
-          Les crypto-artistes expriment donc ici un double message : en pratiquant l'autodérision au sujet des excès et dérives mortifères de l’espace dans lequel ils et elles évoluent, ils et elles critiquent de façon subtile les systèmes centralisés et le capitalisme de surveillance pour qui, en effet... “ça sent le sapin” !
+        {{ $expo->description }}<br>
       </p>
   </div>
 
