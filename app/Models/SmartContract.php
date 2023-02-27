@@ -51,6 +51,7 @@ class SmartContract extends Model
         'network_id' => 'integer',
         'self_nfts_number' => 'integer',
         'artwork_max_supply' => 'integer',
+        'artwork_total_supply' => 'integer',
         'deployed' => 'boolean',
         'open_sales' => 'boolean',
     ];
