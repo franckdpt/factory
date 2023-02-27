@@ -26,6 +26,9 @@ class Mint extends Component
     public $is_deployed = false;
     public $is_minted = false;
 
+    public $hash;
+    public $token_id;
+
     protected $listeners = [
         'fetchedSupply',
         'minting',
@@ -64,7 +67,11 @@ class Mint extends Component
     public function minted($hash, $tokenid)
     {
         $this->is_minting = false;
+
+        $this->hash = $hash;
+        $this->token_id = $tokenid;
         $this->is_minted = true;
+        
         $this->smart_contract->artwork_total_supply = $this->smart_contract->artwork_total_supply + 1;
         $this->smart_contract->save();
     }
