@@ -71,9 +71,11 @@ class Mint extends Component
         $this->hash = $hash;
         $this->token_id = $tokenid;
         $this->is_minted = true;
-        
+
         $this->smart_contract->artwork_total_supply = $this->smart_contract->artwork_total_supply + 1;
         $this->smart_contract->save();
+
+        $this->checkIfSoldout();
     }
 
     public function fetchedSupply($maxSupply, $totalSupply)
