@@ -104,9 +104,7 @@
               @endif
               @if ($smart_contract->artist_contact_mail)
                 <a class="hover:text-NFTF-green NFTF-transition" 
-                href="{{ $smart_contract->artist_contact_mail }}" 
-                target="_blank" 
-                rel="noopener noreferrer">
+                href="{{ "mailto:".$smart_contract->artist_contact_mail }}">
                   <svg class="w-8 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19">
                     <path id="Tracé_150" data-name="Tracé 150" d="M9.5,19A9.5,9.5,0,1,1,19,9.5,9.511,9.511,0,0,1,9.5,19Zm4.927-6.163a.213.213,0,0,0,.212-.212V6.661L9.806,10.5a.491.491,0,0,1-.611,0L4.361,6.661v5.964a.213.213,0,0,0,.212.212Zm-.741-6.675L9.5,9.487,5.314,6.163Zm1.936.212v6.25a1.2,1.2,0,0,1-1.2,1.2H4.573a1.2,1.2,0,0,1-1.2-1.2V6.375a1.2,1.2,0,0,1,1.2-1.2h9.853A1.2,1.2,0,0,1,15.622,6.375Z" fill-rule="evenodd"/>
                   </svg>
