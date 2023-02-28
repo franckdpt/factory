@@ -34,7 +34,7 @@ class PendingSmartContractResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return [ 'artwork_title', 'address', 'user.name'];
+        return [ 'artwork_title', 'address', 'user.name', 'public_id'];
     }
 
     public static function getGlobalSearchResultDetails($record): array
