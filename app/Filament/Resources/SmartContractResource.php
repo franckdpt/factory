@@ -16,7 +16,7 @@ use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Tables\Filters\Filter;
-
+use Filament\Tables\Filters\SelectFilter;
 
 class SmartContractResource extends Resource
 {
@@ -44,15 +44,21 @@ class SmartContractResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('user.name')->label('Artist')->sortable(),
                 Tables\Columns\TextColumn::make('artwork_title'),
+                Tables\Columns\TextColumn::make('artwork_hd_extension')->label('type')->sortable(),
                 Tables\Columns\TextColumn::make('artwork_price'),
-                Tables\Columns\TextColumn::make('user.name')->label('Owner'),
                 Tables\Columns\TextColumn::make('status'),
-                Tables\Columns\IconColumn::make('deployed')->boolean(),
+                Tables\Columns\IconColumn::make('deployed')->boolean()->sortable(),
             ])
             ->filters([
-                // Filter::make('in_review')
-                //     ->query(fn (Builder $query): Builder => $query->where('status', 'in_review'))
+                SelectFilter::make('artwork_hd_extension')
+                    ->label('type')
+                    ->options([
+                        'mp4' => 'MP4',
+                        'jpeg' => 'JPG',
+                    ]),
+                Filter::make('deployed')
             ])
             ->actions([
                 // Tables\Actions\ViewAction::make(),

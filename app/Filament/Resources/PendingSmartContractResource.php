@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Layout;
 
 class PendingSmartContractResource extends Resource
 {
@@ -61,12 +63,18 @@ class PendingSmartContractResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('user.name')->label('Artist')->sortable(),
                 Tables\Columns\TextColumn::make('artwork_title'),
+                Tables\Columns\TextColumn::make('artwork_hd_extension')->label('type')->sortable(),
                 Tables\Columns\TextColumn::make('artwork_price'),
-                Tables\Columns\TextColumn::make('user.name')->label('Owner'),
             ])
             ->filters([
-                //
+                SelectFilter::make('artwork_hd_extension')
+                    ->label('type')
+                    ->options([
+                        'mp4' => 'MP4',
+                        'jpeg' => 'JPG',
+                    ])
             ])
             ->actions([
                 
