@@ -6,7 +6,7 @@ use Livewire\Component;
 use App\Models\SmartContract;
 use App\Http\Livewire\Traits\AuthRefreshed;
 use App\Models\Network;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class Mint extends Component
 {
@@ -37,7 +37,8 @@ class Mint extends Component
 
     public function mount($smart_contract_publicid)
     {
-        $this->abi = config("contracts.artist.abi");
+        $this->abi = json_decode(Storage::disk('local')->get('sc-721-1.json'), true)['abi'];
+
         $this->smart_contract = SmartContract::wherePublicId($smart_contract_publicid)
                                                 // ->where("deployed", 1)
                                                 ->firstOrFail();

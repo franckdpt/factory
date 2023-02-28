@@ -43,7 +43,6 @@ class EditExpo extends EditRecord
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->maxLength(255)
-                            ->unique()
                             ->required(),
                         Forms\Components\Textarea::make('description')
                             ->maxLength(65535)

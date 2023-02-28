@@ -412,8 +412,8 @@ class Deploy extends Component
 
     public function readyToDeploySmartContract()
     {
-        $this->abi = config("contracts.artist.abi");
-        $this->byte = config("contracts.artist.byte");
+        $this->abi = json_decode(Storage::disk('local')->get('sc-721-1.json'), true)['abi'];
+        $this->byte = json_decode(Storage::disk('local')->get('sc-721-1.json'), true)['bytecode'];
 
         $this->smart_contract_symbol = $this->smart_contract->getContractSymbol();
         $this->smart_contract_name = $this->smart_contract->getContractName();

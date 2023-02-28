@@ -311,7 +311,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
             <div class="md:flex gap-x-10">
               <div class="flex-1 relative flex flex-col">
                 <div class="mb-2 text-xl md:text-2xl font-bold">
-                High Definition media
+                Artwork media
                 </div>
 
                 <label class="flex relative border-2 border-dashed border-black cursor-pointer 
@@ -831,7 +831,6 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
             console.log(contractUrl)
             console.log(tokenUrl)
             console.log(@this.artwork_sha_hash)
-            console.log(@this.factory_address)
             console.log(ethers.utils.parseEther(@this.artwork_price))
             console.log(@this.artwork_max_supply)
             console.log(@this.self_nfts_number)
@@ -841,7 +840,6 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                 [@this.smart_contract_name, @this.smart_contract_symbol], //
                 [@this.artwork_title, @this.artwork_description, @this.artwork_artist],
                 [ipfsUrl,arweaveUrl,contractUrl,tokenUrl,@this.artwork_sha_hash],
-                @this.factory_address,
                 ethers.utils.parseEther(@this.artwork_price),
                 @this.artwork_max_supply,
                 @this.self_nfts_number,
