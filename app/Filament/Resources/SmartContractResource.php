@@ -48,7 +48,7 @@ class SmartContractResource extends Resource
                 Tables\Columns\TextColumn::make('artwork_title'),
                 Tables\Columns\TextColumn::make('artwork_hd_extension')->label('type')->sortable(),
                 Tables\Columns\TextColumn::make('artwork_price'),
-                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('status')->sortable(),
                 Tables\Columns\IconColumn::make('deployed')->boolean()->sortable(),
             ])
             ->filters([
