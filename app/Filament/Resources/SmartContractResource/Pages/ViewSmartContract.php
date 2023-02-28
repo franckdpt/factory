@@ -31,7 +31,7 @@ class ViewSmartContract extends ViewRecord
                         Placeholder::make('Smart contract symbol')
                         ->content(new HtmlString('<b>'.$this->record->getContractSymbol().'</b>')),
                         Placeholder::make('Network')
-                        ->content(new HtmlString('<b>'.$this->record->network->name.'</b>')),
+                        ->content(new HtmlString('<b>'.$this->record->getNetworkValue('name').'</b>')),
                     ]),
 
                     Grid::make(3)->schema([
@@ -49,7 +49,7 @@ class ViewSmartContract extends ViewRecord
                         Placeholder::make('Reserved copies')
                         ->content(new HtmlString('<b>'.$this->record->self_nfts_number.'</b>')),
                         Placeholder::make('Price')
-                        ->content(new HtmlString('<b>'.$this->record->artwork_price.' '.$this->record->network->currency.'</b>')),
+                        ->content(new HtmlString('<b>'.$this->record->artwork_price.' '.$this->record->getNetworkValue('currency').'</b>')),
                         Placeholder::make('Artist royalties')
                         ->content(new HtmlString('<b>'.$this->record->getRoyaltyInput().'%</b>')),
                     ]),

@@ -73,9 +73,9 @@
           <div class="mt-10 flex flex-wrap gap-y-4 gap-x-16">
 
             @foreach ($networks as $network)
-                <label class="flex-1 p-4 flex items-start gap-x-4 border-2 border-transparent  {{ !$in_editing ? '' : 'hover:border-NFTF-green cursor-pointer' }}">
+                <label class="flex-1 p-4 flex items-start gap-x-4 border-2 border-transparent  {{ !$in_editing || $in_uploading ? '' : 'hover:border-NFTF-green cursor-pointer' }}">
                 <input class="w-10 h-10 cursor-pointer shrink-0"
-                {{ !$in_editing ? 'disabled' : '' }}
+                {{ !$in_editing || $in_uploading ? 'disabled' : '' }}
                 type="radio"
                 wire:model.lazy="network_id"
                 value="{{ $network->id }}"/>
@@ -209,8 +209,8 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artwork_artist') ? '!border-red-600' : '' }}
-                  {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
-                  {{ !$in_editing ? 'disabled' : '' }}
+                  {{ !$in_editing || $in_uploading ? 'border-gray-500 bg-gray-200' : '' }}"
+                  {{ !$in_editing || $in_uploading ? 'disabled' : '' }}
                   type="text" 
                   id="artworkartist" 
                   name="artworkartist" 
@@ -245,8 +245,8 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artwork_title') ? '!border-red-600' : '' }}
-                  {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
-                  {{ !$in_editing ? 'disabled' : '' }}
+                  {{ !$in_editing || $in_uploading ? 'border-gray-500 bg-gray-200' : '' }}"
+                  {{ !$in_editing || $in_uploading ? 'disabled' : '' }}
                   type="text" 
                   id="artworktitle" 
                   name="artworktitle" 
@@ -281,8 +281,8 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                 <div>
                   <textarea class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artwork_description') ? '!border-red-600' : '' }}
-                  {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
-                  {{ !$in_editing ? 'disabled' : '' }}
+                  {{ !$in_editing || $in_uploading ? 'border-gray-500 bg-gray-200' : '' }}"
+                  {{ !$in_editing || $in_uploading ? 'disabled' : '' }}
                   type="text" 
                   id="artworkdescription" 
                   name="artworkdescription" 
@@ -371,7 +371,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                           </div>
                       </div>
                   </div>
-                   <input {{ !$in_editing ? 'disabled' : '' }} id="hdMedia" class="hidden" type="file" wire:model="hd_media" />
+                   <input {{ !$in_editing || $in_uploading ? 'disabled' : '' }} id="hdMedia" class="hidden" type="file" wire:model="hd_media" />
                 </label>
                 @error('hd_media') 
                   <div class="text-red-600 font-semibold">
@@ -420,16 +420,16 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                   <div class="flex gap-x-5 items-center text-xl md:text-2xl font-bold">
                     <input class="flex-1 mt-2 py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artwork_price') ? '!border-red-600' : '' }}
-                    {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
-                    {{ !$in_editing ? 'disabled' : '' }}
+                    {{ !$in_editing || $in_uploading ? 'border-gray-500 bg-gray-200' : '' }}"
+                    {{ !$in_editing || $in_uploading ? 'disabled' : '' }}
                     type="number" 
                     min="0"
                     step=".01"
                     placeholder="10"
                     name="price"
                     wire:model="artwork_price">
-                    @if ($smart_contract && $smart_contract->network_id)
-                      {{ $smart_contract->network->currency }}
+                    @if ($smart_contract)
+                      {{ $smart_contract->getNetworkValue('currency') }}
                     @endif
                   </div>
                   @error('artwork_price') 
@@ -479,8 +479,8 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                   <div class="flex gap-x-5 items-center text-xl md:text-2xl font-bold">
                     <input class="flex-1 mt-2 py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artwork_royalty_input') ? '!border-red-600' : '' }}
-                    {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
-                    {{ !$in_editing ? 'disabled' : '' }}
+                    {{ !$in_editing || $in_uploading ? 'border-gray-500 bg-gray-200' : '' }}"
+                    {{ !$in_editing || $in_uploading ? 'disabled' : '' }}
                     type="number" 
                     min="0"
                     step=".01"
@@ -516,8 +516,8 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artwork_max_supply') ? '!border-red-600' : '' }}
-                  {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
-                  {{ !$in_editing ? 'disabled' : '' }}
+                  {{ !$in_editing || $in_uploading ? 'border-gray-500 bg-gray-200' : '' }}"
+                  {{ !$in_editing || $in_uploading ? 'disabled' : '' }}
                   type="number" 
                   min="0" 
                   step="1"
@@ -550,8 +550,8 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('self_nfts_number') ? '!border-red-600' : '' }}
-                  {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
-                  {{ !$in_editing ? 'disabled' : '' }}
+                  {{ !$in_editing || $in_uploading ? 'border-gray-500 bg-gray-200' : '' }}"
+                  {{ !$in_editing || $in_uploading ? 'disabled' : '' }}
                   type="number" 
                   min="0" 
                   step="1"
@@ -610,8 +610,8 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                 <div>
                   <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                   {{ $errors->has('artist_portfolio_link') ? '!border-red-600' : '' }}
-                  {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
-                  {{ !$in_editing ? 'disabled' : '' }}
+                  {{ !$in_editing || $in_uploading ? 'border-gray-500 bg-gray-200' : '' }}"
+                  {{ !$in_editing || $in_uploading ? 'disabled' : '' }}
                   type="text" 
                   id="portfoliolink" 
                   name="portfoliolink"
@@ -640,8 +640,8 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                   <div>
                     <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artist_twitter_link') ? '!border-red-600' : '' }}
-                    {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
-                    {{ !$in_editing ? 'disabled' : '' }}
+                    {{ !$in_editing || $in_uploading ? 'border-gray-500 bg-gray-200' : '' }}"
+                    {{ !$in_editing || $in_uploading ? 'disabled' : '' }}
                     type="text" 
                     id="twitterlink" 
                     name="twitterlink"
@@ -671,8 +671,8 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                   <div>
                     <input class="mt-2 w-full py-2 px-3 block text-lg font-semibold border-2 border-black focus:outline-none focus:ring focus:ring-NFTF-green focus:border-NFTF-green 
                     {{ $errors->has('artist_contact_mail') ? '!border-red-600' : '' }}
-                    {{ !$in_editing ? 'border-gray-500 bg-gray-200' : '' }}"
-                    {{ !$in_editing ? 'disabled' : '' }}
+                    {{ !$in_editing || $in_uploading ? 'border-gray-500 bg-gray-200' : '' }}"
+                    {{ !$in_editing || $in_uploading ? 'disabled' : '' }}
                     type="text" 
                     id="mail" 
                     name="mail" 
@@ -699,7 +699,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
       <button {{ (($smart_contract && $smart_contract->inReview()) || $state) ? 'disabled' : 'type="submit"'}}
         class="block mx-auto mt-10 px-16 py-9 font-bold text-5xl bg-NFTF-green hover:bg-black text-white transition duration-150 ease 
         {{ ($smart_contract && $smart_contract->inReview() || $state) ? '!bg-gray-600' : '' }}">
-        @if ($in_editing)
+        @if ($in_editing || $in_uploading)
           {{ $state ? : 'Submit for approval' }}
         @elseif ($smart_contract && $smart_contract->inReview())
           Contract in review

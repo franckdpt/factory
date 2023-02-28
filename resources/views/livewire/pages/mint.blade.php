@@ -124,7 +124,7 @@
           </h2>
 
           <div class="mt-2 text-6xl md:text-5xl lg:text-7xl font-black">
-            {{ $smart_contract->artwork_price }} {{ $smart_contract->network ? $smart_contract->network->currency : '' }}
+            {{ $smart_contract->artwork_price }} {{ $smart_contract->getNetworkValue('currency') }}
           </div>
           <div class="text-lg font-bold">
               {{ $smart_contract->artwork_max_supply - $smart_contract->artwork_total_supply }} of {{ $smart_contract->artwork_max_supply }} Editions Available
@@ -168,7 +168,7 @@
                       See on Opensea
                     </a> --}}
                     <a class="mt-6 md:mt-0 px-8 py-4 block uppercase bg-NFTF-green hover:bg-black text-white hover:text-white font-black"
-                    href="{{ $smart_contract->network->explorer . 'tx/'. $hash}}">
+                    href="{{ $smart_contract->getNetworkValue('explorer') . 'tx/'. $hash}}">
                       See the transaction
                     </a>
                     <button class="absolute top-3 right-4 p-2 text-black hover:text-Calis-orange z-50"
@@ -231,7 +231,7 @@
               <span class="font-bold">Type:</span> ERC-721
             </li>
             <li>
-              <span class="font-bold">Blockchain:</span> {{ $smart_contract->network ? $smart_contract->network->name : '' }}
+              <span class="font-bold">Blockchain:</span> {{ $smart_contract->getNetworkValue('name') }}
             </li>
             <li>
               <span class="font-bold">Second market royalties:</span> {{ $smart_contract->getRoyaltyInput() }}%
@@ -262,7 +262,7 @@
             @if (!empty($smart_contract->address))
               <li>
                 <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
-                href="{{ $smart_contract->network ? $smart_contract->network->explorer.'address/'.$smart_contract->address : '' }}"
+                href="{{ $smart_contract->getNetworkValue('explorer').'address/'.$smart_contract->address }}"
                 target="_blank"
                 rel="noopener noreferrer">
                 <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">

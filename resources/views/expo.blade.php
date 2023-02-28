@@ -261,7 +261,7 @@
             </div>
             <div class="mt-4 pt-2 flex justify-between items-center font-black text-right border-t-2 border-t-NFTF-green">
                 <div class="font-semibold">Ed: {{ $smart_contract->artwork_max_supply - $smart_contract->artwork_total_supply }} of {{ $smart_contract->artwork_max_supply }}</div>
-                    <div class="font-black">{{ $smart_contract->artwork_price }} {{ $smart_contract->network->currency }}</div>
+                    <div class="font-black">{{ $smart_contract->artwork_price }} {{ $smart_contract->getNetworkValue('currency') }}</div>
                 </div>
                 <div class="opacity-0 group-hover:opacity-100 transition duration-150 ease absolute inset-0 bg-NFTF-green flex items-center justify-center text-2xl font-bold">
                     BUY

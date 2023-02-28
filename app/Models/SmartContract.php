@@ -102,9 +102,29 @@ class SmartContract extends Model
         return $this->status == "in_editing";
     }
 
+    public function inUploading(): string
+    {
+        return $this->status == "in_uploading";
+    }
+
     public function readyToDeploy(): string
     {
         return $this->status == "ready_to_deploy";
+    }
+
+    public function isArtworkIpfsDone(): string
+    {
+        return !empty($this->artwork_ipfs_hash);
+    }
+
+    public function isArtworkArweaveDone(): string
+    {
+        return !empty($this->artwork_arweave_hash);
+    }
+
+    public function isTokenIpfsDone(): string
+    {
+        return !empty($this->token_ipfs_hash);
     }
 
     public function getContractName(): string
@@ -130,6 +150,14 @@ class SmartContract extends Model
     public function getArtworkUrl(): string
     {
         return config('app.url').'/storage/nft_media/'.$this->public_id.'_hd.'.$this->artwork_hd_extension;
+    }
+
+    public function getNetworkValue($attr): string
+    {
+        if ($this->network_id) {
+            return $this->network->$attr ?? '';
+        }
+        return '';
     }
 
     public static function getPreviewUrlIfNeeded($string, $length)

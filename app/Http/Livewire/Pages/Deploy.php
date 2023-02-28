@@ -27,6 +27,7 @@ class Deploy extends Component
     public $hd_media, $state;
     public $wallet;
     public $in_editing = true;
+    public $in_uploading = false;
     public $wallet_allowed = false;
     public $refresh_preview = false;
     public $deployments_limit_reached = false;
@@ -121,6 +122,7 @@ class Deploy extends Component
             $this->artwork_royalty_input = $this->smart_contract->getRoyaltyInput();
 
             $this->in_editing = $this->smart_contract->inEditing();
+            $this->in_uploading = $this->smart_contract->inUploading();
 
             $this->public_id = $this->smart_contract->public_id;
             $this->network_id = $this->smart_contract->network_id;
@@ -290,7 +292,7 @@ class Deploy extends Component
 
     public function submit()
     {
-        if ($this->in_editing) {
+        if ($this->in_editing || $this->in_uploading) {
             $validatedData = $this->validate();
 
             $this->smart_contract = SmartContract::updateOrCreate(
@@ -299,9 +301,30 @@ class Deploy extends Component
             );
 
             $this->wallet = Auth::user()->wallet_address;
-            $this->state = 'Uploading media on IPFS...';
-            $this->emit('readyToUploadIpfs');
 
+            if ($this->in_uploading) {
+                // keep going uploading
+                if (!$this->smart_contract->isArtworkIpfsDone()) {
+                    $this->state = 'Uploading media on IPFS...';
+                    $this->emit('readyToUploadIpfs');
+                } else if (!$this->smart_contract->isArtworkArweaveDone()) {
+                    $this->state = 'Uploading media on Arweave...';
+                    $this->emit('readyToUploadArweave');
+                } else if (!$this->smart_contract->isTokenIpfsDone()) {
+                    $this->state = 'Creating & uploading JSON to IPFS...';
+                    $this->emit('readyToCreateAndUploadJsonTokenIpfs');
+                } else {
+                    dd('Unexpected error, contact dev.');
+                }
+            } else {
+                // start uploading
+                $this->in_uploading = true;
+                $this->smart_contract->status = 'in_uploading';
+                $this->smart_contract->save();
+
+                $this->state = 'Uploading media on IPFS...';
+                $this->emit('readyToUploadIpfs');
+            }
         } else if ($this->smart_contract->inReview()) {
             // nothing
         } else if ($this->smart_contract->readyToDeploy()) {
