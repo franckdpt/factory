@@ -484,7 +484,7 @@ class Deploy extends Component
         $contract_data = [
             "name" => $this->smart_contract->getContractName(),
             "description" => $this->expo->contracts_description,
-            "image" => "https://nftfactoryparis.com/wp-content/uploads/2022/10/Plan-de-travail-%E2%80%93-1.png",
+            "image" => "https://mint.nftfactoryparis.com/storage/logo_collection.jpg",
             "external_link" => route('mint', [
                 'expo' => $this->expo,
                 'smart_contract_publicid' => $this->public_id,
