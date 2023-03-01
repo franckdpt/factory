@@ -265,7 +265,7 @@ class Deploy extends Component
     {
         $this->refresh_preview = false;
         $this->validate([
-            'hd_media' => 'nullable|max:500000|mimes:jpg,mp4',
+            'hd_media' => 'nullable|max:102400|mimes:jpg,mp4',
         ]);
         $this->refresh_preview = true;
 
