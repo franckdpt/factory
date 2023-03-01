@@ -83,7 +83,7 @@ class Deploy extends Component
 
             'artwork_artist' => 'required|string|max:50',
             'artwork_title' => 'required|string|max:50',
-            'artwork_description' => 'required|string|max:200',
+            'artwork_description' => 'required|string|max:300',
             'artwork_max_supply' => 'required',
             'artwork_price' => 'required|numeric|gt:0',
             'artwork_path' => 'required|string',
