@@ -48,6 +48,7 @@ class Mint extends Component
 
         if ($this->smart_contract->network_id) {
             $this->network_public_id = Network::ID[$this->smart_contract->network->public_id][env('BLOCKCHAIN_ENV')];
+            $this->client_network_id = Network::ID[$this->smart_contract->network->public_id][env('BLOCKCHAIN_ENV')];
         }
 
         $this->checkIfSoldout();
