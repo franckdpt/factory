@@ -43,7 +43,7 @@ class Expo extends Model
                 'factory_address' => env('FACTORY_WALLET'),
                 'contracts_symbol' => env('EXPO_SYMBOL_PREFIX'),
                 'contracts_name' => $this->contracts_name ?? $value. ' X ',
-                'slug' => Str::slug($value, '-')
+                'slug' => $this->name ? $this->slug : Str::slug($value, '-')
             ],
         );
     }
