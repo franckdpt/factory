@@ -334,8 +334,9 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                           preload="auto"
                           autoplay="autoplay"
                           loop="loop"
-                          muted="muted"
-                          controls>
+                          controls
+                          onmouseover="this.play()" 
+                          onmouseout="this.pause();this.currentTime=0;">
                           <source src="{{ $hd_media->temporaryUrl() }}"  type="video/mp4">
                           </video>
                         @else
@@ -347,8 +348,9 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                           preload="auto"
                           autoplay="autoplay"
                           loop="loop"
-                          muted="muted"
-                          controls>
+                          controls
+                          onmouseover="this.play()" 
+                          onmouseout="this.pause();this.currentTime=0;">
                             <source src="{{ $smart_contract->getArtworkUrl() }}"  type="video/mp4">
                           </video>
                         @elseif ($smart_contract->isImage())
