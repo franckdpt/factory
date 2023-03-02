@@ -137,6 +137,11 @@
             <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-6xl font-black border-gray-500 bg-gray-200">
               Soldout
             </button>
+            @if($openSeaUrl)
+              {{-- <div class="font-semibold text-center">
+                <a href="{{ $openSeaUrl }}" target="_blank">See on OpenSea {{ $openSeaFloorPrice ? '(floor price: '.$openSeaFloorPrice.')' : '' }}</a>
+              </div> --}}
+            @endif
           @elseif (!$sales_open)
             <button disabled class="flex-1 mt-10 px-5 pt-5 pb-7 text-white text-4xl md:text-6xl font-black border-gray-500 bg-gray-200">
               Sales closed
@@ -271,6 +276,21 @@
                   Smart Contract
                 </a>
               </li>
+              @if($openSeaUrl)
+                <li>
+                  <a class="px-6 py-2 flex items-center gap-x-3 bg-black hover:bg-NFTF-green text-white hover:bg NFTF-transition"
+                  href="{{ $openSeaUrl }}"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.865 13.865">
+                    <g id="Groupe_93" data-name="Groupe 93" transform="translate(-4 -4)">
+                      <path id="Tracé_147" data-name="Tracé 147" d="M17.865,4.462V8.622a.462.462,0,0,1-.924,0V5.578l-6.606,6.606a.462.462,0,1,1-.653-.653l6.606-6.606H13.243a.462.462,0,0,1,0-.924H17.4A.462.462,0,0,1,17.865,4.462ZM16.016,16.478V10.932a.462.462,0,1,0-.924,0v5.546a.462.462,0,0,1-.462.462H5.386a.462.462,0,0,1-.462-.462V7.235a.462.462,0,0,1,.462-.462h5.546a.462.462,0,0,0,0-.924H5.386A1.388,1.388,0,0,0,4,7.235v9.243a1.388,1.388,0,0,0,1.386,1.386H14.63A1.388,1.388,0,0,0,16.016,16.478Z" fill="#fff"/>
+                    </g>
+                  </svg>
+                    OpenSea
+                  </a>
+                </li>
+              @endif
             @endif
             @if (!empty($smart_contract->artwork_ipfs_hash))
               <li>

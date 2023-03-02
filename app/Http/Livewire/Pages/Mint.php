@@ -7,6 +7,7 @@ use App\Models\SmartContract;
 use App\Http\Livewire\Traits\AuthRefreshed;
 use App\Models\Network;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class Mint extends Component
 {
@@ -25,6 +26,8 @@ class Mint extends Component
     public $sales_open = true;
     public $is_deployed = false;
     public $is_minted = false;
+    public $openSeaUrl;
+    public $openSeaFloorPrice;
 
     public $hash;
     public $token_id;
@@ -49,6 +52,29 @@ class Mint extends Component
         if ($this->smart_contract->network_id) {
             $this->network_public_id = Network::ID[$this->smart_contract->network->public_id][env('BLOCKCHAIN_ENV')];
             $this->client_network_id = Network::ID[$this->smart_contract->network->public_id][env('BLOCKCHAIN_ENV')];
+        }
+
+        // TODO support other chains
+        if ($this->smart_contract->address) {
+            $endpoint = "https://eth-mainnet.g.alchemy.com/nft/v2/".env('ALCHEMY_API_KEY');
+            $endpoint = $endpoint . "/getFloorPrice";
+            $endpoint = $endpoint . "?contractAddress=".$this->smart_contract->address;
+            
+            $response = Http::withHeaders([
+                'Host' => 'eth-mainnet.g.alchemy.com',
+                'Accept' => 'application/json'
+            ])->get($endpoint);
+            
+            if ($response->successful()) {
+                if ($response->json()["openSea"]) {
+                    if ($response->json()["openSea"]["collectionUrl"]) {
+                        $this->openSeaUrl = $response->json()["openSea"]["collectionUrl"];
+                    }
+                    if ($response->json()["openSea"]["floorPrice"]) {
+                        $this->openSeaFloorPrice = $response->json()["openSea"]["floorPrice"];
+                    }
+                }
+            }
         }
 
         $this->checkIfSoldout();
