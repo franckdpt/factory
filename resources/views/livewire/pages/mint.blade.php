@@ -23,9 +23,9 @@
         </svg>
       </a>
       <div class="mt-4 md:mt-0 flex justify-between md:justify-start gap-4 items-center text-2xl font-semibold">
-        <div>
+        <a href="{{ route('expo', $smart_contract->expo) }}">
           {{ $smart_contract->expo->name }}
-        </div>
+        </a>
         <div class="ml-4 px-4 py-2 font-black text-lg bg-NFTF-green hover:bg-black text-white NFTF-transition">
           @livewire('wallet-button')
         </div>
