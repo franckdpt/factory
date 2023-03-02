@@ -56,6 +56,7 @@ class Mint extends Component
 
     public function checkIfSoldout()
     {
+        // TODO use isSoldout()
         if ($this->smart_contract->artwork_max_supply == $this->smart_contract->artwork_total_supply) {
             $this->soldout = true;
         }

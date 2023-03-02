@@ -194,6 +194,11 @@ class SmartContract extends Model
         return is_null($this->artwork_royalty) ? null : strval($this->artwork_royalty/100);
     }
 
+    public function isSoldout(): string
+    {
+        return $this->artwork_max_supply <= $this->artwork_total_supply;
+    }
+
     public function isVideo(): string
     {
         return in_array($this->artwork_hd_extension, ['mp4', 'mov']);
