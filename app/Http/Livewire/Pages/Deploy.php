@@ -71,6 +71,7 @@ class Deploy extends Component
         'readyToDeploySmartContract',
 
         'arweaveUploaded',
+        'smartContractDeploying',
         'smartContractDeployed',
     ];
 
@@ -331,8 +332,6 @@ class Deploy extends Component
             if ($this->client_network_id != $this->network_public_id) {
                 $this->emit('switchNetworkOnJs', $this->network_public_id);
             } else {
-                $this->smart_contract->status = 'in_deploying';
-                $this->smart_contract->save();
                 $this->emit('readyToDeploySmartContract');
             }
         }
@@ -429,6 +428,12 @@ class Deploy extends Component
             $this->smart_contract->getArtworkArweaveUrl(),
             $this->smart_contract->getContractUrl(),
         );
+    }
+
+    public function smartContractDeploying()
+    {
+        $this->smart_contract->status = 'in_deploying';
+        $this->smart_contract->save();
     }
 
     public function smartContractDeployed($address)

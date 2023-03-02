@@ -849,6 +849,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
             );
 
             @this.set('state', 'Deploying smart contract...')
+            Livewire.emit('smartContractDeploying')
             await factoryContract.deployed();
             
             Livewire.emit('smartContractDeployed', factoryContract.address)
