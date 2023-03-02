@@ -67,10 +67,10 @@ class Mint extends Component
             
             if ($response->successful()) {
                 if ($response->json()["openSea"]) {
-                    if ($response->json()["openSea"]["collectionUrl"]) {
+                    if (isset($response->json()["openSea"]["collectionUrl"])) {
                         $this->openSeaUrl = $response->json()["openSea"]["collectionUrl"];
                     }
-                    if ($response->json()["openSea"]["floorPrice"]) {
+                    if (isset($response->json()["openSea"]["floorPrice"])) {
                         $this->openSeaFloorPrice = $response->json()["openSea"]["floorPrice"];
                     }
                 }
