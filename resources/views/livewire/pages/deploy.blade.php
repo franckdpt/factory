@@ -704,7 +704,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
         @elseif ($smart_contract && $smart_contract->inReview())
           Contract in review
         @elseif ($smart_contract && $smart_contract->inDeploying())
-          Please contact dev
+          {{ $state ? : 'Please contact dev' }}
         @elseif ($smart_contract && $smart_contract->readyToDeploy())
           @if ($client_network_id != $network_public_id)
             Switch network to deploy
