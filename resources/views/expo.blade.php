@@ -207,14 +207,14 @@
   </div>
 
   <div class="mx-auto py-5 px-4 lg:max-w-screen-lg text-xl">
-      <main id="content" class="py-10 sm:columns-2 gap-8">
+      <main id="content" class="py-10 sm:columns-3 gap-8">
         @foreach($expo->smart_contracts->where('deployed', 1) as $smart_contract)
           <a class="mb-10 flex flex-col group bg-lime-100 break-inside-avoid-column" aria-label="buy this artwork"
             href="{{ route('mint', [ 'expo' => $smart_contract->expo, 'smart_contract_publicid' => $smart_contract->public_id ]) }}">
             <div class="relative overflow-hidden">
               @if ($smart_contract->isVideo())
                 <div class=" group-hover:scale-105 transition duration-150 ease">
-                    <video class="w-full hover:scale-105 transition duration-150 ease" muted="" playsinline="" poster="{{ $smart_contract->getPreviewArtworkUrl() }}" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;">
+                    <video class="w-full hover:scale-105 transition duration-150 ease" playsinline loop poster="{{ $smart_contract->getPreviewArtworkUrl() }}" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;">
                         <source src="{{ $smart_contract->getArtworkUrl() }}" type="video/mp4">
                     </video>
                 </div>

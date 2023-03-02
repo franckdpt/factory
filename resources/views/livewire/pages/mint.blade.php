@@ -59,7 +59,7 @@
             </div>
           </div>
           @else
-            <video class="w-full" controls poster="" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;">
+            <video class="w-full" controls loop poster="" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;">
                 <source src="{{ $smart_contract->getArtworkUrl() }}" type="video/mp4">
             </video>
           @endif
