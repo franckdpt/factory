@@ -201,9 +201,9 @@
   </div>
       
   <div class="pt-3 pb-5">
-      <p class="mx-auto py-5 px-4 lg:container xl:max-w-screen-lg text-gray-800 leading-5 md:columns-2">
-        {{ $expo->description }}<br>
-      </p>
+      <div class="mx-auto py-5 px-4 lg:container xl:max-w-screen-lg text-gray-800 leading-5 md:columns-2">
+        {!! \Illuminate\Support\Str::markdown($expo->description) !!}
+      </div>
   </div>
 
   <div class="mx-auto py-5 px-4 lg:max-w-screen-lg text-xl">

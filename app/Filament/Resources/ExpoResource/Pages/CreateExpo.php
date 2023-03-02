@@ -36,8 +36,15 @@ class CreateExpo extends CreateRecord
                             ->unique()
                             ->required()
                             ->reactive(),
-                        Forms\Components\Textarea::make('description')
-                            ->maxLength(65535)
+                        Forms\Components\MarkdownEditor::make('description')
+                            ->toolbarButtons([
+                                'bold',
+                                'edit',
+                                'italic',
+                                'link',
+                                'preview',
+                                'strike',
+                            ])
                             ->required(),
                         Forms\Components\DatePicker::make('start_date')
                             ->minDate(today())

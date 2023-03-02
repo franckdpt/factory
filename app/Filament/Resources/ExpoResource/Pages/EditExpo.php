@@ -44,8 +44,15 @@ class EditExpo extends EditRecord
                         Forms\Components\TextInput::make('name')
                             ->maxLength(255)
                             ->required(),
-                        Forms\Components\Textarea::make('description')
-                            ->maxLength(65535)
+                        Forms\Components\MarkdownEditor::make('description')
+                            ->toolbarButtons([
+                                'bold',
+                                'edit',
+                                'italic',
+                                'link',
+                                'preview',
+                                'strike',
+                            ])
                             ->required(),
                         Forms\Components\DatePicker::make('start_date')
                             ->required(),

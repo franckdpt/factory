@@ -315,9 +315,9 @@
       <h1 class="-mt-5 text-6xl md:text-5xl lg:text-7xl font-bold">
         {{ $smart_contract->expo->name }}
       </h1>
-      <p class="mt-3 text-lg">
-        {{ $smart_contract->expo->description }}
-      </p>
+      <div class="mt-3 text-lg">
+        {!! \Illuminate\Support\Str::markdown($smart_contract->expo->description) !!}
+      </div>
     </div>
   <div>
   
