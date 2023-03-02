@@ -256,7 +256,7 @@
                         {{ $smart_contract->artwork_title }}
                     </div>
                 <div class="leading-5 font-medium">
-                    {{ $smart_contract->user->name }}
+                    {{ $smart_contract->artwork_artist }}
                 </div>
             </div>
             <div class="mt-4 pt-2 flex justify-between items-center font-black text-right border-t-2 border-t-NFTF-green">
