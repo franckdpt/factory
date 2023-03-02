@@ -107,6 +107,11 @@ class SmartContract extends Model
         return $this->status == "in_uploading";
     }
 
+    public function inDeploying(): string
+    {
+        return $this->status == "in_deploying";
+    }
+
     public function readyToDeploy(): string
     {
         return $this->status == "ready_to_deploy";
