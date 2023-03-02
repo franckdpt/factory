@@ -66,7 +66,7 @@ class Mint extends Component
             ])->get($endpoint);
             
             if ($response->successful()) {
-                if ($response->json()["openSea"]) {
+                if (isset($response->json()["openSea"])) {
                     if (isset($response->json()["openSea"]["collectionUrl"])) {
                         $this->openSeaUrl = $response->json()["openSea"]["collectionUrl"];
                     }
