@@ -18,6 +18,9 @@ Route::get('/', function() {
     return redirect()->to('https://nftfactoryparis.com/expositions');
 })->name('landing');
 
+Route::get('/100-ai/mint/eTrzAdF', \App\Http\Livewire\Pages\MintCustom1::class)->name('mint-custom1');
+// Route::get('/100-ai/mint/pbFE3ez', \App\Http\Livewire\Pages\MintCustom2::class)->name('mint-custom2');
+
 Route::get('/{expo}', [\App\Http\Controllers\ExpoController::class, 'index'])->name('expo');
 
 Route::get('/{expo}/deploy', \App\Http\Livewire\Pages\Deploy::class)->name('deploy');
