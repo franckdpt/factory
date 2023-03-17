@@ -19,7 +19,7 @@ Route::get('/', function() {
 })->name('landing');
 
 Route::get('/100-ai/mint/eTrzAdF', \App\Http\Livewire\Pages\MintCustom1::class)->name('mint-custom1');
-// Route::get('/100-ai/mint/pbFE3ez', \App\Http\Livewire\Pages\MintCustom2::class)->name('mint-custom2');
+Route::get('/100-ai/mint/klDfEzF', \App\Http\Livewire\Pages\MintCustom2::class)->name('mint-custom2');
 
 Route::get('/{expo}', [\App\Http\Controllers\ExpoController::class, 'index'])->name('expo');
 

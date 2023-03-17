@@ -315,6 +315,43 @@
               </div>
             </div>
           </a>
+
+          <a class="mb-10 flex flex-col group bg-lime-100 break-inside-avoid-column" aria-label="buy this artwork"
+            href="{{ route('mint-custom2') }}">
+            <div class="relative overflow-hidden">
+
+              <div class=" group-hover:scale-105 transition duration-150 ease">
+                <video class="w-full hover:scale-105 transition duration-150 ease" playsinline loop poster="{{ config('app.url').'/storage/custom/yura_cover.png'}}" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;">
+                    <source src="{{ config('app.url').'/storage/custom/yura.mp4'}}" type="video/mp4">
+                </video>
+              </div>
+
+              <div class="absolute bottom-4 right-4 w-5 text-NFTF-green">
+                <svg class="fill-current w-full" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve">
+                    <g><path d="m497 0h-482c-8.285156 0-15 6.714844-15 15v397.445312c0 8.285157 6.714844 15 15 15h482c8.285156 0 15-6.714843 15-15v-397.445312c0-8.285156-6.714844-15-15-15zm-304.457031 264.078125v-100.710937c0-7.203126 4.109375-13.769532 10.722656-17.136719 6.71875-3.417969 14.894531-2.960938 21.113281 1.109375l85.828125 50.101562c.4375.253906.859375.53125 1.269531.828125 5.074219 3.695313 7.984376 9.328125 7.984376 15.453125s-2.910157 11.757813-7.984376 15.453125c-.410156.296875-.832031.574219-1.269531.828125l-85.828125 50.101563c-3.4375 2.246093-7.464844 3.390625-11.519531 3.390625-3.285156 0-6.585937-.753906-9.59375-2.285156-6.617187-3.363282-10.722656-9.929688-10.722656-17.132813zm159.6875-207.960937v-26.117188h50.332031v26.117188zm-30 0h-50.335938v-26.117188h50.335938zm-80.335938 0h-50.332031v-26.117188h50.332031zm-80.332031 0h-50.332031v-26.117188h50.332031zm0 315.210937v26.117187h-50.332031v-26.117187zm30 0h50.332031v26.117187h-50.332031zm80.332031 0h50.335938v26.117187h-50.335938zm80.335938 0h50.332031v26.117187h-50.332031zm129.769531-315.210937h-49.4375v-26.117188h49.4375zm-400.769531-26.117188v26.117188h-51.230469v-26.117188zm-51.230469 341.328125h51.230469v26.117187h-51.230469zm402.5625 26.117187v-26.117187h49.4375v26.117187zm0 0" class=""></path></g>
+                </svg>
+              </div>
+            </div>
+
+            <div id="content" class="grow flex flex-col justify-between px-4 py-4 bg-lime-100 relative">
+              <div>
+                <div class="text-lg font-bold leading-5">
+                    Vincent & Frida
+                </div>
+                <div class="leading-5 font-medium">
+                  Yura Miron
+                </div>
+              </div>
+              <div class="mt-4 pt-2 flex justify-between items-center font-black text-right border-t-2 border-t-NFTF-green">
+                <div class="font-black">
+                  1.5 ETH
+                </div>
+              </div>
+              <div class="opacity-0 group-hover:opacity-100 transition duration-150 ease absolute inset-0 bg-NFTF-green flex items-center justify-center text-2xl font-bold">
+                  BUY
+              </div>
+            </div>
+          </a>
         @endif
     </main>
   </div>
