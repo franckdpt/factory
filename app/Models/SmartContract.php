@@ -179,6 +179,11 @@ class SmartContract extends Model
         return self::IPFS_GATEWAY.$this->token_ipfs_hash;
     }
 
+    public function getPreviewArtworkIpfsUrl(): string
+    {
+        return self::IPFS_GATEWAY.$this->artwork_cover_ipfs_hash;
+    }
+
     public function getArtworkIpfsUrl(): string
     {
         return self::IPFS_GATEWAY.$this->artwork_ipfs_hash;

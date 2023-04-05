@@ -24,12 +24,13 @@ class Deploy extends Component
     public $network_rates;
 
     public $abi, $byte, $arweave_key;
-    public $hd_media, $state;
+    public $hd_media, $hd_media_cover, $state;
     public $wallet;
     public $in_editing = true;
     public $in_uploading = false;
     public $wallet_allowed = false;
     public $refresh_preview = false;
+    public $refresh_preview_cover = false;
     public $deployments_limit_reached = false;
     public $artwork_royalty_input;
     public $client_network_id;
@@ -47,6 +48,7 @@ class Deploy extends Component
     public $artwork_title;
     public $artwork_description;
     public $artwork_path = null;
+    public $artwork_cover_path = null;
     public $artwork_hd_extension;
     public $artwork_max_supply = null;
     public $artwork_price = null;
@@ -57,6 +59,7 @@ class Deploy extends Component
     public $artist_contact_mail;
     
     public $artwork_ipfs_hash;
+    public $artwork_cover_ipfs_hash;
     public $token_ipfs_hash;
     public $artwork_arweave_hash;
     public $artwork_sha_hash;
@@ -88,6 +91,7 @@ class Deploy extends Component
             'artwork_max_supply' => 'required',
             'artwork_price' => 'required|numeric|gt:0',
             'artwork_path' => 'required|string',
+            'artwork_cover_path' => 'string',
             'artwork_royalty_input' => 'required|numeric|max:10',
 
             'artist_portfolio_link' => 'nullable|url',
@@ -136,6 +140,7 @@ class Deploy extends Component
             $this->artwork_title = $this->smart_contract->artwork_title;
             $this->artwork_description = $this->smart_contract->artwork_description;
             $this->artwork_path = $this->smart_contract->artwork_path;
+            $this->artwork_cover_path = $this->smart_contract->artwork_cover_path;
             $this->artwork_hd_extension = $this->smart_contract->artwork_hd_extension;
             $this->artwork_max_supply = $this->smart_contract->artwork_max_supply;
             $this->artwork_price = $this->smart_contract->artwork_price;
@@ -146,6 +151,7 @@ class Deploy extends Component
             $this->artist_contact_mail = $this->smart_contract->artist_contact_mail ? : Auth::user()->contact_mail;
 
             $this->artwork_ipfs_hash = $this->smart_contract->artwork_ipfs_hash;
+            $this->artwork_cover_ipfs_hash = $this->smart_contract->artwork_cover_ipfs_hash;
             $this->token_ipfs_hash = $this->smart_contract->token_ipfs_hash;
             $this->artwork_arweave_hash = $this->smart_contract->artwork_arweave_hash;
             $this->artwork_sha_hash = $this->smart_contract->artwork_sha_hash;
@@ -291,6 +297,32 @@ class Deploy extends Component
         }
     }
 
+    public function updatedHdMediaCover()
+    {
+        $this->refresh_preview_cover = false;
+        $this->validate([
+            'hd_media_cover' => 'nullable|max:10000|mimes:jpg',
+        ]);
+        $this->refresh_preview_cover = true;
+
+        if ($this->in_editing) {
+            $extension = explode('/', $this->hd_media_cover->getMimeType())[1];
+
+            // $this->hd_media->storeAs('nft_media', $this->public_id.'_hd.'.$this->artwork_hd_extension);
+            $this->hd_media_cover->storePubliclyAs(
+                'nft_media',
+                $this->public_id.'_cover.'.$extension,
+                'public'
+            );
+
+            // $this->artwork_sha_hash = hash_file('sha256', public_path('storage/nft_media/'.$this->public_id.'_hd.'.$extension));
+
+            // $this->smart_contract->artwork_sha_hash = $this->artwork_sha_hash;
+            $this->smart_contract->artwork_cover_path = '/storage/nft_media/'.$this->public_id.'_cover.'.$extension;
+            $this->smart_contract->save();
+        }
+    }
+
     public function submit()
     {
         if ($this->in_editing || $this->in_uploading) {
@@ -345,6 +377,19 @@ class Deploy extends Component
     public function readyToUploadIpfs()
     {
         
+        $this->artwork_cover_ipfs_hash = $this->uploadFileToIpfs(
+            $this->getArtworkCoverUrlForIpfsUpload(),
+            'image/jpeg',
+            $this->public_id.'_cover'
+        );
+
+        $this->smart_contract->artwork_cover_ipfs_hash = $this->artwork_cover_ipfs_hash;
+        $this->smart_contract->save();
+
+        if (empty($this->artwork_cover_ipfs_hash)) {
+            dd('error on uploading IPFS');
+        }
+
         $this->artwork_ipfs_hash = $this->uploadFileToIpfs(
             $this->getArtworkUrlForIpfsUpload(),
             $this->smart_contract->artwork_hd_mime,
@@ -399,7 +444,7 @@ class Deploy extends Component
         $this->smart_contract->token_ipfs_hash = $this->token_ipfs_hash;
         $this->smart_contract->save();
 
-        if (empty($this->artwork_ipfs_hash)) {
+        if (empty($this->token_ipfs_hash)) {
             dd('error on uploading IPFS');
         }
 
@@ -467,7 +512,7 @@ class Deploy extends Component
         ];
 
         if ($this->smart_contract->isVideo()) {
-            $data["image"] = "";
+            $data["image"] = $this->smart_contract->getPreviewArtworkIpfsUrl();
             $data["animation_url"] = $this->smart_contract->getArtworkIpfsUrl();
             $data["video_arweave"] = $this->smart_contract->getArtworkArweaveUrl();
             $data["video_ipfs"] = $this->smart_contract->getArtworkIpfsUrl();
@@ -575,6 +620,17 @@ class Deploy extends Component
                     $this->smart_contract->artwork_hd_extension;
         } else {
             return $this->smart_contract->getArtworkUrl();
+        }
+    }
+
+    private function getArtworkCoverUrlForIpfsUpload()
+    {
+        if (env('APP_ENV') == 'local') {
+            return env('LOCAL_PATH').
+                    $this->smart_contract->public_id.
+                    '_cover.jpeg';
+        } else {
+            return $this->smart_contract->getPreviewArtworkUrl();
         }
     }
 }

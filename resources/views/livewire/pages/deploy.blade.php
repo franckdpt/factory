@@ -330,14 +330,14 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                       <div class="mt-5 flex justify-center">
                       @if ($hd_media && $refresh_preview)
                         @if ($hd_media->getMimeType() == 'video/mp4')
-                        <video poster=""
-                          preload="auto"
-                          autoplay="autoplay"
-                          loop="loop"
-                          controls
-                          onmouseover="this.play()" 
-                          onmouseout="this.pause();this.currentTime=0;">
-                          <source src="{{ $hd_media->temporaryUrl() }}"  type="video/mp4">
+                          <video poster=""
+                            preload="auto"
+                            autoplay="autoplay"
+                            loop="loop"
+                            controls
+                            onmouseover="this.play()" 
+                            onmouseout="this.pause();this.currentTime=0;">
+                            <source src="{{ $hd_media->temporaryUrl() }}"  type="video/mp4">
                           </video>
                         @else
                           <img class="h-32" src="{{ $hd_media->temporaryUrl() }}" alt="" />
@@ -375,12 +375,103 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                   </div>
                    <input {{ !$in_editing || $in_uploading ? 'disabled' : '' }} id="hdMedia" class="hidden" type="file" wire:model="hd_media" />
                 </label>
+
                 @error('hd_media') 
                   <div class="text-red-600 font-semibold">
                     {{ $message }}
                   </div>
                 @enderror
                 @error('artwork_path') 
+                  <div class="text-red-600 font-semibold">
+                    {{ $message }}
+                  </div>
+                @enderror
+
+                {{-- Cover if Video --}}
+                @if ($hd_media && $refresh_preview)
+                  @if ($hd_media->getMimeType() == 'video/mp4')
+                    <label class="flex relative border-2 border-dashed border-black cursor-pointer 
+                    {{ $errors->has('hd_media_cover') ? '!border-red-600' : '' }}"
+                    for="hdMediaCover"
+                    x-data="drop_file_component_cover()">
+                      <div class="p-10 w-full rounded-xl"
+                        x-bind:class="dropingFile ? 'bg-gray-300' : ''"
+                        x-on:drop="dropingFile = false"
+                        x-on:drop.prevent="handleFileDrop($event)"
+                        x-on:dragover.prevent="dropingFile = true"
+                        x-on:dragleave.prevent="dropingFile = false">
+                        <div class="text-center text-xl text-gray-500 font-semibold uppercase">
+                            UPLOAD A JPEG PREVIEW<br>(max 10Mb)
+                        </div>
+                        <div class="mt-5 flex justify-center">
+                          @if ($hd_media_cover && $refresh_preview_cover)
+                            <img class="h-32" src="{{ is_null($hd_media_cover) ? 'Upload your media here' : $hd_media_cover->temporaryUrl() }}" alt="" />
+                          @else
+                            <svg class="h-32 w-32" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><g fill="#000" fill-rule="evenodd" clip-rule="evenodd"><path d="m20 7-4-4H5a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1zm-1 13H5V4h10.5v2.5a1 1 0 0 0 1 1H19zm-.914-13.5L16.5 4.914V6.5z" fill="#000000" data-original="#000000"></path><path d="M11.5 13.5V16h1v-2.5H15v-1h-2.5V10h-1v2.5H9v1z" fill="#000000" data-original="#000000"></path></g></g></svg>
+                          @endif
+                        </div>
+                        <div class="text-center font-bold">
+                          {{ is_null($hd_media_cover) ? 'Upload your JPEG cover here' : $hd_media_cover->getClientOriginalName() }}
+                        </div>
+                        <div class="mt-1 flex justify-center" wire:loading.flex wire:target="hd_media_cover">
+                            <div class="flex">
+                                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <div class="font-bold">Processing Files</div>
+                            </div>
+                        </div>
+                      </div>
+                      <input {{ !$in_editing || $in_uploading ? 'disabled' : '' }} id="hdMediaCover" class="hidden" type="file" wire:model="hd_media_cover" />
+                    </label>
+                  @endif
+                @elseif ($artwork_path && $smart_contract->isVideo())
+                  <label class="flex relative border-2 border-dashed border-black cursor-pointer 
+                  {{ ($errors->has('hd_media_cover') || $errors->has('artwork_cover_path')) ? '!border-red-600' : '' }}"
+                  for="hdMediaCover"
+                  x-data="drop_file_component_cover()">
+                    <div class="p-10 w-full rounded-xl"
+                      x-bind:class="dropingFile ? 'bg-gray-300' : ''"
+                      x-on:drop="dropingFile = false"
+                      x-on:drop.prevent="handleFileDrop($event)"
+                      x-on:dragover.prevent="dropingFile = true"
+                      x-on:dragleave.prevent="dropingFile = false">
+                      <div class="text-center text-xl text-gray-500 font-semibold uppercase">
+                          UPLOAD A JPEG PREVIEW<br>(max 10Mb)
+                      </div>
+                      <div class="mt-5 flex justify-center">
+                        @if ($hd_media_cover && $refresh_preview_cover)
+                          <img class="h-32" src="{{ is_null($hd_media_cover) ? 'Upload your media here' : $hd_media_cover->temporaryUrl() }}" alt="" />
+                        @elseif ($artwork_cover_path)
+                          <img class="h-32" src="{{ $smart_contract->getPreviewArtworkUrl() }}" alt="" />
+                        @else
+                          <svg class="h-32 w-32" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><g fill="#000" fill-rule="evenodd" clip-rule="evenodd"><path d="m20 7-4-4H5a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1zm-1 13H5V4h10.5v2.5a1 1 0 0 0 1 1H19zm-.914-13.5L16.5 4.914V6.5z" fill="#000000" data-original="#000000"></path><path d="M11.5 13.5V16h1v-2.5H15v-1h-2.5V10h-1v2.5H9v1z" fill="#000000" data-original="#000000"></path></g></g></svg>
+                        @endif
+                      </div>
+                      <div class="text-center font-bold">
+                        {{ is_null($hd_media_cover) ? 'Upload your JPEG cover here' : $hd_media_cover->getClientOriginalName() }}
+                      </div>
+                      <div class="mt-1 flex justify-center" wire:loading.flex wire:target="hd_media_cover">
+                          <div class="flex">
+                              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                              <div class="font-bold">Processing Files</div>
+                          </div>
+                      </div>
+                    </div>
+                    <input {{ !$in_editing || $in_uploading ? 'disabled' : '' }} id="hdMediaCover" class="hidden" type="file" wire:model="hd_media_cover" />
+                  </label>
+                @endif
+                  
+                @error('hd_media_cover') 
+                  <div class="text-red-600 font-semibold">
+                    {{ $message }}
+                  </div>
+                @enderror
+                @error('artwork_cover_path') 
                   <div class="text-red-600 font-semibold">
                     {{ $message }}
                   </div>
@@ -796,6 +887,22 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                     const files = e.dataTransfer.files;
                     console.log(files[0].name);
                     @this.upload('hd_media', files[0],
+                        (uploadedFilename) => {
+                        }, () => {}, (event) => {}
+                    )
+                }
+            }
+        };
+    }
+
+    function drop_file_component_cover() {
+        return {
+            dropingFile: false,
+            handleFileDrop(e) {
+                if (event.dataTransfer.files.length > 0) {
+                    const files = e.dataTransfer.files;
+                    console.log(files[0].name);
+                    @this.upload('hd_media_cover', files[0],
                         (uploadedFilename) => {
                         }, () => {}, (event) => {}
                     )

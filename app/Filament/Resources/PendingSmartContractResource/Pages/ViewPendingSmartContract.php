@@ -126,6 +126,7 @@ class ViewPendingSmartContract extends ViewRecord
         return [
             SmartContractResource\Widgets\SmartContractArweaveArtworkVisual::class,
             SmartContractResource\Widgets\SmartContractIpfsArtworkVisual::class,
+            SmartContractResource\Widgets\SmartContractIpfsArtworkCoverVisual::class,
             SmartContractResource\Widgets\SmartContractArtworkVisual::class,
         ];
     }
