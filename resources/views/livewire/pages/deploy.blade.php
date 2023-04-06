@@ -390,7 +390,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                 {{-- Cover if Video --}}
                 @if ($hd_media && $refresh_preview)
                   @if ($hd_media->getMimeType() == 'video/mp4')
-                    <label class="flex relative border-2 border-dashed border-black cursor-pointer 
+                    <label class="mt-5 flex relative border-2 border-dashed border-black cursor-pointer 
                     {{ $errors->has('hd_media_cover') ? '!border-red-600' : '' }}"
                     for="hdMediaCover"
                     x-data="drop_file_component_cover()">
@@ -427,7 +427,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                     </label>
                   @endif
                 @elseif ($artwork_path && $smart_contract->isVideo())
-                  <label class="flex relative border-2 border-dashed border-black cursor-pointer 
+                  <label class="mt-5 flex relative border-2 border-dashed border-black cursor-pointer 
                   {{ ($errors->has('hd_media_cover') || $errors->has('artwork_cover_path')) ? '!border-red-600' : '' }}"
                   for="hdMediaCover"
                   x-data="drop_file_component_cover()">
