@@ -123,11 +123,16 @@ class ViewPendingSmartContract extends ViewRecord
 
     protected function getFooterWidgets(): array
     {
-        return [
+        $widgets = [
             SmartContractResource\Widgets\SmartContractArweaveArtworkVisual::class,
             SmartContractResource\Widgets\SmartContractIpfsArtworkVisual::class,
-            SmartContractResource\Widgets\SmartContractIpfsArtworkCoverVisual::class,
             SmartContractResource\Widgets\SmartContractArtworkVisual::class,
         ];
+
+        if ($this->record->isVideo()) {
+            $widgets[] = SmartContractResource\Widgets\SmartContractIpfsArtworkCoverVisual::class;
+        }
+
+        return $widgets;
     }
 }
