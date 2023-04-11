@@ -91,7 +91,6 @@ class Deploy extends Component
             'artwork_max_supply' => 'required',
             'artwork_price' => 'required|numeric|gt:0',
             'artwork_path' => 'required|string',
-            'artwork_cover_path' => 'string',
             'artwork_royalty_input' => 'required|numeric|max:10',
 
             'artist_portfolio_link' => 'nullable|url',
@@ -326,7 +325,14 @@ class Deploy extends Component
     public function submit()
     {
         if ($this->in_editing || $this->in_uploading) {
+
             $validatedData = $this->validate();
+
+            if ($this->smart_contract->artwork_hd_mime && $this->smart_contract->artwork_hd_mime == "video/mp4") {
+                $this->validate([
+                    'artwork_cover_path' => 'string|required',
+                ]);
+            }
 
             $this->smart_contract = SmartContract::updateOrCreate(
                 [ 'public_id' => $this->public_id ],
