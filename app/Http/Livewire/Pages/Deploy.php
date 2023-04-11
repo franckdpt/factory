@@ -577,7 +577,7 @@ class Deploy extends Component
         curl_close($curl);
 
         if ($err) {
-            dd(curl_getinfo($curl));
+            dd($err);
         } else {
             return json_decode($response)->IpfsHash;
         }
