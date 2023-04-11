@@ -382,18 +382,19 @@ class Deploy extends Component
 
     public function readyToUploadIpfs()
     {
-        
-        $this->artwork_cover_ipfs_hash = $this->uploadFileToIpfs(
-            $this->getArtworkCoverUrlForIpfsUpload(),
-            'image/jpeg',
-            $this->public_id.'_cover'
-        );
+        if ($this->smart_contract->artwork_hd_mime && $this->smart_contract->artwork_hd_mime == "video/mp4") {
+            $this->artwork_cover_ipfs_hash = $this->uploadFileToIpfs(
+                $this->getArtworkCoverUrlForIpfsUpload(),
+                'image/jpeg',
+                $this->public_id.'_cover'
+            );
+    
+            $this->smart_contract->artwork_cover_ipfs_hash = $this->artwork_cover_ipfs_hash;
+            $this->smart_contract->save();
 
-        $this->smart_contract->artwork_cover_ipfs_hash = $this->artwork_cover_ipfs_hash;
-        $this->smart_contract->save();
-
-        if (empty($this->artwork_cover_ipfs_hash)) {
-            dd('error on uploading IPFS');
+            if (empty($this->artwork_cover_ipfs_hash)) {
+                dd('error on uploading IPFS');
+            }
         }
 
         $this->artwork_ipfs_hash = $this->uploadFileToIpfs(
@@ -576,7 +577,7 @@ class Deploy extends Component
         curl_close($curl);
 
         if ($err) {
-            dd($err);
+            dd(curl_getinfo($curl));
         } else {
             return json_decode($response)->IpfsHash;
         }
