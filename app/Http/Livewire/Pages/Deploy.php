@@ -293,6 +293,14 @@ class Deploy extends Component
             $this->smart_contract->artwork_hd_mime = $this->hd_media->getMimeType();
             $this->smart_contract->artwork_path = $this->artwork_path;
             $this->smart_contract->save();
+
+            // remove cover
+
+            $this->artwork_cover_path = null;
+
+            // $this->smart_contract->artwork_sha_hash = $this->artwork_sha_hash;
+            $this->smart_contract->artwork_cover_path = $this->artwork_cover_path;
+            $this->smart_contract->save();
         }
     }
 
