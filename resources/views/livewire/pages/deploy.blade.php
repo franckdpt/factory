@@ -321,7 +321,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                   <div class="p-10 w-full rounded-xl"
                       x-bind:class="dropingFile ? 'bg-gray-300' : ''"
                       x-on:drop="dropingFile = false"
-                      x-on:drop.prevent="handleFileDrop($event)"
+                      x-on:drop.prevent="{{ !$in_editing || $in_uploading ? '' : 'handleFileDrop($event)' }}"
                       x-on:dragover.prevent="dropingFile = true"
                       x-on:dragleave.prevent="dropingFile = false">
                       <div class="text-center text-xl text-gray-500 font-semibold uppercase">
@@ -397,7 +397,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                       <div class="p-10 w-full rounded-xl"
                         x-bind:class="dropingFile ? 'bg-gray-300' : ''"
                         x-on:drop="dropingFile = false"
-                        x-on:drop.prevent="handleFileDrop($event)"
+                        x-on:drop.prevent="{{ !$in_editing || $in_uploading ? '' : 'handleFileDrop($event)' }}"
                         x-on:dragover.prevent="dropingFile = true"
                         x-on:dragleave.prevent="dropingFile = false">
                         <div class="text-center text-xl text-gray-500 font-semibold uppercase">
@@ -434,7 +434,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
                     <div class="p-10 w-full rounded-xl"
                       x-bind:class="dropingFile ? 'bg-gray-300' : ''"
                       x-on:drop="dropingFile = false"
-                      x-on:drop.prevent="handleFileDrop($event)"
+                      x-on:drop.prevent="{{ !$in_editing || $in_uploading ? '' : 'handleFileDrop($event)' }}"
                       x-on:dragover.prevent="dropingFile = true"
                       x-on:dragleave.prevent="dropingFile = false">
                       <div class="text-center text-xl text-gray-500 font-semibold uppercase">
