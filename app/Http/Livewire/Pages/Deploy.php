@@ -315,9 +315,10 @@ class Deploy extends Component
             );
 
             // $this->artwork_sha_hash = hash_file('sha256', public_path('storage/nft_media/'.$this->public_id.'_hd.'.$extension));
+            $this->artwork_cover_path = '/storage/nft_media/'.$this->public_id.'_cover.'.$extension;
 
             // $this->smart_contract->artwork_sha_hash = $this->artwork_sha_hash;
-            $this->smart_contract->artwork_cover_path = '/storage/nft_media/'.$this->public_id.'_cover.'.$extension;
+            $this->smart_contract->artwork_cover_path = $this->artwork_cover_path;
             $this->smart_contract->save();
         }
     }
