@@ -926,7 +926,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
 
     async function deploy(tokenUrl, ipfsUrl, arweaveUrl, contractUrl) {
         // prevent wallet error
-        if (@this.auth_address == formatAddress(getAccount().address) &&
+        if (formatAddress(@this.auth_address) == formatAddress(getAccount().address) &&
             @this.network_public_id == getNetwork().chain.id) {
 
             const signer = await fetchSigner()
@@ -964,8 +964,8 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
             Livewire.emit('smartContractDeployed', factoryContract.address)
             console.log(" address", factoryContract.address);
         } else {
-          console.log(@this.auth_address)
-          console.log(formatAddress(getAccount()))
+          console.log(formatAddress(@this.auth_address))
+          console.log(formatAddress(getAccount().address))
           console.log(@this.network_public_id)
           console.log(getNetwork())
           console.log(getNetwork().chain.id)
