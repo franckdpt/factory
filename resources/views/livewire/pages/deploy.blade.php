@@ -967,7 +967,8 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
           console.log(@this.auth_address)
           console.log(formatAddress(getAccount()))
           console.log(@this.network_public_id)
-          console.log(formatAddress(getNetwork()()))
+          console.log(getNetwork())
+          console.log(getNetwork().chain.id)
         }
     }
 
