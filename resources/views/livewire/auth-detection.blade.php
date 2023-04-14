@@ -14,7 +14,7 @@
         // })
         
         function formatAddress(address) {
-            return typeof address == 'string' ? ethers.utils.getAddress(address) : ''
+            return typeof address == 'string' ? window.ethers.utils.getAddress(address) : ''
         }
 
         document.addEventListener('DOMContentLoaded', function () {
