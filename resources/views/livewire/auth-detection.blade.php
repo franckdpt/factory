@@ -13,7 +13,7 @@
         //     signMessageToRegister(@this.message)
         // })
         
-        async function formatAddress(address) {
+        function formatAddress(address) {
             return typeof address == 'string' ? ethers.utils.getAddress(address) : ''
         }
 
@@ -21,7 +21,7 @@
 
             const unwatchAccount = watchAccount((account) => {
                 if (account.isConnected) {
-                    Livewire.emit('onWalletConnected', formatAddress(account.address))
+                    Livewire.emit('onWalletConnected', (account.address))
                 } else if (account.isConnecting) {
                     Livewire.emit('onWalletConnecting')
                 } else if (account.isDisconnected) {
