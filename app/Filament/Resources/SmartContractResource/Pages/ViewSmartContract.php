@@ -110,8 +110,8 @@ class ViewSmartContract extends ViewRecord
     protected function getFooterWidgets(): array
     {
         return [
-            SmartContractResource\Widgets\SmartContractArweaveArtworkVisual::class,
-            SmartContractResource\Widgets\SmartContractIpfsArtworkVisual::class,
+            // SmartContractResource\Widgets\SmartContractArweaveArtworkVisual::class,
+            // SmartContractResource\Widgets\SmartContractIpfsArtworkVisual::class,
             SmartContractResource\Widgets\SmartContractArtworkVisual::class,
         ];
     }

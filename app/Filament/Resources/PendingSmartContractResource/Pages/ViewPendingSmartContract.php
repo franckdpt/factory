@@ -84,11 +84,11 @@ class ViewPendingSmartContract extends ViewRecord
                         <b><u><a href="'.$this->record->getArtworkIpfsUrl().'">'.SmartContract::getPreviewUrlIfNeeded($this->record->getArtworkIpfsUrl(), 80).'</a></u></b>')),
                     ]),
 
-                    Grid::make(1)->schema([
-                        Placeholder::make('artwork arweave uri')
-                        ->content(new HtmlString('
-                        <b><u><a href="'.$this->record->getArtworkArweaveUrl().'">'.SmartContract::getPreviewUrlIfNeeded($this->record->getArtworkArweaveUrl(), 80).'</a></u></b>')),
-                    ]),
+                    // Grid::make(1)->schema([
+                    //     Placeholder::make('artwork arweave uri')
+                    //     ->content(new HtmlString('
+                    //     <b><u><a href="'.$this->record->getArtworkArweaveUrl().'">'.SmartContract::getPreviewUrlIfNeeded($this->record->getArtworkArweaveUrl(), 80).'</a></u></b>')),
+                    // ]),
 
                 ])
 
@@ -124,8 +124,8 @@ class ViewPendingSmartContract extends ViewRecord
     protected function getFooterWidgets(): array
     {
         $widgets = [
-            SmartContractResource\Widgets\SmartContractArweaveArtworkVisual::class,
-            SmartContractResource\Widgets\SmartContractIpfsArtworkVisual::class,
+            // SmartContractResource\Widgets\SmartContractArweaveArtworkVisual::class,
+            // SmartContractResource\Widgets\SmartContractIpfsArtworkVisual::class,
             SmartContractResource\Widgets\SmartContractArtworkVisual::class,
         ];
 
