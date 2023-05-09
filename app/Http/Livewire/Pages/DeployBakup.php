@@ -5,7 +5,6 @@ namespace App\Http\Livewire\Pages;
 use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Http;
 use App\Http\Livewire\Traits\AuthRefreshed;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -13,7 +12,7 @@ use App\Models\Expo;
 use App\Models\SmartContract;
 use App\Models\Network;
 
-class Deploy extends Component
+class DeployBakup extends Component
 {
     use WithFileUploads, AuthRefreshed;
 
@@ -24,7 +23,7 @@ class Deploy extends Component
     public $networks;
     public $network_rates;
 
-    public $abi, $byte/*, $arweave_key*/;
+    public $abi, $byte, $arweave_key;
     public $hd_media, $hd_media_cover, $state;
     public $wallet;
     public $in_editing = true;
@@ -62,7 +61,7 @@ class Deploy extends Component
     public $artwork_ipfs_hash;
     public $artwork_cover_ipfs_hash;
     public $token_ipfs_hash;
-    // public $artwork_arweave_hash;
+    public $artwork_arweave_hash;
     public $artwork_sha_hash;
     public $address;
     public $deployed = false;
@@ -70,11 +69,11 @@ class Deploy extends Component
 
     protected $listeners = [
         'readyToUploadIpfs',
-        // 'readyToUploadArweave',
+        'readyToUploadArweave',
         'readyToCreateAndUploadJsonTokenIpfs',
         'readyToDeploySmartContract',
 
-        // 'arweaveUploaded',
+        'arweaveUploaded',
         'smartContractDeploying',
         'smartContractDeployed',
     ];
@@ -153,7 +152,7 @@ class Deploy extends Component
             $this->artwork_ipfs_hash = $this->smart_contract->artwork_ipfs_hash;
             $this->artwork_cover_ipfs_hash = $this->smart_contract->artwork_cover_ipfs_hash;
             $this->token_ipfs_hash = $this->smart_contract->token_ipfs_hash;
-            // $this->artwork_arweave_hash = $this->smart_contract->artwork_arweave_hash;
+            $this->artwork_arweave_hash = $this->smart_contract->artwork_arweave_hash;
             $this->artwork_sha_hash = $this->smart_contract->artwork_sha_hash;
             $this->address = $this->smart_contract->address;
             $this->deployed = $this->smart_contract->deployed;
@@ -186,11 +185,7 @@ class Deploy extends Component
             $this->smart_contract = SmartContract::updateOrCreate(
                 [ 'public_id' => $this->public_id ], array_merge(
                     $validatedData,
-                    [ 
-                        'user_id' => Auth::user()->id,
-                        'expo_id' => $this->expo->id,
-                        'type' => "sc-721-low"
-                    ])
+                    [ 'user_id' => Auth::user()->id, 'expo_id' => $this->expo->id])
             );
         }
     }
@@ -360,9 +355,9 @@ class Deploy extends Component
                 if (!$this->smart_contract->isArtworkIpfsDone()) {
                     $this->state = 'Uploading media on IPFS...';
                     $this->emit('readyToUploadIpfs');
-                /*} else if (!$this->smart_contract->isArtworkArweaveDone()) {
+                } else if (!$this->smart_contract->isArtworkArweaveDone()) {
                     $this->state = 'Uploading media on Arweave...';
-                    $this->emit('readyToUploadArweave'); */
+                    $this->emit('readyToUploadArweave');
                 } else if (!$this->smart_contract->isTokenIpfsDone()) {
                     $this->state = 'Creating & uploading JSON to IPFS...';
                     $this->emit('readyToCreateAndUploadJsonTokenIpfs');
@@ -425,35 +420,32 @@ class Deploy extends Component
         }
         
         // Next
-        // $this->state = 'Uploading media on Arweave...';
-        // $this->emit('readyToUploadArweave');
+        $this->state = 'Uploading media on Arweave...';
+        $this->emit('readyToUploadArweave');
+    }
 
+    public function readyToUploadArweave()
+    {
+        $this->arweave_key = Storage::disk('local')->get('hW-arweave.json');
+        $base64 = base64_encode(file_get_contents($this->getArtworkUrlForIpfsUpload()));
+
+        // Next on JS side.
+        $this->emit('uploadArweaveOnJs', $this->smart_contract->artwork_hd_mime, $base64);
+    }
+
+    public function arweaveUploaded()
+    {
+        $this->smart_contract->artwork_arweave_hash = $this->artwork_arweave_hash;
+        $this->smart_contract->save();
+
+        if (empty($this->artwork_arweave_hash)) {
+            dd('error on uploading Arweave');
+        }
+
+        // Next
         $this->state = 'Creating & uploading JSON to IPFS...';
         $this->emit('readyToCreateAndUploadJsonTokenIpfs');
     }
-
-    // public function readyToUploadArweave()
-    // {
-    //     $this->arweave_key = Storage::disk('local')->get('hW-arweave.json');
-    //     $base64 = base64_encode(file_get_contents($this->getArtworkUrlForIpfsUpload()));
-
-    //     // Next on JS side.
-    //     $this->emit('uploadArweaveOnJs', $this->smart_contract->artwork_hd_mime, $base64);
-    // }
-
-    // public function arweaveUploaded()
-    // {
-    //     $this->smart_contract->artwork_arweave_hash = $this->artwork_arweave_hash;
-    //     $this->smart_contract->save();
-
-    //     if (empty($this->artwork_arweave_hash)) {
-    //         dd('error on uploading Arweave');
-    //     }
-
-    //     // Next
-    //     $this->state = 'Creating & uploading JSON to IPFS...';
-    //     $this->emit('readyToCreateAndUploadJsonTokenIpfs');
-    // }
 
     public function readyToCreateAndUploadJsonTokenIpfs()
     {
@@ -482,9 +474,8 @@ class Deploy extends Component
 
     public function readyToDeploySmartContract()
     {
-        $this->abi = json_decode(Storage::disk('local')->get($this->smart_contract->type.'.json'), true)['abi'];
-        $this->byte = json_decode(Storage::disk('local')->get($this->smart_contract->type.'.json'), true)['bytecode'];
-        // $this->byte = json_decode(Storage::disk('local')->get('sc-721-low.json'), true)['bytecode'];
+        $this->abi = json_decode(Storage::disk('local')->get('sc-721-1.json'), true)['abi'];
+        $this->byte = json_decode(Storage::disk('local')->get('sc-721-1.json'), true)['bytecode'];
 
         $this->smart_contract_symbol = $this->smart_contract->getContractSymbol();
         $this->smart_contract_name = $this->smart_contract->getContractName();
@@ -495,7 +486,7 @@ class Deploy extends Component
         $this->emit('deploySmartContractOnJs',
             $this->smart_contract->getTokenIpfsUrl(),
             $this->smart_contract->getArtworkIpfsUrl(),
-            // $this->smart_contract->getArtworkArweaveUrl(),
+            $this->smart_contract->getArtworkArweaveUrl(),
             $this->smart_contract->getContractUrl(),
         );
     }
@@ -539,13 +530,13 @@ class Deploy extends Component
         if ($this->smart_contract->isVideo()) {
             $data["image"] = $this->smart_contract->getPreviewArtworkIpfsUrl();
             $data["animation_url"] = $this->smart_contract->getArtworkIpfsUrl();
-            // $data["video_arweave"] = $this->smart_contract->getArtworkArweaveUrl();
-            // $data["video_ipfs"] = $this->smart_contract->getArtworkIpfsUrl();
+            $data["video_arweave"] = $this->smart_contract->getArtworkArweaveUrl();
+            $data["video_ipfs"] = $this->smart_contract->getArtworkIpfsUrl();
             $data["video_sha256"] = $this->artwork_sha_hash;
         } else if ($this->smart_contract->isImage()) {
             $data["image"] = $this->smart_contract->getArtworkIpfsUrl();
-            // $data["image_arweave"] = $this->smart_contract->getArtworkArweaveUrl();
-            // $data["image_ipfs"] = $this->smart_contract->getArtworkIpfsUrl();
+            $data["image_arweave"] = $this->smart_contract->getArtworkArweaveUrl();
+            $data["image_ipfs"] = $this->smart_contract->getArtworkIpfsUrl();
             $data["image_sha256"] = $this->artwork_sha_hash;
         }
 
@@ -579,17 +570,25 @@ class Deploy extends Component
     
     public function uploadFileToIpfs($path, $type, $name)
     {
-        $response = Http::withHeaders([
-                'pinata_api_key' => env('PINATA_KEY'),
-                'pinata_secret_api_key' => env('PINATA_SECRET'),
-            ])
-            ->attach('file', file_get_contents($path), $name, ['mime' => $type])
-            ->post('https://api.pinata.cloud/pinning/pinFileToIPFS');
-        
-        if ($response->failed()) {
-            dd($response->body());
+        $curl = curl_init();
+        $tmp = curl_setopt_array($curl, [
+            CURLOPT_URL => "https://api.pinata.cloud/pinning/pinFileToIPFS",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => 1,
+            CURLOPT_POSTFIELDS => array('file' => curl_file_create($path, $type, $name)),
+            CURLOPT_HTTPHEADER => [
+                "pinata_api_key: ".env('PINATA_KEY'),
+                "pinata_secret_api_key: ".env('PINATA_SECRET')
+            ],
+        ]);
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        curl_close($curl);
+
+        if ($err) {
+            dd($err);
         } else {
-            return json_decode($response->body())->IpfsHash;
+            return json_decode($response)->IpfsHash;
         }
     }
 

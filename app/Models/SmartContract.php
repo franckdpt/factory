@@ -17,6 +17,7 @@ class SmartContract extends Model
     const ARWEAVE_GATEWAY = "https://arweave.net/";
 
     protected $fillable = [
+        'type',
         'public_id',
         'user_id',
         'expo_id',

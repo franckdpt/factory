@@ -410,12 +410,15 @@
       }
 
       const data = await readContracts({
-        contracts: [
-          { ...contract, functionName: 'maxSupply' },
-          { ...contract, functionName: 'totalSupply' },
-          //{ ...contract, functionName: 'salesOpen' },
-        ],
-      })
+          contracts: [
+            { ...contract, functionName: 'maxSupply' },
+            { ...contract, functionName: 'totalSupply' },
+            //{ ...contract, functionName: 'salesOpen' },
+          ],
+        })
+
+        console.log(data[0]);
+        console.log(data[1]);
 
       Livewire.emit('fetchedSupply', ethers.utils.formatUnits(data[0], 0), ethers.utils.formatUnits(data[1], 0))
     }

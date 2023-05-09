@@ -481,13 +481,22 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
               <div class="hidden md:block w-1 bg-gray-200"></div>
               <ul class="flex-1 self-end list-inside list-disc">
                 <li class="text-lg">
+                  On-chain proved (SHA256).
+                </li>
+                <li class="text-lg">
+                  On-chain backup uploadability (see more <b><a target="_blank" href="https://medium.com/art-for-all-nft-platform/how-to-retrieve-on-chain-large-sized-data-df65adef0c2a">here</a></b>).
+                </li>
+                <li class="text-lg">
                   Stored on IPFS.
+                </li>
+                <li class="text-lg">
+                  Stored on Arweave.
                 </li>
                 <li class="text-lg">
                   Can't be changed after the deployment.
                 </li>
                 <li class="text-lg">
-                  As part of our persistent policy, this file is going to be stored in IPFS. Be cautious as you won’t be able to modify the file once the smart contract is deployed.
+                  As part of our persistent policy, this file is going to be stored in IPFS as well as Arweave. It will be on-chain proved with SHA256 encryption. Be cautious as you won’t be able to modify the file once the smart contract is deployed.
                 </li>
               </ul>
             </div>
@@ -835,6 +844,41 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
       this.style.minHeight = (this.scrollHeight) + "px";
     }
 
+    async function arweaveUpload(type, file) {
+      //let reader  = new FileReader();
+
+      //reader.addEventListener("load", function () {
+          let key = @this.get('arweave_key');
+          //arweave.createTransaction({ data: buffer.from(reader.result.split(',')[1], 'base64') }, JSON.parse(key))
+          arweave.createTransaction({ data: buffer.from(file, 'base64') }, JSON.parse(key))
+          .then((transaction) => {
+              transaction.addTag('Content-Type', type);
+              arweave.transactions.sign(transaction, JSON.parse(key))
+              .then(() => {
+                  arweave.transactions.getUploader(transaction)
+                  .then((uploader) => {
+                      function loop() {
+                          uploader.uploadChunk()
+                          .then(() => {
+                              if (!uploader.isComplete) {
+                                  console.log('need to loop')
+                                  loop()
+                              } else {
+                                  console.log('done')
+                                  @this.set('artwork_arweave_hash', transaction.id)
+                                  Livewire.emit('arweaveUploaded')
+                              }
+                          })
+                      }
+                      loop();
+                  })
+              });
+          });
+      //}, false);
+
+      //reader.readAsDataURL(file);
+    }
+
     function drop_file_component() {
         return {
             dropingFile: false,
@@ -880,7 +924,7 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
       })
     }
 
-    async function deploy(tokenUrl, ipfsUrl, contractUrl) {
+    async function deploy(tokenUrl, ipfsUrl, arweaveUrl, contractUrl) {
         // prevent wallet error
         if (formatAddress(@this.auth_address) == formatAddress(getAccount().address) &&
             @this.network_public_id == getNetwork().chain.id) {
@@ -890,16 +934,23 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
             // const factoryContract = await Factory.deploy("Hello, Hardhat!");
             console.log(@this.smart_contract_name)
             console.log(@this.smart_contract_symbol)
+            console.log(@this.artwork_title)
+            console.log(@this.artwork_description)
+            console.log(@this.artwork_artist)
+            console.log(ipfsUrl)
+            console.log(arweaveUrl)
+            console.log(contractUrl)
             console.log(tokenUrl)
+            console.log(@this.artwork_sha_hash)
             console.log(ethers.utils.parseEther(@this.artwork_price))
             console.log(@this.artwork_max_supply)
             console.log(@this.self_nfts_number)
             console.log(@this.artwork_royalty)
 
             const factoryContract = await Factory.deploy(
-                @this.smart_contract_name,
-                @this.smart_contract_symbol,
-                tokenUrl,
+                [@this.smart_contract_name, @this.smart_contract_symbol], //
+                [@this.artwork_title, @this.artwork_description, @this.artwork_artist],
+                [ipfsUrl,arweaveUrl,contractUrl,tokenUrl,@this.artwork_sha_hash],
                 ethers.utils.parseEther(@this.artwork_price),
                 @this.artwork_max_supply,
                 @this.self_nfts_number,
@@ -922,9 +973,14 @@ NFT Factory uses the highest standard to ensure the persistence and integrity of
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+      
+      Livewire.on('uploadArweaveOnJs', function (type, file) {
+        // file = document.querySelector('input[type=file]').files[0]
+        arweaveUpload(type, file)
+      });
 
-      Livewire.on('deploySmartContractOnJs', function (tokenUrl, ipfsUrl, contractUrl) {
-        deploy(tokenUrl, ipfsUrl, contractUrl)
+      Livewire.on('deploySmartContractOnJs', function (tokenUrl, ipfsUrl, arweaveUrl, contractUrl) {
+        deploy(tokenUrl, ipfsUrl, arweaveUrl, contractUrl)
       });
 
       Livewire.on('switchNetworkOnJs', function (networkId) {

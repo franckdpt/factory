@@ -15,6 +15,7 @@ class Mint extends Component
 
     public ?SmartContract $smart_contract = null;
     public $smart_contract_address = '';
+    public $smart_contract_type = '';
     public $smart_contract_price = '';
     public $abi;
     public $network_public_id;
@@ -40,11 +41,12 @@ class Mint extends Component
 
     public function mount($smart_contract_publicid)
     {
-        $this->abi = json_decode(Storage::disk('local')->get('sc-721-1.json'), true)['abi'];
-
         $this->smart_contract = SmartContract::wherePublicId($smart_contract_publicid)
                                                 // ->where("deployed", 1)
                                                 ->firstOrFail();
+
+        $this->abi = json_decode(Storage::disk('local')->get($this->smart_contract->type.'.json'), true)['abi'];
+        $this->smart_contract_type = $this->smart_contract->type;
         $this->smart_contract_address = $this->smart_contract->address;
         $this->smart_contract_price = $this->smart_contract->artwork_price;
         $this->is_deployed = $this->smart_contract->deployed;
